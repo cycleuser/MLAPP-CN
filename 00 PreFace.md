@@ -3,9 +3,12 @@
 > A Chinese Notes of MLAPP，MLAPP 中文笔记项目
 > https://zhuanlan.zhihu.com/python-kivy
 
-翻译：[cycleuser](https://www.zhihu.com/people/cycleuser/activities)
+记笔记的人：[cycleuser](https://www.zhihu.com/people/cycleuser/activities)
 
 2018年05月06日13:15:36
+
+本文内容仅仅是读书笔记，并非对原文的忠实翻译，且不包含任何原文图件。
+
 
 ## 简介
 电子形式的数据规模增长，带来了数据分析自动化方法的需求的增长。机器学习的目的是开发能从数据中自动识别模式的方法，然后用发现的模式去对未来数据进行预测等等。所以机器学习和统计与数据挖掘领域都很相关，但重点和术语方面有所不同。本书就是对这一领域进行详细介绍，包含了一些应用样例，这些样例的领域包括分子生物学、文本处理、计算机视觉和机器人。
