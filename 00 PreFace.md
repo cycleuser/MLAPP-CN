@@ -1,7 +1,10 @@
 # MLAPP 读书笔记 - 00 前言
-A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/python-kivy
+
+> A Chinese Notes of MLAPP，MLAPP 中文笔记项目
+> https://zhuanlan.zhihu.com/python-kivy
 
 翻译：[cycleuser](https://www.zhihu.com/people/cycleuser/activities)
+
 2018年05月06日13:15:36
 
 ## 简介
@@ -19,7 +22,7 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 
 本书并不仅仅是一个罗列不同启发式方法的菜谱式书籍，而是强调了机器学习中的基于模型为原则的角度。对于任意的给定模型，都可以用一系列不同算法。反过来说，任意的算法也都往往可以用于多种不同模型。这样实现了一种模块化，将模型和算法相互区分，对教学和工程来说都是好选择。
 
-本书会经常用到图像化的语言来对模型进行简明直观的表达。除了有助于理解之外，图结构还有利于开发搞笑的算法。不过这本书的重点并不是图结构，而是一般意义上的概率建模。
+本书会经常用到图像化的语言来对模型进行简明直观的表达。除了有助于理解之外，图结构还有利于开发高效的算法。不过这本书的重点并不是图结构，而是一般意义上的概率建模。
 
 ## 实践角度
 
