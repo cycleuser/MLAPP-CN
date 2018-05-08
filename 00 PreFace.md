@@ -22,7 +22,7 @@
 
 本书会经常用到图像化的语言来对模型进行简明直观的表达。除了有助于理解之外，图结构还有利于开发高效的算法。不过这本书的重点并不是图结构，而是一般意义上的概率建模。
 
-本书中所提到的方法几乎都包含于一个叫做 PMTK 的 MATLAB 软件包里面，这个 PMTK 的意思就是概率建模工具箱（Probabilistic modeling toolkit）的英文缩写。PMTK 软件可以从 https://github.com/probml/pmtk3 下载，原来书中的链接 pmtk3.googlecode.com 提示失效了。pmtk 后面的这个3 是指版本号，本书用的是 pmtk3，更多相关资源可以访问 https://github.com/probml，其中由代码、文档、图件等等。
+本书中所提到的方法几乎都包含于一个叫做 PMTK 的 MATLAB 软件包里面，这个 PMTK 的意思就是概率建模工具箱（Probabilistic modeling toolkit）的英文缩写。PMTK 软件可以从 https://github.com/probml/pmtk3 下载，原来书中的链接 pmtk3.googlecode.com 提示失效了。pmtk 后面的这个3 是指版本号，本书用的是 pmtk3，更多相关资源可以访问 https://github.com/probml ，其中由代码、文档、图件等等。
 关于 MATLAB 的介绍这里就不说了，建议大家使用开源的 MATLAB 替代品 Octave。
 
 本书中的很多图片都是使用 PMTK 生成的，这些相关的代码也都在 PMTK 网站上可以找到。这部分内容大家自己在 PMTK 的网站上看吧。
