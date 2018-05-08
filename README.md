@@ -11,3 +11,33 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 另外书中的代码部分，我准备尝试用 Python（3.5 以及之后的版本）来实现一下，也放在 Github 上面: https://github.com/Kivy-CN/MLAPP-CN 。
 到时候还希望大家批评指正！
 
+## 翻译进度追踪
+
+- [x] 01 Introduction 1~26
+- [ ] 02 Probability 27~64
+- [ ] 03 Generative models for discrete data 65~96
+- [ ] 04 Gaussian models 97~148
+- [ ] 05 Bayesian statistics 149~190
+- [ ] 06 Frequentist statistics 191~216
+- [ ] 07 Linear regression 217~244
+- [ ] 08 Logistic regression 245~280
+- [ ] 09 Generalized linear models and the exponential family 281~306
+- [ ] 10 Directed graphical models (Bayes nets) 307~336
+- [ ] 11 Mixture models and the EM algorithm 337~380
+- [ ] 12 Latent linear models 381~420
+- [ ] 13 Sparse linear models 421~478
+- [ ] 14 Kernels 479~514
+- [ ] 15 Gaussian processes 515~542
+- [ ] 16 Adaptive basis function models 543~588
+- [ ] 17 Markov and hidden Markov models 589~630
+- [ ] 18 State space models 631~660
+- [ ] 19 Undirected graphical models (Markov random fields) 661~706
+- [ ] 20 Exact inference for graphical models 707~730
+- [ ] 21 Variational inference 731~766
+- [ ] 22 More variational inference 767~814
+- [ ] 23 Monte Carlo inference 815~836
+- [ ] 24 Markov chain Monte Carlo (MCMC) inference 837~874
+- [ ] 25 Clustering 875~906
+- [ ] 26 Graphical model structure learning 907~944
+- [ ] 27 Latent variable models for discrete data 945~994
+- [ ] 28 Deep learning 995~1009
