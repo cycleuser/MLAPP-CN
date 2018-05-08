@@ -238,7 +238,7 @@ $std[X]*= \sqrt {var[X]}$(2.27)
 
 ### 2.3.1 二项分布和伯努利分布
 
-设咱们抛硬币 n 次，设$X\in \{0,...,n\}$ 是人头朝上的次数。如果头朝上的概率是$\theta$，这就可以说 X 是一个二项分布（binomial distribution），记作$X~Bin(n,\theta)$。则 pmf（概率质量函数）可以写作：
+设咱们抛硬币 n 次，设$X\in \{0,...,n\}$ 是人头朝上的次数。如果头朝上的概率是$\theta$，这就可以说 X 是一个二项分布（binomial distribution），记作$X∼Bin(n,\theta)$。则 pmf（概率质量函数）可以写作：
 $Bin(k|n,\theta)*= \binom{n}{k} \theta ^k  (1- \theta)^{n-k}$（2.28）
 上式中的
 $ \binom{n}{k} *= \frac{n!}{(n-k)!k!}$(2.29)
@@ -251,7 +251,7 @@ $ \binom{n}{k} *= \frac{n!}{(n-k)!k!}$(2.29)
 这个分布的均值和方差如下所示：
 $mean=\theta, var =n\theta(1-\theta)$（2.30）
 
-换个思路，如果只抛硬币一次，那么$X\in \{0,1 \}$就是一个二值化的随机变量，成功或者人头朝上的概率就是$\theta$。这时候就说 X 服从伯努利分布（Bernoulli distribution），记作$X~Ber(\theta)$，其中的 pmf 定义为：
+换个思路，如果只抛硬币一次，那么$X\in \{0,1 \}$就是一个二值化的随机变量，成功或者人头朝上的概率就是$\theta$。这时候就说 X 服从伯努利分布（Bernoulli distribution），记作$X∼Ber(\theta)$，其中的 pmf 定义为：
  
 $Ber(x|\theta)=\theta^{\prod (x=1)}(1-\theta)^{\prod (x=0)}$(2.31)
 
@@ -283,7 +283,7 @@ $Mu(x|1,\theta)=\prod^K_{j=1 }\theta_j ^{\prod(x_j=1)}$(2.35)
 
 $Cat(x|\theta)*= Mu(x|1,\theta)$(2.36)
 
- 换句话说，如果$x~Cat(\theta)$，则$p(x=j|theta)=\theta_j$。参考表2.1。
+ 换句话说，如果$x∼Cat(\theta)$，则$p(x=j|theta)=\theta_j$。参考表2.1。
 
 
 
@@ -308,7 +308,7 @@ $\hat\theta_t =N_t/N$(2.38)
 
 
 
-如果一个离散随机变量$X\in \{0,1,2,...\}$服从泊松分布，即$X~ Poi(\lambda)$，其参数$\lambda >0$，其概率质量函数 pmf 为：
+如果一个离散随机变量$X\in \{0,1,2,...\}$服从泊松分布，即$X∼ Poi(\lambda)$，其参数$\lambda >0$，其概率质量函数 pmf 为：
 
 $Poi(x|\lambda )=e^{-\lambda}\frac{\lambda ^x}{x!}$(2.39) 
 
