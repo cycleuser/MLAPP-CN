@@ -333,6 +333,183 @@ $$(2.41)
 一般来说可以给每个样本关联一个权重（weight）
 $p(x)=\sum^N_{i=1}w_i\delta_{x_i}(x)$（2.42）
 
+其中要满足$0\le w_i \le 1$以及$\sum^N_{i=1}w_i=1$。可以想象成一个直方图（histogram），其中每个点$x_i$位置都有各自的峰（spike），而$w_i$决定了峰值i 的高低。这个分布中，所有不在数据集中的点就都设为0了。
+
+## 2.4 一些常见的连续分布
+
+接下来介绍一些常用的单变量一维连续概率分布。
+
+### 2.4.1 高斯（正态）分布
+
+不管是统计学还是机器学习里面，最广泛使用的都是高斯分布了，也叫做正态分布。其概率密度函数 pdf 为：
+$N(x|\mu,\sigma^2) *= \frac {1}{\sqrt{2\pi \sigma^2}} e^ {-\frac{1}{2 \sigma^2}(x-\mu)^2}$(2.43)
+
+上式中的$\mu=E[X]$是均值（mean）也是模（mode）,$\sigma^2=var[X]$ 是方差（variance）。$\sqrt{2\pi \sigma^2}$是归一化常数（normalization constant），用于确保整个密度函数的积分是1，具体可以参考练习2.11。
+
+可以写成$X ∼ N(\mu,\sigma^2) $来表示$p(X=x)=N(x|\mu,\sigma^2)$。$X ∼ N(0,1)$就是标准正态分布（standard normal distribution）。图2.3（b）是这样一个标准正态分布的概率密度函数图像，也被称作钟形曲线。
+
+所谓高斯分布的精确度（precision）就是方差的倒数$\lambda =1/\sigma^2$。精确度高的意思也就是方差低，而整个分布很窄，对称分布在均值为中心的区域。
+
+要注意这是一个概率密度函数（pdf），所以完全可以$p(x)>1$。比如在中心位置，$x=\mu$,这样就有$N(\mu\mu,\sigma^2)=(\sigma\sqrt{2\pi})^{-1 }e^0$,所以如果$\sigma< 1/\sqrt{2\pi}$,这样就有$p(x)>1$.
+
+高斯分布的累积分布函数(cdf)为:
+
+$\phi(x;\mu , \sigma^2)*= \int^x_{-\infty}N(z|\mu,\sigma^2)dz $(2.44)
+
+
+图2.3(a) 所示为当$\mu=0,\sigma^2=1$时候的 cdf 函数曲线.这个函数的积分没有闭合形式表达式,不过在多数软件包里面都内置了.另外还能以误差函数(error function,缩写为 erf)的形式来计算:
+
+
+$\phi(x;\mu , \sigma^)*= \frac 1 2[1+erf(z/\sqrt2)] $(2.45)
+
+其中的$z=(x-\mu)/\sigma$,误差函数为:
+$erf(x)*= \frac{2}{\sqrt\pi}\int^x_0e^{-t^2}dt$(2.46)
+
+高斯分布是统计学里面用的最广的分布,有几个原因.首先是这两个参数很好解释,分别对应着分布中的两个基础特征,均值和方差.其次中心极限定理( central limit theorem, 参考本书2.6.3)也表明独立随机变量的和旧近似为高斯分布,所以高斯分布很适合用来对残差或者噪音建模.然后高斯分布有最小假设数(least number of assumptions),最大熵(maximum entropy),适合用于有特定均值和方差情境下建立约束,如本书9.2.6所述,这就使得高斯分布是很多情况下很不错的默认选择.另外,高斯分布的数学形式也很简单,容易实现,效率也很高.高斯分布更广泛应用参考 Jaynes 2003 第七章.
+
+### 2.4.2 退化概率分布函数(Degenerate pdf)
+
+
+如果让方差趋近于零,即$\sigma^2 \rightarrow 0$,那么高斯分布就变成高度为无穷大而峰值宽度无穷小的形状了,中心当然还是在$\mu$位置:
+$\lim_{\sigma^2\rightarrow 0} N(x| \mu,\sigma^2) =\delta (x-\mu)$(2.47)
+
+这个新的分布函数$\delta$就叫做狄拉克函数(Dirac delta function).其定义为:
+$$
+\delta(x)=\begin{cases}\infty \text{   if   } x=0\\ 
+0 \text{   if   } x\ne 0
+\end{cases}
+$$(2.48)
+
+这样进行积分也有
+$\int_{-\infty} ^\infty \delta(x)dx=1$(2.49)
+
+这个狄拉克函数的有个特点就是筛选特性(sifting property),从一系列求和或者积分当中筛选了单一项目:
+
+$\int_{-\infty} ^\infty f(x) \delta(x-\mu )dx=f(\mu )$(2.50)
+
+只有当$x-\mu =0$的时候这个积分才是非零的.
+
+高斯分布有个问题就是对异常值很敏感,因为从分布中心往外的对数概率衰减速度和距离成平方关系(since the logprobability only decays quadratically with distance from the center).
+有一个更健壮的分布,就是所谓的 T 分布或者也叫学生分布(student distribution),其概率密度函数如下所示:
+
+$T(x|\mu,\sigma^2,v)\propto [1+\frac 1v (\frac{x-\mu}{\sigma})^2 ]^ {-(\frac {v+1}{2})}$(2.51)
+
+上式中的$\mu$是均值,$\sigma^2>0$是范围参数(scale parameter),$v>0$称为自由度( degrees of freedom). 如图2.7就是该函数的曲线.为了后文用起来方便,这里特地说一下几个属性:
+$mean=\mu, mode=\mu,var=\frac{v\sigma^2}{v-2}$(2.52)
+
+这个模型中,当自由度大于2 $v>2$的时候方差才有意义,自由度大于1 $v>1$均值才有意义.
+
+此处参见原书图2.7
+
+此处参见原书图2.8
+
+T 分布的稳定性如图2.8所示,左侧用的是没有异常值的高斯分布和T 分布,右侧是加入了异常值的.很明显这个异常值对于高斯分布来说干扰很大,而 T 分布则几乎看不出来有影响.因为 T 分布比高斯分布更重尾(heavier tails), 至少对于小自由度 v 的时候是这样,如图2.7所示.
+
+如果自由度 v=1,则 T 分布就成了柯西分布(Cauchy distribution)或者洛伦兹分布(Lorentz distribution) .要注意这时候重尾(heavy tails)会导致定义均值(mean)的积分不收敛.
+
+要确保有限范围的方差(ﬁnite variance), 就需要自由度 v>2.一般常用的是自由度v=4,在一系列问题中的性能表现也都不错(Lange 等1989).如果自由度远超过5,即v>>5,T 分布就很快近似到高斯分布了,也就失去了健壮性(robustness)了.
+
+此处参见原书图2.9
+
+### 2.4.3 拉普拉斯分布(Laplace distribution)
+
+另外一个常用的重尾分布就是拉普拉斯分布,也被称为双面指数分布(double sided exponential distribution),概率密度函数如下所示:
+
+$Lap(x|\mu,b)*=\frac1{2b}\exp(-\frac{|x-\mu|}{b})$(2.53)
+
+上式中的$\mu$是位置参数(location parameter), b>0 是缩放参数(scale parameter),如图2.7所示就是其曲线.这个分布的各个属性如下所示:
+
+$mean=\mu, mode=\mu,var=2b^2$(2.54)
+这个分布的健壮性(robustness)如图2.8中所示,另外从图中也可以发现拉普拉斯分布比高斯分布在0点有更多概率.这个特性在本书13.3的时候还要用到,很适合用于在模型中增强稀疏性(encourage sparsity).
+
+### 2.4.4 $\gamma$分布
+
+
+
+这个分布很灵活,适合正实数值的rv, x>0. 用两个参数定义,分别是形状参数(shape) a>0  和频率参数(rate) b>0:
+
+$Ga(T|shape=a, rate=b)*=  \frac{b^a}{\Gamma(a) }T^{a-1}e^{-Tb}$(2.55)
+
+上式中的$\Gamma(a)$是一个$\gamma$函数:
+$\Gamma(x) \int_0^{\infty} u^{x-1}e^{-u}du$(2.56)
+
+
+参考图2.9就是一些样例图像.这个分布的各个属性如下所示:
+
+$mean=\frac{a}{b}, mode=\frac{a-1}{b},var=\frac{a}{b^2}$(2.54)
+
+有一些分布实际上就是$\gamma$分布的特例, 比如下面这几个:
+
+
+* 指数分布(Exponential distribution)定义是$Expon(x|\lambda)*= Ga(x|1,\lambda)$,其中的$\lambda$是频率参数(rate).这个分布描述的是泊松过程(Poisson process) 中事件之间的时间间隔.例如,一个过程可能有很多一系列事件按照某个固定的平均频率$\lambda$连续独立发生.
+* 厄兰分布(Erlang Distribution)就是一个形状参数 a 是整数的$\gamma$分布,一般会设置 a=2,产生的是一个单参数厄兰分布,$Erlang(x|\lambda) = Ga(x|2, \lambda),$,$\lambda$也是频率参数.
+* 卡方分布(Chi-squared distribution)定义为$\chi ^2 (x|ν) *=Ga(x|\fracν2,\frac12 )$.这个分布是高斯分布随机变量的平方和的分布.更确切地说,如果有一个高斯分布$Z_i ∼ N(0, 1),$,那么其平方和$S=\sum_{i=1}^vZ_i^2$则服从卡方分布$S ∼ \chi_v^2$.
+
+另一个有用的结果是:如果一个随机变量服从$\gamma$分布:$X ∼ Ga(a,b)$ 那么这个随机变量的导数就服从一个逆$\gamma$分布(inverse gamma),即$\frac 1X ∼ IG(a,b)$,这个在练习2.10里面有详细描述.逆$\gamma$分布(inverse gamma)定义如下:
+
+
+$IG(x|shape =a,scale =b)*= \frac{b^a}{\tau (a)}x^{-(a+1)} e^{-\frac b x}$(2.58)
+
+这个逆$\gamma$分布的三个属性 如下所示:
+
+$ mean= \frac{b}{a-1},mode=\frac{b}{a+1},var=\frac{b^2}{(a-1)^2(a-2)}$(2.59)
+
+这个均值只在 a>1 的情况下才存在,而方差仅在 a>2 的时候存在.
+
+
+### 2.4.5 $\beta$分布
+
+此处参见原书图2.10
+
+
+$\beta$分布支持区间[0,1],定义如下:
+
+
+$Beta(x|a,b)=\frac{1}{B(a,b)}x^{a-1 }(1-x)^{b-1}$(2.60)
+
+上式中的$B(a,b)$是一个$\beta$函数,定义如下:
+
+$B(a,b)*=\frac{\tau(a)\tau(b)}{\tau(a+b)}$(2.61)
+
+这个分布的函数图像可以参考图2.10.需要 a 和 b 都大于零来确保整个分布可以积分,这是为了保证$B(a,b)$存在.如果 a=b=1, 得到的就是均匀分布(uniform distirbution),如图2.10中红色虚线所示.如果 a 和 b 都小于1,那么得到的就是一个双峰分布(bimodal distribution),两个峰值在0和1位置上,如图2.10中的蓝色实线所示.如果 a 和 b 都大于1了,得到的就是单峰分布(unimodal distribution) 了,如图2.10中的另外两条虚线所示.这部分内容在练习2.16里会用到.这个分布的属性如下:
+
+$ mean= \frac{a}{a+b},mode=\frac{a-1}{a+b-2},var=\frac{ab}{(a+b)^2(a+b+1)}$(2.52)
+
+
+
+### 2.4.6 柏拉图分布(Pareto distribution)
+
+这个分布是用来对有长尾(long tails)或称为重尾(heavy tails)特点的变量进行建模的.例如,英语中最常出现的词汇是冠词 the, 出现概率可能是第二位最常出现词汇 of 的两倍还多, 而 of 也是第四位的出现次数的两倍,等等.如果把每个词汇词频和排名进行投图,得到的就是一个幂律(power law),也称为齐夫定律(Zipf's law).财富的分配也有这种特点,尤其是在美帝这种腐朽的资本主义国度.
+
+柏拉图分布的概率密度函数(pdf)如下所示:
+$Pareto(x|k,m)=km^kx^{-(k+1)}\prod(x\geq m)$(2.63)
+
+通过定义可知, x 必须必某一个常数 m 大,但又不用大特别多,而其中的 k 就是控制这个的,避免 x 太大.随着$k \rightarrow \infty$,这个分布就接近于狄拉克分布$\delta(x-m)$了.参考图2.11(啊) 就是一些此类分布函数的图像,如果用对数坐标来进行投图,就会形成一条直线,如图2.11(b) 所示那样.这个直线的方程形式就是$\log p(x)=a\log x+c$,其中的 a 和 c 是某个常数.这也叫幂律(power law).这个分布的属性如下所示:
+
+$mean=\frac{km}k-1{} \text{   if }k>1,mode=m, var =\frac{m^2k}{(k-1)^2(k-2)} \text{   if }k>2$(2.64)
+
+
+
+此处参见原书图2.11
+
+
+
+
+
+
+
+
+$$(2.65)
+
+
+
+
+
+
+
+
+
+
 
 
 
