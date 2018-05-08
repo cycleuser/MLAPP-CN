@@ -476,7 +476,6 @@ $B(a,b)*=\frac{\tau(a)\tau(b)}{\tau(a+b)}$(2.61)
 $ mean= \frac{a}{a+b},mode=\frac{a-1}{a+b-2},var=\frac{ab}{(a+b)^2(a+b+1)}$(2.52)
 
 
-
 ### 2.4.6 柏拉图分布(Pareto distribution)
 
 这个分布是用来对有长尾(long tails)或称为重尾(heavy tails)特点的变量进行建模的.例如,英语中最常出现的词汇是冠词 the, 出现概率可能是第二位最常出现词汇 of 的两倍还多, 而 of 也是第四位的出现次数的两倍,等等.如果把每个词汇词频和排名进行投图,得到的就是一个幂律(power law),也称为齐夫定律(Zipf's law).财富的分配也有这种特点,尤其是在美帝这种腐朽的资本主义国度.
@@ -490,25 +489,149 @@ $mean=\frac{km}k-1{} \text{   if }k>1,mode=m, var =\frac{m^2k}{(k-1)^2(k-2)} \te
 
 
 
-此处参见原书图2.11
+此处查看原书图2.11
+
+
+## 2.5 联合概率分布
+
+签名的都是单变量的概率分布,接下来要看看更难的,就是联合概率分布( joint probability distributions),其中要涉及到多个相关联的随机变量,实际上这也是本书的核心内容.
+
+联合概率分布的形式是$p(x_1,...,x_D)$,这些随机变量属于一个规模为 D>1 的集合,对这些随机变量间 的(随机stochastic)关系进行建模,就要用联合概率分布.如果所有变量都是离散的,那就可以吧联合分布表示成一个大的多维数组,每个维度对应一个变量.若设每个变量的状态数目总共是 K, 那么这样要建模的话,需要定义的参数个数就达到了$O(K^D)$了.
+
+
+### 2.5.1 协方差和相关系数
+
+协方差(covariance)是用来衡量两组变量之间(线性)相关的程度的,定义如下:
+
+$cov[X,Y]*= E[(X-E[X])(Y-E[Y])] =E[XY]-E[X]E[Y] $(2.65)
+
+此处查看原书图2.12
+
+如果 x 是一个 d 维度的随即向量,那么它的协方差矩阵(covariance matrix) 的定义如下所示,这是一个对称正定矩阵(symmetric positive definite matrix):
+
+$$\begin{aligned}
+cov[x]*&= E[(x-E[x])(x-E[x])^T] \text{    (2.66)}\\
+&=  \begin{pmatrix}
+        var[X_1] & cov[X_1,X_2] &...& cov[X_1,X_d]  \\
+        cov[X_2,X_1]  & var[X_2]  &...&cov[X_2,X_d]  \\
+        ...&...&...&...\\
+       cov[X_d,X_1]  & cov[X_d,X_2] z &...&var[X_d] \\
+        \end{pmatrix} \text{     (2.67)}\\
+\end{aligned}
+$$
+
+协方差可以从0到$\infty $之间取值.有时候为了使用方便,可以只用其中的上半部分.
+
+两个变量X 和 Y 之间的皮尔逊相关系数(correlation coefficient)定义如下:
+
+$corr[X,Y]*= \frac{cov[X,Y]}{\sqrt{var[X]var[Y]}}$(2.68)
+
+而相关矩阵(correlation matrix)则为:
+$$
+R= \begin{pmatrix}
+        cov[X_1,X_1] & cov[X_1,X_2] &...& cov[X_1,X_d]  \\
+        ...&...&...&...\\
+       cov[X_d,X_1]  & cov[X_d,X_2] z &...&var[X_d] \\
+        \end{pmatrix} 
+$$(2.69)
+
+从练习4.3可知相关系数是在[-1,1]这个区间内的,因此在一个相关矩阵中,每一个对角线项值都是1,其他的值都是在[-1,1]这个区间内.
+
+另外还能发现的就是当且仅当有参数 a 和 b 满足$Y = aX + b$的时候,才有$corr [X, Y ] = 1 $,也就是说 X 和 Y 之间存在线性关系,参考练习4.3.
+
+根据直觉可能有人会觉得相关系数和回归线的斜率有关,比如说像$Y = aX + b$这个表达式当中的系数 a 一样.然而并非如此,如公式7.99中所示,实际上回归系数的公式是$a = cov [X, Y ] /var [X]$.可以将相关系数看做对线性程度的衡量,参考图2.12.
+
+回想本书的2.2.4,如果 X 和 Y 相互独立,则有$p(X, Y ) = p(X)p(Y )$,这样二者的协方差$cov[X,Y]=0$,相关系数$ corr[X,Y]=0$, 很好理解,相互独立就是不想管了.但反过来可不成立,不相关并不能意味着相互独立.例如设$X ∼ U(-1,1), Y=X^2$. 很明显吧,这两个是相关的对不对,甚至 Y 就是 X 所唯一决定的,然而如练习4.1所示,这两个变量的相关系数算出来等于零啊,即$corr[X,Y]=0$.图2.12有更多直观的例子,都是两个变量 X 和 Y 显著具有明显的相关性,而计算出来的相关系数却都是0.实际上更通用的用来衡量两组随机变量之间是否独立的工具是互信息量(mutual information),这部分在本书2.8.3当中有设计.如果两个变量真正不相关,这个才会等于0.
+
+此处查看原书图2.13
+
+
+### 2.5.2 多元高斯分布
+
+多元高斯分布(multivariate Gaussian)或者所谓多元正态分布(multivariate normal,缩写为MVN),是针对连续随机变量的联合概率分布里面用的最广的.在第四章会对其进行详细说明,这里只说一些简单定义并且给个函数图像瞅瞅.
+
+在 D 维度上的多元正态分布(MVN)的定义如下所示:
+$N(x|\mu,\Sigma)*= \frac{1}{(2\pi )^{\frac D2} |\Sigma|^{\frac12}}\exp [-\frac12 (x-\mu)^T\Sigma^{-1}(x-\mu) ]$(2.70)
+
+上式中$\mu = E [x] \in R^D$是均值向量,而$\Sigma= cov [x]$ 一个$ D\times D$的协方差矩阵.有时候我们会用到一个名词叫做精度矩阵(precision/concentration matrix),这个就是协方差矩阵的逆矩阵而已,也就是$\Lambda =\Sigma^{-1 }$.前面那一团做分母的$(2\pi )^{\frac D2}|\Sigma|^{\frac12}$也还是归一化常数,为了保证这个概率密度函数的积分等于1,更多参考练习4.5
+
+图2.13展示了一些多元正态分布的密度图像,其中有三个是三个不同协方差矩阵的下的二维投影,另外一个是立体的曲面图像.一个完整的协方差矩阵有$D(D + 1)/2$个参数,除以2是因为矩阵$\Sigma$是对称的.对角协方差矩阵的方向有 D 个参数,非对角线位置的元素的值都是0. 球面(spherical)或者各向同性(isotropic)协方差矩阵$\Sigma = \delta^2 I_D$有一个自由参数.
+
+### 2.5.3 多元学生 T 分布
+
+相比多元正态分布 MVN, 多元学生T 分布更加健壮,其概率密度函数为:
+$$
+\begin{aligned}
+\tau(x|\mu,\Sigma,v)&=\frac{\tau(v/2+D/2)}{\tau(v/2+D/2)}  \frac{|\Sigma|^{-1/2}}{v^{D/2}\pi^{D/2}}\times [1+\frac1v(x-\mu )^T\Sigma^{-1}(x-\mu)]^{-(\frac{v+D}{2})}
+&\text{   (2.71)}\\
+&=\frac{\tau(v/2+D/2)}{\tau(v/2+D/2)} |\pi V|^{-1/2}\times [1+(x-\mu)^T\Sigma^{-1}(x-\mu)]^{-(\frac{v+D}{2})}
+ &\text{   (2.72)}\\
+\end{aligned}
+$$
+
+其中的$\Sigma$叫做范围矩阵(scale matrix),而并不是真正的协方差矩阵,$V=v\Sigma$.这个分布比高斯分布有更重的尾部(fatter tails).参数$v$越小,越重尾;而当$v\rightarrow \infty$则这个分布趋向为高斯分布.这个分布的属性如下所示:
+
+$mean=\mu, mode=\mu,  Cov=\frac{v}{v-2}\Sigma$(2.73)
+
+### 2.5.4 狄利克雷分布
+
+$\beta$分布扩展到多元就成了狄利克雷分布(Dirichlet distribution),支持概率单纯形(probability simplex),定义如下:
+
+$S_K={x:0 \le x_k \le 1, \sum ^K_{k=1}x_k=1}$(2.74)
+
+其概率密度函数 pdf 如下所示:
+
+$Dir(x|\alpha)*= \frac{1}{B(\alpha)} \prod^K_{k=1} x_k^{\alpha_k -1}\prod(x\in S_K)$(2.75)
 
 
 
+此处查看原书图2.14
 
 
+此处查看原书图2.15
+
+上式中的$B(\alpha_1,...,\alpha_K)$是将$\beta$函数在 K 个变量上的自然推广(natural generalization),定义如下:
+
+$B(\alpha)*= \frac{\prod^K_{k=1}\tau(\alpha_k)}{\tau(\alpha_0)}$(2.76)
+其中的$\alpha_0*= \sum^K_{k=1}\alpha_k$.
+
+图2.14展示的是当 K=3的时候的一些狄利克雷函数图像,图2.15是一些概率向量样本.很明显其中$\alpha_0*= \sum^K_{k=1}\alpha_k$控制了分布强度,也就是峰值位置.例如Dir(1, 1, 1)是一个均匀分布,Dir(2, 2, 2) 是以为(1/3, 1/3, 1/3)中心的宽分布(broad distribution),而Dir(20, 20, 20) 是以为(1/3, 1/3, 1/3)中心的窄分布(narrow distribution).如果对于所有的 k  都有$\alpha_k <1$,那么峰值在单纯形的角落.
+
+这个分布的属性如下:
+$ E[x_k]=\frac{\alpha_k}{\alpha_0},mode[x_k]=\frac{\alpha_k-1}{\alpha_0-K},var[x_k]=\frac{\alpha_k(\alpha_0-\alpha_k)}{\alpha_0^2(\alpha_0+1)}$(2.77)
+
+上式中的$\alpha_0 = \sum_k \alpha_k$.通常我们用对称的狄利克雷分布,$\alpha_k=\alpha/K$. 这样则有方差$var[x_k]=\frac{K-1}{K^2(\alpha+1)}$. 这样增大$\alpha$就能降低方差,提高了模型精度.
 
 
+## 2.6 随机变量变换
 
-$$(2.65)
-
-
-
+如果有一个随机变量$x ∼p()$,还有个函数$y=f(x)$,那么 y 的分布是什么?这就是本节要讨论的内容.
 
 
+### 2.6.1 线性变换
 
+设$f() $是一个线性函数:
+$y=f(x)=Ax+b$(2.78)
 
+这样就可以推导 y 的均值和协方差了.首先算均值如下:
+$E[y]=E[Ax+b]=A\mu+b$(2.79)
 
+上市中的$\mu=E[x]$.这就叫线性期望(linearity of expectation).如果$f()$ 是一个标量值函数(scalar-valued function)$f(x)=a^Tx+b $,那么对应结果就是:
 
+$E[a^Tx+b]=a^T\mu+b$(2.80)
+
+对于协方差,得到的就是:
+
+$cov[y]=cov[Ax+b]=A\Sigma A^T$(2.81)
+
+其中的$\Sigma =cov[x]$, 这个证明过程留作联系.如果$f()$ 是一个标量值函数(scalar-valued function),这个结果就成了:
+$var[y]=var[a^Tx+b]=a\Sigma a^T$(2.82)
+
+ 这些结果后面的章节都会多次用到.不过这里要注意,只有x 服从高斯分布的时候,才能单凭借着均值和协方差来定义 y 的分布.通常我们必须使用一些技巧来对 y 的完整分布进行推导,而不能只靠两个属性就确定.
+ 
+ 
+
+### 2.6.2 通用变换
 
 
 
