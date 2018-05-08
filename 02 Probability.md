@@ -531,7 +531,7 @@ $$
 R= \begin{pmatrix}
         cov[X_1,X_1] & cov[X_1,X_2] &...& cov[X_1,X_d]  \\
         ...&...&...&...\\
-       cov[X_d,X_1]  & cov[X_d,X_2] z &...&var[X_d] \\
+       cov[X_d,X_1]  & cov[X_d,X_2] &...&var[X_d] \\
         \end{pmatrix} 
 $$(2.69)
 
@@ -629,9 +629,72 @@ $var[y]=var[a^Tx+b]=a\Sigma a^T$(2.82)
 
  这些结果后面的章节都会多次用到.不过这里要注意,只有x 服从高斯分布的时候,才能单凭借着均值和协方差来定义 y 的分布.通常我们必须使用一些技巧来对 y 的完整分布进行推导,而不能只靠两个属性就确定.
  
- 
+
 
 ### 2.6.2 通用变换
+
+如果 X 是一个离散随机变量, $f(x)=y$, 推导 y 的概率质量函数 pmf,只要对所有x 的概率值了加到一起就可以了, 如下所示:
+$p_y(y)=\sum_{x:f(x)=y}p_x(x)$(2.83)
+
+例如,若X是偶数则$f(X)=1$,奇数则$f(X)=0$,$p_x(X)$是在集合$\{1, . . . , 10\}$上的均匀分布(uniform),这样$p_y (1) = x\in \{2,4,6,8,10\},  p_x (x) = 0.5,  p_y (0) = 0.5$.注意这个例子中的函数 f 是多对一的函数.
+如果 X 是连续的随机变量,就可以利用公式2.83,因为$p_x (x)$是一个密度,而不是概率质量函数了,也就不能把密度累加起来了. 这种情况下用的就是累积密度函数 cdf 了,协作下面的形式:
+
+$P_y(y)*=P(Y\le y)=P(f(X)\le y)=P(X\in\{x|f(x)\le y\})$(2.84)
+
+对累积密度函数 cdf 进行微分,就能得到概率密度函数 pdf 了:
+
+$P_y(y)*=P(Y\le y)=P(X\le f^{-1}(y))=P_x(f^{-1}(y))$(2.85)
+
+求导就得到了:
+
+$p_y(y)*= \frac{d}{dy}P_y(y)=\frac{d}{dy}P_x(f^{-1}(y)=\frac{dx}{dy}\frac{d}{dx}P-X(x)=\frac{dx}{dy}px(x)$(2.86)
+
+显然 $x=f^{-1}(y)$ ,可以把 $dx$看作是对 x 空间的一种体测量;类似的把$dy$当作对 y 空间体积的测量.这样$\frac{dx}{dy}$就测量了体积变化.由于符号无关紧要,所以可以取绝对值来得到通用表达式:
+
+$p_y(y)=p_x(x)|\frac{dx}{dy}|$(2.87)
+
+这也叫变量转换公式(change of variables formula).按照下面的思路来理解可能更容易.落在区间$(x, x+\delta x)$的观测被变换到区间$(y, y+\delta y)$ , 其中$p_x (x)\delta x \approx p_y (y)\delta  y$.因此$p_y(y)\ approx p_x(x)|\frac{\delta x}{\delta y}|$.例如,假如有个随机变量$X ∼ U(-1,1) , Y=X^2$.那么则有$p_y(y)=\frac12y^{-\frac12}$. 具体看练习2.10.
+
+
+#### 2.6.2.1 变量的多重变化(Multivariate change of variables)
+
+前面的结果可以推到多元分布上.设$f$是一个函数,从$R^n$映射到$R^n$, 设$y=f(x)$. 那么就有这个函数的雅可比矩阵 J(Jacobian matrix):
+
+
+$$
+J_{x\rightarrow y } * = \frac{\partial(y_1,...,y_n)}{\partial(x_1,...,x_n)}*=
+\begin{pmatrix}
+        \frac{\partial y_1}{\partial x_1} & ...& \frac{\partial y_1}{\partial x_n}  \\
+        ...&...&...\\
+       \frac{\partial y_n}{\partial x_1}   &...&\frac{\partial y_n}{\partial x_n} \\
+        \end{pmatrix} 
+$$(2.88)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
