@@ -101,7 +101,7 @@ $p(x=1|y=1)=0.8$(2.8)
 其中的 x=1意思就是检测结果阳性，而 y=1的意思是确实患病。
 据此很多人就认为患病概率也就是80%。这是错误的！
 这个计算方法忽略了患病的先验概率（prior probability），即：
-$p(y=1)=0/004$(2.9)
+$p(y=1)=0.004$(2.9)
 
 把这个先验概率忽略掉，就是基本比率谬误（base rate fallacy）。此外还要考虑的就是测试本身的假阳性（false positive）或者假警报（false alarm）的概率：
 
@@ -125,7 +125,7 @@ $(2.11、2.12)
 
 $p(y=c|x,\theta)=\frac{p(y=c|\theta)p(x|y=c,\theta)}{\sum_{\dot c}p(y=\dot c|\theta)p(x|y=\dot  c,\theta)}$(2.13)
 
-这就是生成分类器（Generative classiﬁers），使用类条件概率密度$p(x|y=c)$和类先验概率密度$p(y=c$来确定如何生成数据。更多细节在本书第3、4章。另一种方法是直接拟合类后验概率密度$p(y=c|x)$，这就叫辨别式分类器（discriminative classifier）。这两种方法的优劣在本书8.6有详细讲解。
+这就是生成分类器（Generative classiﬁers），使用类条件概率密度$p(x|y=c)$和类先验概率密度$p(y=c)$来确定如何生成数据。更多细节在本书第3、4章。另一种方法是直接拟合类后验概率密度$p(y=c|x)$，这就叫辨别式分类器（discriminative classifier）。这两种方法的优劣在本书8.6有详细讲解。
 
 
 
