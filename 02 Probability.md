@@ -40,7 +40,7 @@ https://zhuanlan.zhihu.com/python-kivy
 
 表达式p(A)是指 A 事件发生（为真）的概率。A 可以是逻辑判断表达式，比如：“明天会下雨”。根据概率定义就可以知道 $0\leq p(A) \leq 1$，如果p(A)=0则意味着绝对不会发生，如果p(A)=1则意味着必然发生。用$p(\bar A)$表示事件 A 不发生的概率；很显然，$p(\bar A) = 1- p(A)$。当事件 A 为真的时候通常还简写做  A=1，反之写为 A=0。这就跟布尔运算那个类似了。
 
-对这个二值事件的记号进行扩展，可以定义一个离散随机变量（discrete random variable）X，这个随机变量可以从任意的一个有限元素集合或者无限但可列的集合 *X* 中取值。将 Xx 的概率记作$p(X=x)$，或者缩写成$p(x)$。这里的$p()$也叫做概率质量函数（probability mass function，缩写为 pmf）。跟上面的一样，也要满足 $0\leq p(x) \leq 1$ 和$\sum_{x\in X}p(x)$。如图2.1所示的就是两个密度函数，定义在有限状态空间$x=\{1,2,3,4,5\}$。做梦的是一个正态分布，$p(x)=1/5$，右面的则是一个退化分布（degenerate distribution），$p(x)=\prod (x=1)$，其中的$\prod()$是二值指标函数（binary indicator function）。这个分布表示的是 X 就总是1，也就是说是固定值。
+对这个二值事件的记号进行扩展，可以定义一个离散随机变量（discrete random variable）X，这个随机变量可以从任意的一个有限元素集合或者无限但可列的集合 *X* 中取值。将 X = x 的概率记作$p(X=x)$，或者缩写成$p(x)$。这里的$p()$也叫做概率质量函数（probability mass function，缩写为 pmf）。跟上面的一样，也要满足 $0\leq p(x) \leq 1$ 和$\sum_{x\in X}p(x)$。如图2.1所示的就是两个密度函数，定义在有限状态空间$x=\{1,2,3,4,5\}$。左边的是一个均匀分布，$p(x)=1/5$，右面的则是一个退化分布（degenerate distribution），$p(x)=\prod (x=1)$，其中的$\prod()$是二值指标函数（binary indicator function）。这个分布表示的是 X 就总是1，也就是说是固定值。
 
 
 ### 2.2.2 基本规则
@@ -51,8 +51,8 @@ https://zhuanlan.zhihu.com/python-kivy
 
 给定两个事件，A 和 B，可以用如下方式来定义结合概率：
 
-$p(A ∨ B) = p(A) + p(B) − p(A ∧ B)$ （2.1）
-$p(A ∨ B) = p(A) + p(B)$ 若两个事件互斥（mutually exclusive）（2.2）
+$p(A ∨ B) = p(A) + p(B) − p(A ∧ B)$ (2.1)
+$p(A ∨ B) = p(A) + p(B)  \text{若两个事件互斥（mutually exclusive）} $ (2.2)
 
 译者注：其实2.2毫无必要，因为两个事件互斥的时候也就是2.1里面的最后一项$p(A ∧ B) =0 $所以根本没必要单独定义。 
 
@@ -63,11 +63,11 @@ $p(A ∨ B) = p(A) + p(B)$ 若两个事件互斥（mutually exclusive）（2.2�
 
 两个事件 A 和 B 的联合概率定义如下所示：
 
-$p(A,B) = p(A ∧ B) = p(A|B)p(B)$ （2.3）
+$p(A,B) = p(A ∧ B) = p(A|B)p(B)$ (2.3)
 
 这也叫做乘法规则（product rule）。对两个事件的联合概率分布$p(A,B)$，可以以如下方式定义边缘分布(marginal distribution)：
 
-$p(A)=\sum_b p(A,B) =\sum_b p(A|B=b)p(B=b)$(2.4)
+$p(A)=\sum_b p(A,B) =\sum_b p(A|B=b)p(B=b)$ (2.4)
 
 上式中对所有可能的状态 B 来进行求和。对 $p(B)$的定义与之相似。也有时候也叫做加法规则（sum rule）或者全概率规则（rule of total probability）
 
