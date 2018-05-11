@@ -670,17 +670,136 @@ J_{x\rightarrow y } * = \frac{\partial(y_1,...,y_n)}{\partial(x_1,...,x_n)}*=
         \end{pmatrix} 
 $$(2.88)
 
+矩阵 J 的行列式|det J|表示的是在运行函数 f 的时候一个单位的超立方体的体积变化.
+如果 f 是一个可逆映射(invertible mapping),就可以用逆映射$y\rightarrow x$的雅可比矩阵(Jacobian matrix) 来定义变换后随机变量的概率密度函数(pdf)
+
+$p_y(y)=p_x(x)|det(\frac{\partial x}{\partial y})|=p_x(x)|detJ_{y\rightarrow x}$(2.89)
+在练习4.5,你就要用到上面这个公式来推导一个多元正态分布的归一化常数(normalization constant).
+
+举个简单例子,假如要把一个概率密度函数从笛卡尔坐标系(Cartesian coordinates)的$x=(x_1,x_2)$ 转换到一个极坐标系(polar coordinates)$y=(r,\theta )$, 其中有对应关系:$x_1=r \cos \theta,x_3=r \sin \theta$.这样则有雅可比矩阵如下:
+
+$$
+J_{y\rightarrow x }=
+\begin{pmatrix}
+        \frac{\partial x_1}{\partial r}  &\frac{\partial x_1}{\partial \theta}  \\
+       \frac{\partial x_2}{\partial r} &\frac{\partial x_2}{\partial \theta} \\
+        \end{pmatrix} =
+\begin{pmatrix}
+        \cos \theta   & -r \sin \theta \\
+        \sin \theta   &   r\cos \theta\\
+        \end{pmatrix} 
+$$(2.90)
+
+矩阵 J 的行列式为:
+
+$|det J|=|r\cos^2\theta+r\sin^2\theta|=|r|$(2.91)
+
+因此:
+
+$p_y(y)=p_x(x)|det J|$(2.92)
+
+$p_{r,\theta}(r,\theta)=p_{x_1,x_2}(x_1,x_2)r=p_{x_1,x_2}(r\cos\theta,r\sin\theta)r$(2.93)
+
+
+以几何角度来看,可以参考图2.16,其中的阴影部分面积可以用如下公式计算:
+
+
+$P(r \le R \le  r + dr, \theta  \le  \Theta  \le  \theta  + d\theta ) = p_{r,\theta}  (r, \theta )drd\theta $(2.94)
+
+
+在这个限制范围内,这也就等于阴影中心部分的密度$p(r,\theta)$乘以阴影部分的面积,$rdrd\theta$.因此则有:
+
+$p_{r,\theta}  (r, \theta )drd\theta= p_{x_1,x_2}(r\cos\theta,r\sin\theta)rdrd\theta$$(2.95)
+
+此处查看原书图2.16
+
+此处查看原书图2.17
+
+
+### 2.6.3 中心极限定理(Central limit theorem)
+
+
+现在设想有 N 个随机变量,概率密度函数(pdf)为p(x_i),且不一定是正态分布,每个的均值和方差都分别是$\mu,\sigma^2$.然后假设每个随机变量都市独立同分布的(independent and identically distributed,缩写成iid).设$S_N =\sum^N_{i=1 }X_i$是所有随机变量的和.这是一个很简单的变换,但应用很广.随着 N 的增大,这个和的分布会接近:
+
+
+$p(S_N=s)=\frac{1}{\sqrt{2\pi N\sigma^2}}\exp(-\frac{(s-N\mu)^2}{2N\sigma^2})$(2.96)
+
+所以这个量的分布就是:
+
+$ Z_N *= \frac{S_N-N_{\mu}}{\sigma\sqrt N} = \frac{\bar X-\mu}{\sigma/\sqrt N} $(2.97)
+
+这个分布就会收敛到标准正态分布了,其中样本均值为:$\bar X=\frac 1 N \sum^N_{i=1}x_i$.这就叫做中心极限定理,更多内容参考(Jaynes 2003, p222) 或者 (Rice 1995, p169).
+
+图2.17即是一例,其中计算$\beta$分布变量均值,右图可见很快收敛到正态分布了.
+
+
+## 2.7 蒙特卡罗近似方法(Monte Carlo approximation)
+
+要计算一个随机变量的函数的分布,靠公式变换 通常还挺难的.有另外一个办法,简单又好用.首先就是从分布中生成 S 个样本,就把它们标为$x_1,...,x_S$.生成样本有很多方法,对于高维度分布来说最流行的方法就是马尔科夫链蒙特卡罗方法(Markov chain Monte Carlo,缩写为 MCMC),这部分内容在本书24章再行讲解.
+还说这个例子,对分布函数$f(X)$使用经验分布(empirical distribution)$\{f(x_s )\}^S_{s=1}$来进行近似.这就叫蒙特卡洛近似(Monte Carlo approximation), 之所以用这个名字是因为欧洲的知名赌城.这种方法首先是在统计物理性里面应用发展起来的,确切来说还是在原子弹研究过程中,不过现在已经广泛应用在统计和机器学习领域里面了.
+
+此处查看原书图2.18
+
+
+应用蒙特卡罗方法,可以对任意的随机变量的函数进行近似估计.先简单取一些样本,然后计算这些样本的函数的算术平均值(arithmetic mean).这个过程如下所示:
+
+$E[f(X)]=\int f(xp(x)dx\approx \frac1S\sum^S_{s=1}f(x_s)$(2.98)
+
+上式中$x_s ∼ p(X)$.这就叫做蒙特卡罗积分(Monte Carlo integration),相比数值积分(numerical integration)的一个优势就是在蒙特卡罗积分中只在具有不可忽略概率的地方进行评估计算,而数值积分会对固定网格范围内的所有点的函数进行评估计算.
+
+通过调整函数$f()$,就能对很多有用的变量进行估计,比如:
+* $\bar x =\frac 1S \sum^S_{s=1}x_s\rightarrow E[X]$
+* $\frac 1 S\sum^S_{s=1}(x_s-\bar x)^2\rightarrow var[X]$
+* $\frac 1 S \# \{x_s \le c\}\rightarrow P(X\le c)$
+* 中位数(median)$\{x_1,...,x_S\}\rightarrow median(X)$
+
+下面是一些例子,后面一些章节有更详细介绍.
+
+### 2.7.1 样例:更改变量,使用 MC (蒙特卡罗)方法
+
+在2.6.2，我们讨论了如何分析计算随机变量函数的分布$y = f(x)$.更简单的方法是使用蒙特卡罗方法估计.例如,若$x ∼ Unif(−1, 1) ,  y = x^2$.就可以这样估计$p(y)$:从 $p(x)$ 中去多次取样,取平方,计算得到的经验分布.如图2.18所示.后文中还要广泛应用这个方法.参考图5.2.
+
+此处查看原书图2.19
 
 
 
+### 2.7.2 样例:估计圆周率$\pi$,使用蒙特卡罗积分
 
+蒙特卡罗方法还可以有很多种用法,不仅仅是统计学领域.例如我们可以用这个方法来估计圆周率$\pi$.我们知道圆的面积公式可以利用圆周率和圆的半径 r 来计算,就是$\pi r^2$,另外这个面积也等于下面这个定积分(deﬁnite integral):
+$I=\int _{-r}^r\int _{-r}^r\prod(x^2+y^2\le r^2)dxdy$(2.99)
 
+因此有 $\pi =I/(r^2)$.然后就可以用蒙特卡罗积分来对此进行近似了.设$fx,y) =\prod(x^2+y^2\le r^2)$是一个指示器函数(indicator function),只要点在圆内,则函数值为1,反之为0,然后设$p(x),p(y)$都是在闭区间[-r,r]上的均匀分布(uniform distribution),所以有$p(x)=p(y)=\frac{1}{2r}$ 这样则有:
 
+$$
+\begin{aligned}
+I &= (2r)(2r)\int\int f(x,y)p(x)p(y)dxdy&\text{ (2.100)}\\
+&= 4r^2 \int\int f(x,y)p(x)p(y)dxdy&\text{ (2.101)}\\
+&=4r^2\frac1S\sum^S_{s=1}f(x_s,y_s) &\text{ (2.102)}\\
+\end{aligned}
+$$
 
+当标准差为0.09的时候,计算得到的圆周率为$\hat \pi =3.1416$,参考本书2.7.3就知道什么是标准差了.接受/拒绝的点如图2.19中所示.
 
+此处查看原书图2.20
 
+### 2.7.3 蒙特卡罗方法的精确度
 
+随着取样规模的增加,蒙特卡罗方法的精度就会提高,如图2.20所示,在图上部是从一个高斯分布中取样的直方图,底下的两个图使用了核密度估计(kernel density estimate, 参考本书14.7.2)得到的光化曲线.这种光滑分布函数在密集网格点上进行评估和投图.这里要注意一点,光滑操作只是为了投图看而已,蒙特卡罗方法估计的过程根本用不着光滑.
+如果我们知道了均值的确切形式,即$\mu =E]f(X)]$,然后蒙特卡罗方法近似得到的是$\hat\mu$,那么对于独立取样则有:
+$(\hat\mu -\mu )\rightarrow N(0,\frac{\sigma^2 }{S})$(2.103) 
 
+其中:
+$\sigma^2=var[f(X)]=E[f(X)^2]-E[f(X)]^2$(2.104) 
+
+这是由中心极限定理决定的.当然了,上式中的$\sigma^2$是位置的,但也可以用蒙特卡罗方法来估计出来:
+$\hat\sigma^2= \frac1S \sum^S_{s=1}(f(x_s)-\hat\mu)^2$(2.105) 
+
+然后则有:
+$P\{\mu-1.96\frac{\hat \sigma}{\sqrt S}\le \hat\mu \le \mu +1.96\frac{\hat \sigma}{\sqrt S}\}\approx 0.95 $(2.106) 
+
+上式中的$\frac {\hat \sigma}{\sqrt S} $就叫做数值标准差或者经验标准差(numerical or empirical standard error), 这个量是对我们对$\mu$估计精度的估计.具体信息查看本书6.2有更多讲解.
+
+如果我们希望得到的答案$\pm \epsilon$范围内的概率至少为95%,那就要保证取样数目 S 满足条件 $1.96\sqrt{\hat\sigma^2/S}\le \epsilon$, 这里的1.96可以粗略用2替代,这样就得到了$S\geq \frac{4 \hat\sigma^2}{\epsilon^2}$.
 
 
 
