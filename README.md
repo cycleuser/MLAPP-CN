@@ -14,7 +14,7 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 ## 翻译进度追踪
 
 - [x] 01 Introduction 1~26
-- [ ] 02 Probability 27~64
+- [ ] 02 Probability 27~64 (当前页面56)
 - [ ] 03 Generative models for discrete data 65~96
 - [ ] 04 Gaussian models 97~148
 - [ ] 05 Bayesian statistics 149~190
@@ -41,3 +41,5 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 - [ ] 26 Graphical model structure learning 907~944
 - [ ] 27 Latent variable models for discrete data 945~994
 - [ ] 28 Deep learning 995~1009
+
+
