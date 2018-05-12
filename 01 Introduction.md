@@ -469,7 +469,7 @@ $err(f,D)=\frac{1}{N}\sum^N_{i=1}\prod(f(x_i)\neq y_i)$(1.14)
 
 
 
-## 练习
+## 练习 1
 
 
 
