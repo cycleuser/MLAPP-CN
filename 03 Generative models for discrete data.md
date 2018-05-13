@@ -58,7 +58,7 @@ $p(D|h)=[\frac{1}{size(h)}]^N=[\frac{1}{|h|}]^N$(3.2)
 
 
 
-此处参考原书图3.2.png?raw=true)
+此处参考原书图3.2
 
 
 ### 3.2.3 后验(Posterior)
@@ -93,8 +93,8 @@ $\hat  h^{mle} *= \arg \max_h p(D|h) =\arg \max_h \log p(D|h)$(3.7)
 
 如果假设空间里面包含了真实假设,那么最大后验估计/最大似然估计就都会收敛到这个假设.因此说贝叶斯推断(Bayesian inference)和最大似然估计是一致估计(consistent estimator),更多内容参考6.4.1.此事也说假设空间在限定范围内可识别(identiﬁable in the limit),意味着虽然受限于有限的数据也能够恢复出真实概念.如果假设类不足以全面表征真实情况(这也是常态),我们就只能收敛到尽可能接近真实概念的假设上.正规来说要用到亲密度(closeness)的概念,这超出了本章的范围了.
 
-此处参考原书图3.3.png?raw=true)
-此处参考原书图3.4.png?raw=true)
+此处参考原书图3.3
+此处参考原书图3.4
 
 
 ### 3.2.4 后验预测分布(Posterior predictive distribution)
@@ -127,7 +127,7 @@ $p(h)=\pi_0 p_{rules}(h)+( -\pi_0)p_{interval}()h$(3.10)
 
 
 
-此处参考原书图3.5.png?raw=true)
+此处参考原书图3.5
 
 ## 3.3 $\beta$二项模型(beta-binomial model)
 
@@ -173,7 +173,116 @@ $Beta(\theta|a,b)\propto \theta^{a-1}(1-\theta)^{b-1} $(3.15)
 
 
 
-此处参考原书图3.6.png?raw=true)
+此处参考原书图3.6
+
+
 
 ### 3.3.3 后验(posterior)
+
+把二项分布的似然率和$\beta$分布的先验乘到一起,就得到下面的后验了(参考公式3.14):
+
+$p(\theta|D ) \propto Bin(N_1|\theta ,N_0+ N_1)Beta(\theta|a,b)Beta(\theta|N_1+a,N_0+b)$(3.16)
+
+具体来说,这个后验是通过在经验计数(empirical counts)基础上加上了先验超参数(prior hyper-parameters)而得到的.因此将这些超参数称之为伪计数(pseudo counts).先验的强度,也是先验的有效取样规模(effective sample size)就是伪计数的和$a+b$;这个量起到的作用类似于数据集规模$N_1 + N_0 = N$.
+
+图3.6(a)所示的例子中,弱先验Beta(2,2),似然率函数为单峰,对应一个大取样规模;从图中可见后验和似然率基本相符合:这是因为数据规模盖过了先验.图3.6(b)是使用了强先验Beta(5,2)来进行更新,也是一个单峰值似然率函数,可这时候很明显后验就是在先验和似然率函数之间的一个折中调和.
+
+要注意的是按顺序对后验进行更新等价于单次批量更新.假设有两个数据集$D_a,D_b$,各自都有充分统计$N^a_1 , N^a_0$和$N^b_1 , N^b_0$.设$N_1= N^a_1+N^b_1,N_0= N^a_0+N^b_0$则是联合数据集的充分统计.在批量模式(batch mode)下则有:
+$p(\theta|D_a,D_b)\propto Bin(N_1|\theta,N_1+N_0)Beta(\theta|a,b)\propto Beta(\theta|N_1+a,N_0+b)$(3,17)
+
+
+在序列模式(sequential mode)则有:
+
+$$
+\begin{aligned}
+p(\theta|D_a,D_b) &\propto p(D_b|\theta)p(\theta|D_a)&\text{(3.18)}\\
+ &\propto Bin(N^b_1|\theta,N^b_1+N^b_0)Beta(\theta|N^a_1+a,N^a_0+b)&\text{(3.19)}\\
+ &\propto Beta(\theta |N^aa_1+N^b_1+a,N^a_0+N^b_0+b) &\text{(3.20)}\\
+\end{aligned}
+$$
+
+这个性质使得贝叶斯推断很适合在线学习(online learning),后面会有更详细说明.
+
+#### 3.3.3.1 后验(posterior)的均值(mean)和模(mode)
+
+参考等式2.62,最大后验估计(MAP)为:
+$\hat\theta_{MAP}=\frac{a+N_1-1}{a+b+N-2}$(3.21)
+
+如果使用均匀分布先验,那么最大后验估计(MAP)就会降低成为最大似然估计(MLE),就正好是硬币人头朝上的经验分数(empirical):
+$\hat\theta_{MLE}=\frac{N_1}{N}$(3.22)
+
+这个结论很符合直观印象,不过也可以通过应用基本微积分使等式3.11中的似然函数最大而推导出,参考练习3.1.
+
+后验均值如下所示:
+$\bar\theta = \frac{a+N_1}{a+b+N}$(3.23)
+
+这个区别后面有很大用处.后验均值是先验均值和最大似然估计的凸组合(convex combination),表示的就是在这两者之间进行折中,兼顾了先验的已有观点以及数据提供的信息.
+
+设$\alpha_0 = a + b$是先验中的等效样本容量(equivalent sample size),控制的是先验强度,然后令先验均值(prior mean)为$m_1=a/\alpha_0$.然后后验均值可以表示为:
+$E[]=\frac{\alpha_0 m_1+N_1}{N+\alpha_0} = \frac{\alpha_0}{N+\alpha_0}m_1+\frac{N}{N+\alpha_0}\frac{N_1}{N}=\lambda m_1+(1-\lambda)\hat\theta_{MLE}$(3.24)
+
+上式中的$\lambda=\frac{\alpha_0}{N+\alpha_0}$为先验和后验的等效样本容量的比值.随意先验越弱,$\lambda$越小,而后验均值就更接近最大似然估计(MLE).
+
+#### 3.3.3.2 后验(posterior)的方差(variance)
+
+
+均值和模都是点估计,还要知道可信程度.后验方差就是用来对此进行衡量的.$\Beta$后验的方差如下所示:
+
+$var[\theta|D]=\frac{(a+N_1)(b+N_0)}{(a+N_1+b+N_0)^2(a+N_1+b+N_0+1)}$(3.25)
+
+上面这个式子看着很麻烦,在$N>>a,b$的情况下可以对其进行近似以简化,得到的为:
+$var[\theta|D]\approx \frac{N_1 N_0}{NNN}=\frac{\bar\theta(1-\bar\theta)}{N}$(3.26)
+
+其中的$\bar\theta$就是最大似然估计(MLE).然后能得到估计结果的"误差项(error bar)",也就是后验标准差:
+$\sigma =\sqrt{var[\theta|D]}\approx \sqrt{ \frac{\bar\theta(1-\bar\theta)}{N}}$(3.27)
+
+显然,不确定性以$1/\sqrt N$的速度降低.要注意这里的不确定性,也就是方差,在$\bar\theta=0.5$的时候最大,在$\bar\theta$接近0或者1的时候最小.这意味着确定硬币是否有偏差要比确定硬币结果是否合理公平更容易(This means it is easier to be sure that a coin is biased than to be sure that it is fair).
+
+### 3.3.4 后验预测分布(Posterior predictive distribution)
+
+截至目前,我们关注的都是对未知参数的推导.这一节咱们回头来看对未来可观测数据的预测.
+
+设预测一个硬币落地成人头朝上在未来单次实验中的概率服从后验分布$Beta(a,b)$.则有:
+$$
+\begin{aligned}
+p(\bar x=1|D )& =\int^1_0 p(x=1|\theta)p(\theta|D)d\theta &\text{(3.28)}\\
+&=\int^1_0\theta Beta(\theta|a,b)d\theta=E[\theta|D]=\frac{a}{a+b}&\text{(3.29)}\end{aligned}
+$$
+
+
+这样就能发现,在这个案例中,后验预测分布(posterior predictive distribution)的均值(mean)和后验均值参数插值(plugging in the posterior mean parameters)是等价的:$p(\bar x|D)=Ber(\bar x|E[\theta|D])$.
+
+#### 3.3.4.1 过拟合与黑天鹅悖论
+
+若不使用插值进行最大似然估计(MLE),也就是说使用$p(\bar x|D)\approx  Ber(\bar x|\hat\theta_{MLE})$.很不幸,当样本规模小的时候这个近似表现很差.例如设一组实验$N=3$.那么最大似然估计(MLE)就是$\bar\theta =0/3=0$,这已经是最大程度利用了观测数据了.如果我们采信这个估计,就会认为硬币人头朝上是不可能事件了.这就叫做零计数问题(zero count problem)或者稀疏数据问题(sparse data problem),对小规模数据进行估计的时候会经常出现的.有人可能觉得在所谓大数据应用领域,就没必要太担心这种问题了,可是一定要注意,一旦我们对数据基于某些特定标准进行了人为划分,比如某个人从事某个活动的次数等等,样本规模就变小了很多了.这种问题就还会出现,比如在推荐个性化网页的时候就可能出现.所以即便是在所谓大数据时代,贝叶斯方法还是有用的 (Jordan 2011).
+
+领技术问题很类似一个叫做黑天鹅悖论的哲学问题.古代西方人的观念是所有提案额都是白色的,就把黑天鹅当作不存在的事物的一个比喻.而在17世纪欧洲探索者在澳大利亚发现了黑天鹅.所以科学哲学家卡尔 波普(Karl Popper)就提出了黑天鹅悖论这个名词,另外也有个畅销书用黑天鹅做标题(Taleb 2007).这个悖论用与归纳问题,如何从过去的特定观察去得出对未来的一般性结论.
+
+使用贝叶斯方法来推导一个对这个问题的解决方案.使用均匀先验,所以a=b=1.这样对后验均值插值就得到了拉普拉斯继承规则(Laplace’s rule of succession):
+
+$p(\hat x =1|D)=\frac{N_1+1}{N_1+N_0+2}$(3.30)
+
+上式中包含了一种实践中的常规做法,就是对经验计数(empirical counts)加1,归一化,然后插值,这也叫做加一光滑(add-one smoothing).要注意对最大后验估计(MAP)插值就不会有这种光滑效果,因为这时候模(mode)的形式$\hat\theta=\frac{N_1+a+1}{N+a+b+2}$,如果a=b=1就成了最大似然估计(MLE)了.
+
+
+#### 3.3.4.2 预测未来多次实验
+
+设有 M 次未来实验,要去预测其中的人头朝上的次数 x.这个概率则为:
+$$
+\begin{aligned}
+p(x|D,M)&= \int_0^1 Bin(x|\theta,M)Beta(\theta|a,b)d\theta&\text{(3.31)}\\
+&=({\begin{aligned}M\\x\end{aligned}})\frac{1}{B(a,b)}\int_0^1\theta^x(1-\theta)^{M-x}\theta^{a-1}(1-\theta)^{b-1}d\theta &\text{(3.32)}\\
+\end{aligned}
+$$
+这个积分正好就是$Beta(a+x, M−x+b)$这个分布的归一化常数.因此:
+$$(3.33)
+因此就能发现后验预测分布如下所示,是一个(复合)$\beta$-二项分布分布(beta-binomial distribution):
+$Bb(x|a,b,M)*= ({\begin{matrix}M\\x\end{matrix}}) \frac{B(x+a,M-x+b)}{B(a,b)}$(3.34)
+这个分布的均值和方差如下所示:
+$E[x]=M\frac{a}{a+b},var[x]=\frac{Mab}{(a+b)^2}\frac{(a+b+M)}{a+b+1}$(3.35)
+如果$M=1$,则$x\in \{0,1\}$,均值就成了$E[x|D]=p(x=1|D)=\frac{a}{a+b}$,和等式3.29一致.
+
+这个过程如图3.7(a)所示.开始是用Beta(2,2)作为先验,投图的是$N_1 = 3,N_0 = 17$,即3次人头,17次背面的情况下的后验预测密度.图3.7(b)投图的是最大后验估计(MAP)插值近似.很明显贝叶斯预测(Bayesian prediction)有更长尾(longer tails)概率质量分布的更广泛,所以更不容易过拟合,也更不容易遇到黑天鹅悖论的情况.
+
+此处查看原书图3.7
 
