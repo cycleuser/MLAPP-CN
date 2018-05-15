@@ -286,3 +286,258 @@ $E[x]=M\frac{a}{a+b},var[x]=\frac{Mab}{(a+b)^2}\frac{(a+b+M)}{a+b+1}$(3.35)
 
 此处查看原书图3.7
 
+## 3.4 狄利克雷-多项式模型(Dirichlet-multinomial model)
+
+上一节讲的抛硬币的概率问题只有两个状态,人头朝上或者背面朝上.本节要对上一节的结论推广到有K个面的骰子的k个状态上.这和另外一个玩具练习有点像,不过这一章要学到的方法还会广泛应用到文本/生物序列等数据的分析上.
+
+
+### 3.4.1 似然率(Likelihood)
+
+假设观测了N次掷骰子,得到的点数集合为$D=\{x_1,...,x_N\}$,其中$x_i\in \{1,...,K\}$.假设这个数据是独立同分布的(IID),那么似然率如下所示:
+$p(D|\theta)=\prod^K_{k=1}\theta^{N_k}_k$(3.36)
+上式中的$N_k=\sum^K_{i=1}I(y_i=k)$是事件k出现的次数(这也是该模型的充分统计).多项式模型的似然率与上式形式相同,有不相关常数因子.(The likelihood for the multinomial model has the same form, up to an irrelevant constant factor.)
+
+
+### 3.4.2 先验(Prior)
+
+参数向量处在K维度概率单纯形(K-dimensional probability simplex)中,所以需要在这个单纯形上定义一个先验.理想情况下应该是共轭的(conjugate).很幸运的就是本书2.5.4中提到的狄利克雷分布就满足这两个条件.所以使用如下的先验:
+
+$Dir(\theta|\alpha )= \frac{1}{B(\alpha)}\prod^K_{}\theta_k^{\alpha_{k-1}}I(x\in S_K)$(3.37)
+
+
+
+### 3.4.3 后验(Posterior)
+
+把先验和似然率相乘,就得到了后验了,也是一个狄利克雷分布:
+
+$$
+\begin{aligned}
+p(\theta|D)& \propto p(D|\theta)p(\theta)&\text{(3.38)}\\
+& \propto \prod^K_{k=1}\theta^{N_k}_k\theta_k^{\alpha_k -1} = \prod^K_{k=1}\theta_k^{\alpha_k+N_k-1} &\text{(3.39)}\\
+&  =Dir(\theta|\alpha_1+N_1,...,\alpha_K+N_K)&\text{(3.40)}\\
+\end{aligned}$$
+
+
+很明显这个后验是通过将先验的超参数（伪计数pseudo-counts）$\alpha_k$加到经验计数(empirical counts)$N_k$上而获得的。
+
+可以通过积分来推导出这个后验的模,也就是最大后验估计(MAP estimate).不过还要必须强化约束条件$\sum_k\theta_k=1$.可以通过拉格朗日乘数(Lagrange multiplier)来实现.受约束的目标函数,也叫拉格朗日函数(Lagrangian),可以通过对似然率取对数加上对先验取对数然后加上约束条件:
+$l(\theta,\lambda) =\sum_kN_k\log\theta_k+\sum_k(\alpha_k-1)\log\theta_k+\lambda(1-\sum_k\theta_k)$(3.41)
+
+为了简化表达,定义一个$\hat N_k*= N_k + \alpha_k − 1$.取关于$\lambda$的导数就得到了初始约束(original constraint):
+$\frac{\partial l}{\partial \lambda}= (1-\sum_k\theta_k)=0$(3.42)
+
+利用总和为1这个约束条件就可以解出来$\lambda$:
+$\sum_k\hat N_k =\lambda\sum_k \theta_k$(3.45)
+
+$N+\alpha_0-K=\lambda $(3.46)
+上式中的$\alpha_0*= \sum^K_{k=1}\alpha_k$等于先验中的样本规模.这样最大后验估计(MAP estimate)为:
+$\hat\theta_k = \frac{N_k+\alpha_k-1}{N+\alpha_0-K}$(3.47)
+
+这与等式2.77相一致.如果使用均匀分布作为先验,即$\alpha_k=1$,就能解出最大似然估计(MLE):
+$\hat\theta_k=N_k/N$(3.48)
+
+这正好是k面出现次数的经验分数(empirical fraction).
+
+
+### 3.4.4 后验预测分布(Posterior predictive)
+
+
+对一个单次多重伯努利实验(single multinoulli trial),后验预测分布如下所示:
+$$
+\begin{aligned}
+p(X=j|D)&=\int p(X=j|\theta)p(\theta|D)d\theta &\text{(3.49)}\\
+&=\int p(X=j|\theta_j)[\int p(\theta_{-j},\theta_j|D)d\theta_{-j}]d\theta_j &\text{(3.50)}\\
+&=\int \theta_j p(\theta_j |D)d\theta =E[\theta_j|D]=\frac{\alpha_j+N_j}{\sum_k(\alpha_k+N_k)}=\frac{\alpha_j+N_j}{\alpha_0+N}&\text{(3.51)}\\
+\end{aligned}
+$$
+
+上式中的$\theta_{-j}$是除了$\theta_j$之外的其他所有$\theta$的成员,参考练习3.13.
+
+上面的表达式避免了零计数问题(zero-count problem),参考3.3.4.1.实际上,贝叶斯光滑(Bayesian smoothing)在多项分布情况比二值分布中更重要,因为一旦将数据分成许多类别了,数据稀疏的可能性就增加了.
+
+
+#### 3.4.4.1 实例:使用单词袋的语言模型
+
+使用狄利克雷-多项模型进行贝叶斯光滑的一个应用就是语言建模(language modeling),就是预测一个序列中下一个位置出现什么词.
+设第i个词为$X_i\in\{1,...K\}$,使用多重伯努利分布$Cat(\theta)$从所有其他词汇中独立取样.这就叫单词袋模型(bag of words model).知道了已经出现的单词序列之后,如何预测下一个单词可能是什么呢?
+
+假设我们观察到的是下面这个序列,来自一段儿歌:
+
+Mary had a little lamb, little lamb, little lamb,
+Mary had a little lamb, its fleece as white as snow
+
+然后设我们的词汇表包含下面的单词:
+
+
+|mary |lamb| little |big |fleece |white |black |snow| rain| unk|
+|---|---|---|---|---|---|---|---|---|---|
+|1| 2| 3| 4| 5| 6| 7| 8| 9| 10|
+
+上面表格中的 unk表示的是未知词汇,也就是所有没在列表中出现的其他词汇.要对儿歌进行编码,先去掉标点符号,然后去掉停止词(stop words)比如a/as/the等等.这就要进行词干化(stemming),意思就是把所有词汇恢复原形,去掉复数,去掉ing恢复动词本身等等.不过这个儿歌里面到没有这么麻烦的.把每个单词用词汇表中的索引号进行编码就得到了:
+1 10 3 2 3 2 3 2
+1 10 3 2 10 5 10 6 8
+接下来忽略单词排序,只数一下每个单词出现的次数,得到一个频率分布表:
+
+
+|单词|mary |lamb| little |big |fleece |white |black |snow| rain| unk|
+|---|---|---|---|---|---|---|---|---|---|---|
+|编号|1| 2| 3| 4| 5| 6| 7| 8| 9| 10|
+|次数|2| 4| 4| 0| 1| 1| 0| 1| 0| 4|
+
+上面的计数记作$N_j$.如果用一个狄利克雷函数$Dir(\alpha)$作为$\theta$的先验,后验预测分布为:
+$p(\tilde X=j|D)=E[\theta_j|D]=\frac{\alpha_j+N_j}{\sum_{j'}\alpha_{j'}+N_{j'}}=\frac{1+N_j}{10+17}$(3.52)
+
+如果设$\alpha_j=1$,则有:
+$p(\tilde X=j|D)=(3/27,5/27,5/27,1/27,2/27,2/27,1/27,2/27,1/27,5/27)$(3.53)
+
+上面这个预测分布的模(mode)是$X = 2 \text{(“lamb”)},X = 10 \text{(“unk”)}$.这里要注意,有的单词虽然没出现在当前看过的词汇序列中,但依然被预测了非零概率,也就是以后有可能出现,比如big/black/rain这几个词.后面还有更复杂的语言模型.
+
+
+## 3.5 朴素贝叶斯分类器(Naive Bayes classiﬁers)
+
+本节讨论的是对离散值特征向量进行分类,其中特征$x\in\{1,...,K\}^D$,K是每个特征的数值个数,D是特征数.这次要用一种通用方法.这就需要确定类条件分布(class conditional distribution)$p(x|y=c)$.最简单的方法,在给定类标签的情况下,假设所有特征有条件独立.这样就可以将类条件密度(class conditional density)写成一维密度的乘积：
+
+$p(x|y=c,\theta)=\prod^D_{j=1}p(x_j|y=c,\theta_{jc})$(3.54)
+
+这样得到的模型就叫做朴素贝叶斯分类器(naive Bayes classiﬁer,缩写为 NBC).
+
+称之为"朴素(naive)"是因为我们并不指望各个特征独立,甚至即便在类标签上也未必有条件独立.不过即便朴素贝叶斯假设不成立,得到的分类结果也还都不错(Domingos and Pazzani 1997).一个原因就是这个模型特别简单,对于C个类D个特征的情况只有$O(CD)$个参数,所以相对来说不容易过拟合.
+
+类条件密度的形式取决于每个特征的类型,下面给出一些可能的情况:
+* 如果特征向量是实数值的,可以用高斯分布,也就是正态分布:$p(x|y=c,\theta)=\prod^D_{}N(x_j|\mu_{jc},\sigma^2_{jc})$,其中的$\mu_{jc}$是类c对象中特征j的均值,$\sigma^2_{jc}$是方差.
+* 如果特征是二值化的,即$x_j\in\{0,1\}$,可以用伯努利分布:$p(x|y=c,\theta)=\prod^D_{j=1}Ber(x_j|\mu_{jc})$,其中的$\mu_{jc}$是特征j出现在类别c的概率.这有时候也叫做多元伯努利朴素贝叶斯模型(multivariate Bernoulli naive Bayes model).
+* 如果是分类特征,$x_j\in\{1,...,K\}$,可以用多重伯努利(multinoulli)分布:$p(x|y=c,\theta)=\prod^D_{j=1}Cat(x_j|\mu_{jc})$,其中的$\mu_{jc}$是类中的$x_j$的K个可能值的频数(histogram).
+
+
+当然还可以处理其他类型的特征,或者使用不同的分布假设.另外也可以对不同类型特征进行混合和匹配.
+
+### 3.5.1 模型拟合
+
+接下来就要"训练"一个朴素贝叶斯分类器了.一般都是对参数进行最大似然估计(MLE)或者最大后验估计(MAP estimate).不过本节还要讲如何对整个后验$p(\theta|D)$进行计算.
+
+#### 3.5.1.1 朴素贝叶斯分类器的最大似然估计
+
+单数据情况(single data case)下的概率为:
+$p(x_i,y_i|\theta)=p(y_i|\pi)\prod_jp(x_{ij}|\theta_j)=\prod_c\pi_c^{I(y_i=c)}\prod_j\prod_cp(x_{ij}|\theta_{jc})^{I(y_i=c)}  $(3.55)
+
+这样则有对数似然率(log-likelihood):
+$\log p(D|\theta) =\sum^C_{c=1}N_c\log\pi_c+\sum^D_{j=1}\sum^C_{c=1}\sum_{i:y_i=c}\log p(x_{ij}|\theta_{jc})$(3.56)
+
+很明显上面这个表达式可以拆解成一系列子项,其中有一个包含了$\pi$,另外的DC项目包含了$\theta_{jc}$.所以可以对所有这些参数分开优化.
+
+从等式3.48得知,分类先验(class porior)的最大似然估计(MLE)为:
+$\hat\pi_c =\frac{N_c}{N}$(3.57)
+
+上式中的$N_c*=\sum_iI(y_i=c)$,是类c中的样本个数.
+
+对似然率的最大似然估计(MLE)依赖于我们对特征所选的分布类型.简单起见,假设所有特征都是二值化的,这样使用伯努利分布,即$x_j|y=c∼ Ber(\theta_{jc} )$.这时候最大似然估计(MLE)则为:
+$\hat\theta_{jc}=\frac {N_{jc}}{N_c}$(3.58)
+
+
+这个模型拟合过程的实现特别简单,可以参考本书算法8作为伪代码,或者MATLAB代码中的naiveBayesFit.这个算法的复杂度是O(ND).此方法也很容易泛化拓展到对混合类型特征的应用上.由于简单,应用广泛.
+
+图3.8给出的例子中,有2个类,600个二值特征,这些特征表示的是一个词是否出现在一个词汇袋模型中.图中对两类中的$\theta_c$向量进行了可视化.107位置上的特别高端峰值对应的是单词"subject",在两类中出现的概率都是1.在3.5.4会讲到如何"滤除(filter out)"这些非信息特征.
+
+
+
+
+此处查看原书图3.8
+
+#### 3.5.1.2 使用贝叶斯方法的朴素贝叶斯(Bayesian naive Bayes)
+
+最大似然估计有个麻烦就是可能会过拟合.比如图3.8中的例子,"subject"这个词,假设作为特征j,在两类中都出现,所以对应这个特征j的$\hat\theta_{jc}=1$.那如果收到一个新邮件其中不包含这个词会怎么办?算法就会崩溃了,因为发现对于两个类来说此事都有$p(y=c|x,\hat\theta)=0$.这也是3.3.4.1当中提到的黑天鹅悖论的另一种体现.
+
+避免过拟合的简单解决方案就是使用贝叶斯方法.简单起见,使用一个因式化先验:
+$p(\theta)=p(\pi)\prod^D_{j=1}\prod^C_{c=1}p(\theta_{jc})$(3.59)
+
+对于$\pi$使用狄利克雷先验$Dir(\alpha)$,对每个参数$\theta_{jc}$采用$\beta$分布$Beta(\beta_0,\beta_1)$.通常就设$\alpha=1,\beta=1$对应的是加一光滑或者拉普拉斯光滑.
+
+结合等式3.56当中的因式化似然率与因式化先验,就得到了下面的因式化后验:
+$p(\theta|D)=p(\pi|D) \prod^D_{j=1}\prod^C_{c=1}p(\theta_{jc}|D)$(3.60)
+
+$p(\pi|D)=Dir(N_1+\alpha_1,...,N_C+\alpha_C)$(3.61)
+
+$p(\theta_{jc}|D)=Beta((N_c-N_{jc})+\beta_0,N_{jc}+\beta_1)$(3.62)
+
+换句话说,要计算这个后验,只需要用似然率中的经验计数(empirical counts)更新先验计数(prior counts).修改一下算法8就可以进行这个版本的模型拟合了.
+
+### 3.5.2 使用模型做预测
+
+再测试的时候,目标是计算:
+
+$p(y=c|x,D)\propto p(y=c|D)\prod^D_{j=1}p(x_j|y=c|D)$(3.63)
+
+正确的贝叶斯步骤就是使用积分排除掉未知参数:
+$$
+\begin{aligned}
+p(y=c|x,D)\propto & [\int Cat(y=c|\pi)p(\pi|D)d\pi]&\text{(3.64)}\\
+&\prod^D_{j=1}[\int Ber(x_j|y=c,\theta_{jc})p(\theta_{jc}|D)]&\text{(3.65)}\\
+\end{aligned}
+$$
+
+还好这个比较好实现,至少在后验为狄利克雷分布的时候挺简单的.参考等式3.51,我们知道后验预测密度可以通过插入后验均值参数$\theta$来获得.因此有:
+
+
+$$
+\begin{aligned}
+p(y=c|x,D) &\propto  \bar\pi _C\prod^D_{j=1}(\bar\theta_{jc})^{I(x_j=1)} (1-\bar\theta_{jc})^{I(x_j=0)}  &\text{(3.66)}\\
+\bar\theta_{jk} & =\frac{N_{jc}+\beta_1}{N_c+\beta_0+\beta_1} &\text{(3.67)}\\
+\bar\pi_c & =\frac{N_c+\alpha_c}{N +\alpha_0} &\text{(3.68)}\\
+\end{aligned}
+$$
+
+上式中$\alpha_0\\sum_c\alpha_c$.
+如果我们通过单个点估计了后验,$p(\theta|D)\approx \delta_{\hat\theta}(\theta) $,其中的$\hat\theta$可以使最大似然估计(MLE)或者最大厚颜估计(MAP),然后就可以通过对参数插值来得到后验预测密度了,生成的是一个虚拟一致规则(virtually identical rule):
+$p(y=c|x,D)\propto \hat\pi_c\prod^D_{j=1}(\hat\theta_{jc})^{I(x_j=1}(1-\hat\theta_{jc})^{I(x_j=0)}$(3.69)
+
+唯一具备就是把后验均值的$\bar\theta$换成了后验模或者最大似然估计$\hat\theta$.不过这差别虽然小,实践中的影响可能很大,因为后验均值更不容易过拟合,参考本书3.4.4.1.
+
+### 3.5.3 求对数-相加-幂运算组合技巧(log-sum-exp trick)
+接下来要讨论的是一个在使用各种通用分类器的时候都很有用的重要应用细节.对类标签的后验计算可以使用等式2.13,使用合适的类条件密度(class-conditional density)(以及插值近似).然而很不幸,直接使用等式2.13进行计算可能会因为数值向下溢出(numerical underﬂow)而失败.这是因为概率$p(x|y=c)$通常都是非常非常小的数值,尤其是如果x是高维度向量的时候更是如此.而概率总和必然是1,即$\sum_xp(x|y)=1$,所以任何特定的高维度向量被观测到的概率都是很小的.要解决这个问题,就需要在应用贝叶斯规则的时候先取对数,如下所示:
+$$
+\begin{aligned}
+\log p(y=c|X)&= b_c-\log[\sumˆC_{c'=1}eˆ{b_{c'}}]&\text{(3.70)}\\
+ b_c& *=\log p(x|y=c)+\log p(y=c) &\text{(3.71)}
+\end{aligned}
+$$
+然而这需要我们计算下面这个表达式:
+$\log[\sum_{c'}e^{b_{c'}}]  = \log[\sum_{c'}p(y=c',x)]=\log p(x)$(3.72)
+
+可是这算起来挺麻烦的,不过好在可以找到最大因子项,然后提取出来,用这一项来表示其他的,如下所示:
+
+$\log(e + e^{−121} ) = \log e −120 (e^0 + e^{−1} ) = \log(e^0 + e^{−1} ) − 120$(3.73)
+
+通常来说就得到下面这种:
+
+$\log\sum_ce^{b_c} =\log[(\sum_ce^{b_c-B})e^B]=[\log(\sum_ce^{b_c-B})]+B$(3.74)
+
+其中的最大公因式项$B=\max_cb_c$.这种手法就是求对数-相加-幂运算组合技巧(log-sum-exp trick),用的很广泛,PMTK3中的logsumexp就是一个实例.
+
+这个方法用在了算法1中,算法以的伪代码是使用朴素贝叶斯分类器来计算$p(y_i|x_i,\hat\theta)$.PMTK3中的naiveBayesPredict是MATLAB代码.如果只要计算$\hat y_i$其实并不需要这样做,因为直接将未归一化的量$\log p(y_i = c) + \log p(x_i |y = c).$最大化就可以了.
+
+
+### 3.5.4 是用互信息量进行特征选择
+
+朴素贝叶斯分类器是对一个在多个潜在特征上的联合分布进行拟合,所以可能会过拟合.另外其运算上的开销是O(D),对于某些情况下可能太高开销了.一种解决这些问题的常见方法就是进行特征选择(feature selection),移除一些对于分类问题本身没有太大帮助的"不相关(irrelevant)"信息.最简单的信息选择方法就是单独评价每个特征的相关性(relevance),然后选择最大的K个,K是根据精确度和复杂度之间的权衡来选择的.这种方法也叫做变量排序/过滤/筛选.
+衡量相关性的一个手段就是利用互信息量(mutual information),参考本书2.8.3.要计算特征$X_j$和分类标签Y之间的互信息量:
+$I(X,Y) = \sum_{x_j} \sum_y p(x_j,y) \log \frac{p(x_j,y)}{p(x_j)p(y)} $(3.75)
+
+互信息量可以被理解为在观测了特诊j的值的时候标签分布上的信息熵降低.如果特征是二值化的,就很明显可以用下面的公式来计算(参见练习3.2.1):
+$I_j=\sum_c[\theta_{jc}\pi_c\log\frac{\theta_{jc}}{\theta_{j}}+ (1-\theta_{jc})\pi)c\log\frac{1-\theta_{jc}}{1-\theta_{j}}  ]$(3.76)
+
+上式中的$\pi_c=p(y=c),\theta_{jc}=p(x_j=1|y=c),\theta_j=p(x_j=1)=\sum_c\pi_c\theta_{jc}$,所有这些量都可以在拟合朴素贝叶斯分类器的时候作为副产品被计算出来. 
+
+
+表3.1展示的是将这个方法用于图3.8所示的二值化词汇袋得到的结果.从表中可以看到有最高互信息量的单词会比常见单词有更大区别作用(discriminative).例如两类中最常见的单词就是"subject"主体,者经常出现因为这两份都是新闻组数据,总会包含一个主题行.不过很明显这个词没有什么区别作用.带有分类标签的最高互信息量的词汇按照降序排列为"windows”, “microsoft”, “DOS”,“motif”这就合理了,因为这两个分类对应的是微软的Windows和X Windows.
+
+### 3.5.5 使用词汇袋进行文档分类
+
+文档分类(Document classiﬁcation)问题是要把文本文档分成不同类别.一个简单方法就是把每个文档都看做二值化向量,每个单词是否出现是值,当且仅当单词j出现在文档i当中 $x_{ij}=1$,否则 $x_{ij}=0$.就可以用下面的分类条件密度了:
+$p(x_i|y_i=c,\theta)=\prod^D_{j=1}Ber(x_{ij}|\theta_{jc} =\prod^D_{j=1}\theta_{jc}^{I(x_{ij})}(1-\theta_{jc})^{I(1-x_{ij})}  $(3.77)
+这也叫做伯努利乘积模型(Bernoulli product model,),或者叫二值独立模型(binary independence model).
+
+可是上面这个模型只有是否包含单词这个信息,缺失了单词出现次数,丢失了很多信息(McCallum and Nigam 1998).更精确的表示需要记录每个单词出现的次数.具体来说设$x_i$是文档i的技术向量,所以有$x_{ij}\in\{0,1,...,N_i\}$,其中$N_i$是文档i中的词汇总数,所以有$\sum^D_{j=1}x_{ij}=N_i$.对于类条件密度,可以使用多项式分布(multinomial distribution):
+
+$p(x_i|y_i=c,\theta)=Mu(x_i|N_i,\theta_c)=\frac{N_i!}{\prod^D_{j=1}x_{ij}!}\prod^D_{j=1}\theta^{x_{ij}}_{jc}$(3.78)
+
+

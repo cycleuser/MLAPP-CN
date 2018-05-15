@@ -11,11 +11,40 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 另外书中的代码部分，我准备尝试用 Python（3.5 以及之后的版本）来实现一下，也放在 Github 上面: https://github.com/Kivy-CN/MLAPP-CN 。
 到时候还希望大家批评指正！
 
+## 书中疑似错误
+
+#### 14页1.3.4.1图像填充倒数第三行
+
+“This is somewhat like masket basket analysis”
+
+这里的 masket 明显是拼写错误，应该是 market，应该改为：
+
+“This is somewhat like market basket analysis”
+
+
+
+#### 22页1.4.7过拟合当中第一段最后一句
+
+“Thus using such a model might result in accurate predictions of future outputs.”
+
+ 这句话这样就成了“因此用这样的模型对未来输出可能会做出准确预测。”而实际结合上下文应该是说过拟合的模型对未来输出可能不能给出精确预测，所以是缺少了个 not，应该改成：
+
+“Thus using such a model might not result in accurate predictions of future outputs.”
+
+
+#### 87页3.5.4最后一段第一句
+
+"Figure 3.1 illustrates what happens if we apply this to the binary bag of words dataset used in Figure 3.8."
+
+图3.1和词汇没关系,是猜数字游戏的,推测应该是表3.1.应该改成:
+
+"Table 3.1 illustrates what happens if we apply this to the binary bag of words dataset used in Figure 3.8."
+
 ## 翻译进度追踪
 
 - [x] 01 Introduction 1~26
 - [x] 02 Probability 27~64 (练习略)
-- [ ] 03 Generative models for discrete data 65~96(当前位置p79)
+- [ ] 03 Generative models for discrete data 65~96(当前位置p88)
 - [ ] 04 Gaussian models 97~148
 - [ ] 05 Bayesian statistics 149~190
 - [ ] 06 Frequentist statistics 191~216
