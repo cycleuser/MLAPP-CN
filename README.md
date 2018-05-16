@@ -40,12 +40,14 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 
 "Table 3.1 illustrates what happens if we apply this to the binary bag of words dataset used in Figure 3.8."
 
+
+
 ## 翻译进度追踪
 
 - [x] 01 Introduction 1~26
 - [x] 02 Probability 27~64 (练习略)
-- [ ] 03 Generative models for discrete data 65~96(当前位置p88)
-- [ ] 04 Gaussian models 97~148
+- [x] 03 Generative models for discrete data 65~96(练习略)
+- [ ] 04 Gaussian models 97~148(当前页面 100)
 - [ ] 05 Bayesian statistics 149~190
 - [ ] 06 Frequentist statistics 191~216
 - [ ] 07 Linear regression 217~244
