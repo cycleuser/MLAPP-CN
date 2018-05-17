@@ -85,3 +85,146 @@ $l(\mu,\Sigma)=\log p(D|\mu,\Sigma)=\frac{N}{2}\log|\wedge| -\frac{1}{2}\sum^N_{
 
 上式中$\wedge=\Sigma^{-1}$,是精度矩阵(precision matrix)
 
+然后进行一个替换(substitution)$y_i=x_i-\mu$,再利用微积分的链式法则:
+
+$$
+\begin{aligned}
+\frac{\partial}{\partial\mu} (x_i-\mu)^T\Sigma^{-1}(x_i-\mu) &=  \frac{\partial}{\partial y_i}y_i^T\Sigma^{-1}y_i\frac{\partial y_i}{\partial\mu}   &\text{(4.13)}\\
+&=-1(\Sigma_{-1}+\Sigma^{-T})y_i &\text{(4.14)}\\
+\end{aligned}
+$$
+
+因此:
+
+$$
+\begin{aligned}
+\frac{\partial}{\partial\mu}l(\mu.\Sigma) &= -\frac{1}{2} \sum^N_{i=1}-2\Sigma^{-1}(x_i-\mu)=\Sigma^{-1}\sum^N_{i=1}(x_i-\mu)=0 &\text{(4.15)}\\
+&=-1(\Sigma_{-1}+\Sigma^{-T})y_i &\text{(4.16)}\\
+\end{aligned}
+$$
+所以$\mu$的最大似然估计(MLE)就是经验均值(empirical mean).
+
+然后利用求迹运算技巧(trace-trick)来重写对$\wedge$的对数似然函数:
+$$
+\begin{aligned}
+l(\wedge)&=  \frac{N}{2}\log|\wedge|-\frac{1}{2}\sum_i tr[(x_i-\mu)(x_i-\mu)^T\wedge] &\text{(4.17)}\\
+&= \frac{N}{2}\log|\wedge| -\frac{1}{2}tr[S_{\mu}\wedge]&\text{(4.18)}\\
+& &\text{(4.19)}\\
+\end{aligned}
+$$
+
+上式中
+$S_{\mu}*= \sum^N_{i=1}(x_i-\mu)(x_i-\mu)^T$(4.20)
+
+是以$\mu$为中心的一个散布矩阵(scatter matrix).对上面的表达式关于$\wedge$进行求导就得到了:
+$$
+\begin{aligned}
+\frac{\partial l(\wedge)}{\partial\wedge} & = \frac{N}{2}\wedge^{-T} -\frac{1}{2}S_{\mu}^T=0 &\text{(4.21)}\\
+\wedge^{-T} & = \wedge^{-1}=\Sigma=\frac{1}{N}S_{\mu} &\text{(4.22)}\\
+\end{aligned}
+$$
+
+因此有:
+$\hat\Sigma=\frac{1}{N}\sum^N_{i=1}(x_i-\mu)(x_i-\mu)^T$(4.23)
+
+正好也就是以$\mu$为中心的经验协方差矩阵(empirical covariance matrix).如果插入最大似然估计$\mu=\bar x$(因为所有参数都同时进行优化),就得到了协方差矩阵的最大似然估计的标准方程.
+
+
+### 4.1.4 高斯分布最大熵推导(Maximum entropy derivation of the Gaussian)*
+
+在本节,要证明的是多元高斯分布(multivariate Gaussian)是适合于有特定均值和协方差的具有最大熵的分布(参考本书9.2.6).这也是高斯分布广泛应用到一个原因,均值和协方差这两个矩(moments)一般我们都能通过数据来进行估计得到(注:一阶矩（期望）归零，二阶矩（方差）),所以我们就可以使用能捕获这这些特征的分布来建模,另外还要尽可能少做附加假设.
+
+为了简单起见,假设均值为0.那么概率密度函数(pdf)就是:
+$p(x)=\frac{1}{Z}\exp (-\frac{1}{2}x^T\Sigma^{-1}x)$(4.24)
+
+如果定义$f_{ij} (x) = x_i x_j , \lambda_{ij} = \frac{1}{2} (\Sigma^{−1})_{ij}\\i, j \in \{1, ... , D\}$,就会发现这个和等式9.74形式完全一样.这个分布（使用自然底数求对数）的（微分）熵为:
+$h(N(\mu,\Sigma))  =\frac{1}{2}\ln[(2\pi e)^D|\Sigma|]$(4.25)
+
+接下来要证明有确定的协方差$\Sigma$的情况下多元正态分布(MVN)在所有分布中有最大熵.
+
+#### 定理 4.1.2
+
+设$q(x)$是任意的一个密度函数,满足$\int q(x)x_ix_j=\Sigma_{ij}$.设$p=N(0,\Sigma)$.那么$h(q)\le h(p)$.
+
+证明.(参考(Cover and Thomas 1991, p234)).
+(注:KL是KL 散度(Kullback-Leibler divergence),也称相对熵(relative entropy),可以用来衡量p和q两个概率分布的差异性(dissimilarity).更多细节参考2.8.2.)
+
+$$
+\begin{aligned}
+0 &\le KL(q||p) =\int q(x)\log \frac{q(x)}{p(x)}dx&\text{(4.26)}\\
+& = -h(q) -\int q(x)\log p(x)dx &\text{(4.27)}\\
+& =* -h(q) -\int ps(x)\log p(x)dx &\text{(4.28)}\\
+& = -h(q)+h(p) &\text{(4.29)}\\
+\end{aligned}
+$$
+
+
+等式4.28那里的星号表示这一步是关键的,因为q和p对于由$\log p(x)$编码的二次形式产生相同的矩(moments).
+
+## 4.2 高斯判别分析(Gaussian discriminant analysis)
+
+多元正态分布的一个重要用途就是在生成分类器中定义类条件密度,也就是:
+$p(x|y=c,\theta)=N(x|\mu_c,\Sigma_c)$(4.30)
+
+这样就得到了高斯判别分析,也缩写为GDA,不过这其实还是生成分类器(generative classifier）,而并不是辨别式分类器（discriminative classifier）,这两者的区别参考本书8.6.如果\Sigma_c$$是对角矩阵,那这就等价于朴素贝叶斯分类器了.
+
+
+此处参考原书图4.2
+
+从等式2.13可以推导出来下面的决策规则,对一个特征向量进行分类:
+$\hat y(x)=\arg \max_c[\log  p(y=c|\pi)  +\log p(x|\theta_c)] $(4.31)
+
+计算x 属于每一个类条件密度的概率的时候,测量的距离是x到每个类别中心的马氏距离(Mahalanobis distance).这也是一种最近邻质心分类器(nearest centroids classiﬁer).
+
+例如图4.2展示的就是二维下的两个高斯类条件密度,横纵坐标分别是身高和体重,包含了男女两类人.很明显身高体重这两个特征有相关性,就如同人们所想的,个子高的人更可能重.每个分类的椭圆都包含了95%的概率质量.如果对两类有一个均匀分布的先验,就可以用如下方式来对新的测试向量进行分类:
+
+
+$\hat y(x)=\arg \max_c(x-\mu_c)^T\Sigma_c^{-1}(x-\mu_c) $(4.32)
+
+
+### 4.2.1 二次判别分析(Quadratic discriminant analysis,QDA)
+
+对类标签的后验如等式2.13所示.加入高斯密度定义后,可以对这个模型获得更进一步的理解:
+$p(y=c|x,\theta)  =\frac{ \pi_c|2\pi\Sigma_c|^{-1/2} \exp [-1/2(x-\mu_c)^T\Sigma_c^{-1}(x-\mu_c)]   }{   \Sigma_{c'}\pi_{c'}|2\pi\Sigma_{c'}|^{-1/2} \exp [-1/2(x-\mu_{c'})^T\Sigma_{c'}^{-1}(x-\mu_{c'})]    }$(4.33)
+
+对此进行阈值处理(thresholding)就得到了一个x的二次函数(quadratic function).这个结果也叫做二次判别分析(quadratic discriminant analysis,缩写为QDA).图4.3所示的是二维平面中决策界线的范例.
+
+
+此处参考原书图4.3
+
+此处参考原书图4.4
+
+
+### 4.2.2 线性判别分析(Linear discriminant analysis,LDA)
+
+接下来考虑一种特殊情况,此事协方差矩阵为各类所共享(tied or shared),即$\Sigma_c=\Sigma$.这时候就可以把等式4.33简化成虾米这样:
+$$
+\begin{aligned}
+p(y=c|x,\theta)&\propto \pi_c\exp [\mu_c^T\Sigma^{-1}x-\frac12 x^T\Sigma^{-1}x - \frac12\mu_c^T\Sigma^{-1}\mu_c]&\text{(4.34)}\\
+& = \exp [\mu_c^T\Sigma^{-1}x-\frac12 \mu_c^T\Sigma^{-1}\mu_c+\log\pi_c]\exp [-\frac12 x^T\Sigma^{-1}x]&\text{(4.35)}\\
+\end{aligned}
+$$
+
+由于二次项$x^T\Sigma^{-1}$独立于类别c,所以可以抵消掉分子分母.如果定义了:
+
+
+$$
+\begin{aligned}
+\gamma_c &= -\frac12\mu-c^T\Sigma^{-1}\mu_c+\log\pi_c&\text{(4.36)}\\
+&\text{(4.37)}\\
+\beta_c &= \Sigma^{-1}\mu_c\end{aligned}
+$$
+
+则有:
+$p(y=c|x,\theta)=\frac{e^{\beta^T_c+\gamma_c}}{\Sigma_{c'}e^{\beta^T_{c'}+\gamma_{c'}}}=S(\eta)_c$(4.38)
+
+当$\eta =[\beta^T_1x+\gamma_1,...,\beta^T_Cx+\gamma_C]$的时候,$S$就是Softmax函数(softmax function,注:柔性最大函数,或称归一化指数函数),其定义如下:
+$S(\eta/T)= \frac{e^{\eta_c}}{\sum^C_{c'=1}e^{\eta_{c'}}}$(4.39)
+
+Softmax函数如同其名中的Max所示,有点像最大函数.把每个$\eta_c$除以一个常数T,这个常数T叫做温度(temperature).然后让T趋于零,即$T\rightarrow 0$,则有:
+
+$$S(\eta/T)_c=\begin{cases} 1.0&\text{if } c = \arg\max_{c'}\eta_{c'}\\
+0.0 &\text{otherwise}\end{cases} 
+$$(4.40)
+
+
