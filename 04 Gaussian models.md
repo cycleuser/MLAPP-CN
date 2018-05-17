@@ -228,3 +228,66 @@ $$S(\eta/T)_c=\begin{cases} 1.0&\text{if } c = \arg\max_{c'}\eta_{c'}\\
 $$(4.40)
 
 
+
+
+也就是说,在低温情况下,分布总体基本都出现在最高概率的状态下,而在高温下,分布会均匀分布于所有状态.参见图4.4以及其注解.这个概念来自统计物理性,通常称为玻尔兹曼分布(Boltzmann distribution),和Softmax函数的形式一样.
+
+等式4.38的一个有趣性质是,如果取对数,就能得到一个关于x的线性函数,这是因为$x^T\Sigma^{-1}x$从分子分母中约掉了.这样两个类 c 和 c'之间的决策边界就是一条直线了.所以这种方法也叫做线性判别分析(linear discriminant analysis,缩写为LDA).可以按照如下方式来推导出这条直线的形式:
+$$
+\begin{aligned}
+p(y=c|x,\theta)& = p(y=c'|x,\theta)    &\text{(4.41)}\\
+\beta^T_cx+\gamma_c& = \beta^T_{c'}x+\gamma_{c'}   &\text{(4.42)}\\
+x^T(\beta_{c'}-\beta)& = \gamma_{c'}-\gamma_c    &\text{(4.43)}\\
+\end{aligned}
+$$
+
+样例参考图4.5.
+
+除了拟合一个线性判别分析(LDA)模型然后推导类后验之外,还有一种办法就是对某$C\times D$权重矩阵(weight matrix)W,直接拟合$p(y|x,W)=Cat(y|Wx)$.这叫做多类逻辑回归(multi-class logistic regression)或者多项逻辑回归(multinomial logistic regression).此类模型的更多细节将在本书8.2中讲解,两种方法的区别在本书8.6中有解释.
+
+
+此处查看原书图4.5
+
+此处查看原书图4.6
+
+
+
+### 4.2.3 双类线性判别分析(Two-class LDA)
+
+为了更好理解上面那些等式,咱们先考虑二值化分类的情况.这时候后验为:
+$$
+\begin{aligned}
+p(y=1|x,\theta)& =\frac{e^{\beta^T_1x+\gamma_1}}{e^{\beta^T_1x+\gamma_1}+e^{\beta^T_0x+\gamma_0}}    &\text{(4.44)}\\
+& = \frac{1}{1+e^{(\beta_0-\beta_1))^Tx+(\gamma_0-\gamma_1)}} =sigm((\beta_1-\beta_0)^Tx+(\gamma_1-\gamma_0))  &\text{(4.45)}\\
+\end{aligned}
+$$
+
+上式中的$sigm(\eta)$就是之前在等式1.10中提到的S型函数(sigmoid function).现在则有:
+$$
+\begin{aligned}
+\gamma_1-\gamma_0 & = -\frac{1}{2}\mu^T_1\Sigma^{-1}\mu_1+\frac{1}{2}\mu^T_0\Sigma^{-1}\mu_0+\log(\pi_1/\pi_0) &\text{(4.46)}\\
+& =  -\frac{1}{2}(\mu_1-\mu_0)^T\Sigma^{-1}(\mu_1+\mu_0) +\log(\pi_1/\pi_0) &\text{(4.47)}\\
+\end{aligned}
+$$
+
+所以如果定义:
+
+$$
+\begin{aligned}
+w&=  \beta_1-\beta_0=\Sigma^{-1}(\mu_1-\mu_0)&\text{(4.48)}\\
+x_0 & =  -\frac{1}{2}(\mu_1+\mu_0)-(\mu_1-\mu_0)\frac{\log(\pi_1/\pi_0) }{(\mu_1-\mu_0)^T\Sigma^{-1}(\mu_1-\mu_0)} &\text{(4.49)}\\
+\end{aligned}
+$$
+
+然后就有$w^Tx_0=-(\gamma_1-\gamma_0)$,因此:
+$p(y=1|x,\theta) = sigm(w^T(x-x_0))$ (4.50)
+
+这个形式和逻辑回归(logistic regression)关系密切,对此将在本书8.2中讨论.所以最终的决策规则为:将x移动$x_0$,然后投影到线w上,看结果的正负号.
+如果$\Sigma=\sigma^2I$,那么w就是$\mu_1-\mu_0$的方向.我们对点进行分类就要根据其投影距离$\mu_1$和$\mu_0$哪个更近.如图4.6所示.另外,如果$\pi_1=\pi_0$,那么$x_0=\frac{1}{2}(\mu_1+\mu_0)$,正好在两个均值的中间位置.如果让$\pi_1> \pi_0$,则$x_0$更接近$\mu_0$,所以图中所示线上更多位置属于类别1.反过来如果$\pi_1 < \pi_0$则边界右移.因此,可以看到累的先验$\pi_c$只是改变了决策阈值,而并没有改变总帖的结合形态.类似情况也适用于多类情景.
+
+w的大小决定了对数函数的陡峭程度,取决于均值相对于方差的平均分离成都.在心理学和信号检测理论中,通常定义一个叫做敏感度指数(sensitivity index,也称作 d-prime)的量,表示信号和背景噪声的可区别程度:
+
+$d'*= \frac{\mu_1-\mu_0}{\sigma}$(4.51)
+
+上式中的$\mu_1$是信号均值,$\mu_0$是噪音均值,而$\sigma$是噪音的标准差.如果敏感度指数很大,那么就意味着信号更容易从噪音中提取出来.
+
