@@ -291,3 +291,65 @@ $d'*= \frac{\mu_1-\mu_0}{\sigma}$(4.51)
 
 上式中的$\mu_1$是信号均值,$\mu_0$是噪音均值,而$\sigma$是噪音的标准差.如果敏感度指数很大,那么就意味着信号更容易从噪音中提取出来.
 
+
+
+### 4.2.4 对于判别分析(discriminant analysis)的最大似然估计(MLE)
+
+现在来说说如何去拟合一个判别分析模型(discriminant analysis model).最简单的方法莫过于最大似然估计(maximum likelihood).对应的对数似然函数(log-likelihood)如下所示:
+
+$\log p(D|\theta) =[\sum^N_{i=1}\sum^C_{c=1}I(y_i=c)\log\pi_c] + \sum^C_{c=1}[\sum_{i:y_i=c}\log N(x|\mu_c,\Sigma_c)]$(4.52)
+
+显然这个式子可以因式分解成一个含有$\pi$的项,以及对应每个$\mu_c,\Sigma_c$的C个项.因此可以分开对这些参数进行估计.对于类先验(class prior),有$\hat\pi_c=\frac{N_c}{N}$,和朴素贝叶斯分类器里一样.对于类条件密度(class-conditional densities),可以根据数据的类别标签来分开,对于每个高斯分布进行最大似然估计:
+
+$\hat\mu_c=\frac{1}{N_c}\sum_{i:y_i=c}x_i,\hat\Sigma_c=\frac{1}{N_c}\sum_{i:y_i=c}(x_i-\hat\mu_c)(x_i-\hat\mu_c)^T $(4.53)
+
+具体实现可以参考本书配套的PMTK3当中的discrimAnalysisFit是MATLAB代码.一旦一个模型拟合出来了,就可以使用discrimAnalysisPredict来进行预测了,具体用到的是插值近似(plug-in approximation).
+
+### 4.2.5 防止过拟合的策略
+
+最大似然估计(MLE)的最大优势之一就是速度和简洁.然而,在高维度数据的情况下,最大似然估计可能会很悲惨地发生过拟合.尤其是当$N_c<D$,全协方差矩阵(full covariance matrix)是奇异矩阵的时候(singular),MLE方法很容易过拟合.甚至即便$N_c>D$,MLE也可能是病态的(ill-conditioned),意思就是很接近奇异.有以下几种方法来预防或解决这类问题:
+
+* 假设类的特征是有条件独立的(conditionally independent),对这些类使用对角协方差矩阵(diagonal covariance matrix);这就等价于使用朴素贝叶斯分类器了,参考本书3.5.
+* 使用一个全协方差矩阵,但强制使其对于所有的类都相同,即$\Sigma_c=\Sigma$.这称为参数绑定(parameter tying)或者参数共享(parameter sharing),等价于线性判别分析(LDA),参见本书4.2.2.
+* 使用一个对角协方差矩阵,强迫共享.这叫做对角协方差线性判别分析,参考本书4.2.7.
+* 使用全协方差矩阵,但倒入一个先验,然后整合.如果使用共轭先验(conjugate prior)就能以闭合形式(closed form)完成这个过程,李永乐本书4.6.3当中的结果;这类似于本书3.5.1.2当中提到的使用贝叶斯方法的朴素贝叶斯分类器(Bayesian naive Bayes),更多细节参考 (Minka 2000f).
+* 你和一个完整的或者对角协方差矩阵,使用最大后验估计(MAP estimate),接下来会讨论两种不同类型的实现.
+* 将数据投影到更低维度的子空间,然后在子空间中拟合其高斯分布.更多细节在本书8.6.3.3,其中讲了寻找最佳线性投影(即最有区分作用)的方法. 
+
+接下来说一些可选类型.
+
+### 4.2.6 正则化线性判别分析(Regularized LDA)*
+
+假如我们在线性判别分析中绑定了协方差矩阵,即$\Sigma_c=\Sigma$,接下来就要怼$\Sigma$进行最大后验估计了,使用一个逆向Wishart先验,形式为$IW(diag(\hat\Sigma_{mle}),v_0)$,更多内容参考本书4.5.1.然后就有了:
+
+$\hat\Sigma=\lambda diag(\hat\Sigma_{mle})+(1-\lambda)\hat\Sigma_{mle}$(4.54)
+
+上式中的$\lambda$控制的是正则化规模(amount of regularization),这和先验强度(strength of the prior),$v_0$有关,更多信息参考本书4.6.2.1.这个技巧就叫做正则化线性判别分析(regularized discriminant analysis,缩写为 RDA,出自Hastie et al. 2009, p656).
+
+当对类条件密度进行评估的时候,需要计算$\hat\Sigma^{-1}$,也就要计算$\hat\Sigma^{-1}_{mle}$,如果$D>N$那就没办法计算了.不过可以利用对矩阵X的奇异值分解（Singular Value Decomposition,缩写为SVD,参考本书12.2.3)来解决这个问题,如下面所述.(注意这个方法不能用于二次判别分析(QDA,因为QDA不是关于x 的线性函数,是非线性函数了.)
+
+设$X=UDV^T$是对设计矩阵(design matrix)的SVD分解,其中的V/U分别是$D\times N$和$N\times N$的正交矩阵(orthogonal matrix),而D是规模为N的对角矩阵(diagonal matrix).定义一个$N\times N$的矩阵$Z=UD$;这就像是一个在更低维度空间上的设计矩阵,因为我们假设了$N<D$.另外定义$\mu_z=V^T\mu$作为降维空间中的数据均值;可以通过$mu=V\mu_z$来恢复到原始均值,因为$V^TV=VV^T=I$.有了这些定义之后,就可以把最大似然估计(MLE)改写成下面的形式了:
+$$
+\begin{aligned}\\
+\hat \Sigma_{mle} &= \frac{1}{N}X^TX-\mu\mu^T &\text{(4.55)}\\
+&= \frac{1}{N}(ZV^T)^T(ZV^T)-(V\mu-z)(V\mu_z)^T &\text{(4.56)}\\
+&= \frac{1}{N}VZ^TZV^T-V\mu_z\mu_z^TV^T &\text{(4.57)}\\
+&= V(\frac{1}{N}Z^TZ-\mu_z\mu_z^T)V^T &\text{(4.58)}\\
+&= V\hat\Sigma_zV^T &\text{(4.59)}\\
+\end{aligned}\\
+$$
+
+上式中的$\hat\Sigma_z$是**Z**的经验协方差(empirical covariance).因此要重新写成最大后验估计(MAP)为:
+$$
+\begin{aligned}
+\hat\Sigma_{map}&=V\tilde\Sigma_zV^T &\text{(4.60)}\\
+\tilde\Sigma_z &= \lambda diag(\hat\Sigma_z)+(1-\lambda)\hat\Sigma_z &\text{(4.61)}
+\end{aligned}
+$$
+
+最易,我们并不需要真正去计算出来这个$D\times D$矩阵$\hat\Sigma_{map}$.这是因为等式4.38告诉我们,要使用线性判别分析(LDA)进行分类,唯一需要计算的也就是$p(y=c|x,\theta)\propto \exp(\delta_c)$,其中:
+$\delta_c=-x^T\beta_c+\gamma_c,\beta_c=\hat\Sigma^{-1}\mu_c,\gamma_c=- \frac{1}{2}\mu_c^T \beta_c+\log \pi_c $(4.62)
+
+然后可以并不需要求逆$D\times D$矩阵就能计算正则化线性判别分析(RDA)的关键项$\beta_c$.
+$\beta_c =\hat\Sigma^{-1}_{map}\mu_c = (V\tilde\Sigma V^Ts)^{-1}\mu_c =V\tilde\Sigma^{-1}V^T\mu_c=V\tilde\Sigma^{-1}\mu_{z,c}$(4.63)
+

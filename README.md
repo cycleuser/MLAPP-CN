@@ -41,13 +41,18 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 "Table 3.1 illustrates what happens if we apply this to the binary bag of words dataset used in Figure 3.8."
 
 
+2018年05月17日08:34:22
+
+#### 100页第四章的(4.19)尼玛是空白?
+
+#### 108页第四章的(4.62)公式第三个项目$\gamma_c$后面缺少个等号,推测应该是:$\gamma_c=- \frac{1}{2}\mu_c^T \beta_c+\log \pi_c $
 
 ## 翻译进度追踪
 
 - [x] 01 Introduction 1~26
 - [x] 02 Probability 27~64 (练习略)
 - [x] 03 Generative models for discrete data 65~96(练习略)
-- [ ] 04 Gaussian models 97~148(当前页面 106)
+- [ ] 04 Gaussian models 97~148(当前页面 108)
 - [ ] 05 Bayesian statistics 149~190
 - [ ] 06 Frequentist statistics 191~216
 - [ ] 07 Linear regression 217~244
