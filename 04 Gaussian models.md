@@ -318,7 +318,7 @@ $\hat\mu_c=\frac{1}{N_c}\sum_{i:y_i=c}x_i,\hat\Sigma_c=\frac{1}{N_c}\sum_{i:y_i=
 
 接下来说一些可选类型.
 
-### 4.2.6 正则化线性判别分析(Regularized LDA)*
+### 4.2.6 正交线性判别分析(Regularized LDA)*
 
 假如我们在线性判别分析中绑定了协方差矩阵,即$\Sigma_c=\Sigma$,接下来就要怼$\Sigma$进行最大后验估计了,使用一个逆向Wishart先验,形式为$IW(diag(\hat\Sigma_{mle}),v_0)$,更多内容参考本书4.5.1.然后就有了:
 
@@ -350,6 +350,110 @@ $$
 最易,我们并不需要真正去计算出来这个$D\times D$矩阵$\hat\Sigma_{map}$.这是因为等式4.38告诉我们,要使用线性判别分析(LDA)进行分类,唯一需要计算的也就是$p(y=c|x,\theta)\propto \exp(\delta_c)$,其中:
 $\delta_c=-x^T\beta_c+\gamma_c,\beta_c=\hat\Sigma^{-1}\mu_c,\gamma_c=- \frac{1}{2}\mu_c^T \beta_c+\log \pi_c $(4.62)
 
-然后可以并不需要求逆$D\times D$矩阵就能计算正则化线性判别分析(RDA)的关键项$\beta_c$.
+然后可以并不需要求逆$D\times D$矩阵就能计算正交线性判别分析(RDA)的关键项$\beta_c$.
 $\beta_c =\hat\Sigma^{-1}_{map}\mu_c = (V\tilde\Sigma V^Ts)^{-1}\mu_c =V\tilde\Sigma^{-1}V^T\mu_c=V\tilde\Sigma^{-1}\mu_{z,c}$(4.63)
+
+
+### 4.2.7 对角线性判别分析(Diagonal LDA)
+
+上文所述的是正交线性判别分析(RDA),有一种简单的替代方法,就是绑定协方差矩阵(covariance matrice),即线性判别分析(LDA)中$\Sigma_c=\Sigma$,然后对于每个类都是用一个对角协方差矩阵.这个模型就叫做对焦线性判别分析模型(diagonal LDA model),等价于$\lambda =1$时候的正交线性判别分析(RDA).对应的判别函数如下所示(和等式4.33相对比一下):
+
+$\delta _c(x)=\log p(x,y=c|\theta) =-\sum^D_{j=1}\frac{(x_j-\mu_{cj})^2}{2\sigma^2_j}+\log\pi_c $(4.64)
+
+通常设置$\hat\mu_{cj}=\bar x_{cj},\hat\sigma^2_j=s^2_j$,这个$s^2_j$是特征j(跨类汇集)的汇集经验方差(pooled empirical variance).
+
+$s^2_j=\frac{\sum^C_{c=1}\sum_{i:y_i=c}(x_{ij}-\bar x_{cj})^2}{N-C}$(4.65)
+
+对于高维度数据,这个模型比LDA和RDA效果更好(Bickel and Levina 2004).
+
+
+此处查看原书图4.7
+
+
+
+
+### 4.2.8 最近收缩质心分类器(Nearest shrunken centroids classiﬁer)*
+
+对焦线性判别分析(diagonal LDA)有一个弱点,就是要依赖所有特征.在高维度情况下,可能更需要一个只依赖部分子集特征的方法,可以提高准确性或者利于解释.比如可以使用筛选方法(screening method),基于互信息量(mutual information),如本书3.5.4所述.本节要说另外一种方法,即最近收缩质心分类器(nearest shrunken centroids classiﬁer, Hastie et al. 2009, p652).
+
+基本思想是在稀疏先验(sparsity-promoting/Laplace prior)情况下对对角线性判别分析模型进行最大后验估计(MAP),参考本书13.3.更确切来说,用类独立特征均值(class-independent feature mean)$m_j$和类依赖偏移量(class-speciﬁc offset)$\Delta_{cj}$ 来定义类依赖特征均值(class-speciﬁc feature mean)$\mu_{cj}$。 则有:
+$\mu_{cj}=m_j+\Delta_{cj}$(4.66)
+
+接下来对$\Delta_{cj}$这一项设一个先验,使其为零,然后计算最大后验估计(MAP).对特征j,若有对于所有类别c都有$\Delta_{cj}=0$,则该特征在分类决策中则毫无作用,因为$\mu_{cj}$是与c独立的.这样这些不具有判别作用的特征就会被自动忽略掉.这个过程的细节可以参考 (Hastie et al. 2009, p652)和(Greenshtein and Park 2009).代码可以参考本书配套的PMTK3程序中的 shrunkenCentroidsFit.
+
+基于(Hastie et al. 2009, p652)的内容举个例子.设要对一个基因表达数据集进行分类,其中有2308个基因,4各类别,63个训练样本,20个测试样本.使用对角LDA分类器在测试集当中有五次错误.而是用最近收缩质心分类器对一系列不同的$\lambda$值,在测试集中都没有错误,如图4.7所示.更重要的是这个模型是稀疏的,所以更容易解读.图4.8所示的非惩罚估计(unpenalized estimate),灰色对应差值(difference)$d_{cj}$,蓝色的是收缩估计(shrunken estimates)$\Delta_{cj}$.(这些估计的计算利用了通过交叉验证估计得到的$\lambda$值.)在原始的2308个基因中,只有39个用在了分类当中.
+
+接下来考虑个更难的问题,有16,603个基因,来自144个病人的训练集,54个病人的测试集,有14种不同类型的癌症(Ramaswamy et al. 2001).Hastie 等(Hastie et al. 2009, p656) 称最近收缩质心分类器用了6520个基因,在测试集上有17次错误,而正交判别分析(RDA,本书4.3.6)用了全部的16,603个基因,在测试集上有12次错误.本书配套的PMTK3程序当中的函数cancerHighDimClassifDemo可以再现这些数字.
+
+
+此处查看原书图4.8
+
+## 4.3 联合正态分布的推论(Inference in jointly Gaussian distributions)
+
+给定联合分布$p(x_1,x_2)$,边界分布(marginal)$p(x_1)$和条件分布$p(x_1|x_2)$是有用的.下面就说一下如何去计算,并且给出一些应用举例.这些运算在最不理想的情况下大概需要$O(D^3)$的时间.本书的20.4.3会给出一些更快的方法.
+
+### 4.3.1 结果声明
+
+##### 定理 4.3.1 
+
+多元正态分布(MVN)的边界和条件分布.设$x=(x_1,x_2)$是联合正态分布,其参数如下:
+$$\mu=\begin{pmatrix}
+        \mu_1\\
+        \mu_2
+        \end{pmatrix} ,
+\Sigma=\begin{pmatrix}
+        \Sigma_{11}&\Sigma_{12}\\
+        \Sigma_{21}&\Sigma_{22}
+        \end{pmatrix},
+\wedge=\Sigma^{-1}=\begin{pmatrix}
+        \wedge_{11}&\wedge_{12}\\
+        \wedge_{21}&\wedge_{22}
+        \end{pmatrix}
+\text{  (4.67)}
+$$
+
+则边缘分布为:
+$$
+\begin{aligned}
+p(x_1)&=N(x_1|\mu_1,\Sigma_{11})\\
+p(x_2)&=N(x_2|\mu_2,\Sigma_{22})
+\end{aligned} 
+$$(4.68)
+
+后验条件分布则为(重要公式):
+$$
+\begin{aligned}
+p(x_1|x_2)&=N(x_1|\mu_{1|2},\Sigma_{1|2})\\
+\mu_{1|2}&=\mu_1+\Sigma_{12}\Sigma^{-1}_{1|2}(x_2-\mu_2)\\
+&=\mu_1-\wedge_{12}\wedge^{-1}_{1|2}(x_2-\mu_2)\\
+&= \Sigma_{1|2}(\wedge_{11}\mu_1-\wedge_{12}(x_2-\mu_2))\\
+\Sigma_{1|2}&=\Sigma_{11}-\Sigma_{12}\Sigma^{-1}_{22}\Sigma_{21}=\wedge^{-1}_{11}
+\end{aligned} 
+$$(4.69)
+
+上面这个公式很重要,证明过程参考本书4.3.4.
+
+可见边缘和条件分布本身也都是正态分布.对于边缘分布,只需要提取出与$x_1$或者$x_2$对应的行和列.条件分布就要复杂点了.不过也不是特别复杂,条件均值(conditional mean)正好是$x_2$的一个线性函数,而条件协方差(conditional covariance)则是一个独立于$x_2$的常数矩阵(constant matrix).给出了后验均值(posterior mean)的三种不同的等价表达形式,后验协方差(posterior covariance)的两种不同的等价表达方式,每个表达式都在不同情境下有各自的作用.
+
+### 4.3.2 举例
+
+接下来就在实际应用中进行举例,可以让上面的方程更直观也好理解.
+
+
+#### 4.3.2.1 二维正态分布的边缘和条件分布
+
+假设以一个二维正态分布为例,其协方差矩阵为:
+$$
+\Sigma =\begin{pmatrix} \sigma_1^2 & \rho\sigma_1\sigma_2   \\
+\rho\sigma_1\sigma_2 & \sigma_2^2
+\end{pmatrix}
+$$(4.70)
+
+边缘分布$p(x_1)$则是一个一维正态分布,将联合分布投影到$x_1$这条线上即可得到:
+
+$p(x_1)=N(x_1|\mu_1,\sigma_1^2)$(4.71)
+
+
+此处查看原书图4.9
+
 
