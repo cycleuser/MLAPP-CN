@@ -121,7 +121,7 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 | pdf|Probability density function|概率密度函数
 | pmf|Probability mass function|概率质量函数
 | RBPF|Rao-Blackwellised particle ﬁlter|Rao-Blackwell化粒子滤波算法
-| RHS|Right hand side (of an equation|等式右边
+| RHS|Right hand side (of an equation)|等式右边
 | RJMCMC|Reversible jump MCMC|可逆跳变马尔科夫链蒙特卡罗方法
 | RSS|Residual sum of squares|残差平方和
 | SLDS|Switching linear dynamical system|可切换线性动力系统
