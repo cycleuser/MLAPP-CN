@@ -502,3 +502,219 @@ $p(x)=N(x|0,(\lambda^2L^TL)^{-1})\propto \exp(-\frac{\lambda^2}{2}||Lx||^2_2)$(4
 不过只要观测超过2个数据点,即$N\ge2$,这个先验就适用了.
 
 
+
+接下来设$x_2$是N个对函数的无噪音观测，而$x_1$是$D-N$个函数值.不考虑泛化损失,先假设未知变量和已知变量分别被排序.然后就可以对L矩阵进行如下所示的分割:
+$L=[L_1,L_2],L_1\in R^{(D-2)\times(D-N)},L_2\in R^{(D-2)\times(N)}$(4.79)
+然后也可以对联合分布的精度矩阵进行分割:
+$$
+\wedge=L^TL=
+\begin{pmatrix}
+\wedge_{11}&\wedge_{12}\\ 
+\wedge_{21}&\wedge_{22}
+\end{pmatrix}=
+\begin{pmatrix}
+L_1^TL_1&L_1^TL_2\\ 
+L_2^TL_1&L_2^TL_2
+\end{pmatrix}
+$$(4.80)
+
+利用等式4.69,就可以写出条件分布:
+$$
+\begin{aligned}
+p(x_1|x_2)&=N(\mu_{1|2},\Sigma_{1|2}) &\text{(4.81)}\\
+\mu_{1|2}&= -\wedge^{-1}_{11}\wedge_{12}x_2=-L_1^TL_2x_2 &\text{(4.82)}\\
+\Sigma_{1|2} &= \wedge^{-1}_{11}&\text{(4.83)}\\
+\end{aligned}
+$$
+
+解下面的线性方程组就可以计算出均值:
+$L_1\mu_{1|2}=-L_2x_2$(4.84)
+
+$L_1$是三角形矩阵,所以这解起来很容易.图4.10所示为这些等式的图像.从图中可见后验均值$\mu_{1|2}$等于特定各点的观测数据,而中间位置也都进行了光滑插值.
+图中灰色的部分是95%的逐点边界置信区间(pointwise marginal credibility intervals),$\mu_j\pm 2\sqrt{\Sigma_{1|2,jj}}$.观察这部分会发现,远离数据点则方差增大,降低先验精度$\lambda$也会导致方差的增大.不过有趣的是$\lambda$并不会影响后验均值,因为在乘以$\wedge_{11}$和$\wedge_{12}$的时候消掉了.与之形成对比的是本书4.4.2.3的有噪音数据,那时候咱们就能发现先验精度会影响后验均值估计的光滑程度了.
+边界置信区间并没有捕获到邻近位置上的相关性.对此可以从后验中推出完整的函数,也就是向量x,然后绘制函数图像.如图4.10中的细线所示.这就不想后验均值本身那么光滑了.这是因为先验只是处理了一阶差分(prior only penalizes ﬁrst-order differences).更多相关细节参考本书4.4.2.3.
+
+#### 4.3.2.3 数据插补(Data imputation)
+
+假设一个设计矩阵(design matrix)中缺失了某些值(entries).如果各列(columns)相关,可以用观察到的值对缺失值进行预测.如图4.11所示.从一个20维的正态分布中取样若干数据,然后故意在每行(row)隐藏掉一般的数据.接下来使用存留数据对缺失数据进行推测,使用真实(生成)模型(true (generating) model).具体来说,对于每一行i,都计算$p(x_{h_i}|x_{v_i} ,\theta)$,其中的$h_i$和$v_i$分别是 i条件下隐藏和可见值的索引值(indices).从这里就能计算出每个缺失值的边缘分布$p(x_{h_{ij}}|x_{v_i} ,\theta)$.然后对这个分布的均值$\hat x_{ij}=E[x_j|x_{v_i},\theta]$进行投图;这就代表着对缺失值位置真实值的"最佳猜测",因为这使得期望平方误差(expected squared error)最小,更多细节参考本书5.7.如图4.11所示,这些估计和真实值还是很接近的.(当然了,如果$j\in v_i$则期望值就等于观测值,即$\hat x_{ij} = x_{ij}$.)
+
+然后可以用$var[x_{h_{ij}}|x_{v_i} ,\theta]$来衡量对这个猜测的信心,不过图中没有展示出来.或者可以从$p(x_{h_{ij}}|x_{v_i} ,\theta)$中进行多次取样,这样就叫做多重插补(multiple imputation).
+
+除了推算缺失值之外,我们可能还要计算表格中每个特定观测到的行(row)的似然率(likelihood),$p(x_{v_i}|\theta)$,这可以用等式4.68进行计算.这可以用于检测异常值(outliers)(也就是不太正常的观测结果,atypical observations)).
+
+此处参考原书图4.11
+
+### 4.3.3 信息形式(Information form)
+
+
+设$x ∼ N(\mu,\Sigma)$.很明显$E[x]=\mu$就是均指向量,而$cov[x]=\Sigma$就是协方差矩阵(covariance matrix).这些都叫做分布的矩参数(moment parameters).不过有时候可能使用规范参数(canonical parameters)或者自然参数(natural parameters)更有用,具体定义如下所示:
+$\wedge *= \Sigma^{-1},\xi *=  \Sigma^{-1} \mu$(4.85)
+还可以转换回矩参数:
+$ \mu=\wedge^{-1}\xi,\Sigma =\wedge^{-1}$(4.86)
+使用规范参数,可以将多元正态分布(MVN)写成信息形式(information form)(也就是写成指数组分布的形式(exponential family form),具体定义在本书9.2):
+$N_c(x|\xi,\wedge)=(2\pi)^{-D/2}|\wedge|^{\frac{1}{2}} \exp[-\frac{1}{2}(x^T\wedge x+\xi^T\wedge^{-1}\xi-2x^T\xi)]$(4.87)
+
+上式中使用了$N_c()$是为了和矩参数表达形式$N()$相区分.
+边缘分布和条件分布公式也都可以推导出信息形式.为:
+$p(x_2)=N_c(x_2|\xi_2-\wedge_{21}\wedge_{11}^{-1}\xi_1,\wedge_{22}-\wedge_{21}\wedge_{11}^{-1}\wedge_{12})$(4.88)
+$p(x_1|x_2)=N_c(x_1|\xi_1-\wedge_{12}x_2,\wedge_{11})$(4.89)
+
+通过上式可见比矩参数形式求边缘分布更容易,而信息形势下求条件分布更容易.
+这种信息形式记法的另外一个好处是将两个正态分布相乘更简单了.如下所示:
+$N_c(\xi_f,\lambda_f)N_c(\xi_g,\lambda_g)=N_c(\xi_f+\xi_g,\lambda_f+\lambda_g)$(4.90)
+而在矩参数形式下,这相乘起来可就麻烦了:
+$N(\mu_f,\sigma_f^2)N(\mu_g,\sigma_g^2)=N(\frac{\mu_f\sigma_g^2+\mu_g\sigma_f^2}{\sigma_f^2+\sigma_g^2},\frac{\sigma_f^2 \sigma_g^2}{\sigma_f^2+\sigma_g^2})$(4.91)
+
+### 4.3.4 结论证明*
+
+这一节是要证明定理4.3.1.害怕矩阵代数计算的读者可以直接跳过这部分内容.本节开始要先推到一些有用的结果,这些结论不仅在这节要用到,在本书其他地方也有用.然后在结尾部分就给出证明.
+
+#### 4.3.4.1 使用Schur补(Schur complements)得到分区矩阵的逆矩阵(Inverse)
+
+要像个办法对一个分区矩阵求逆矩阵.可以使用下面的结论.
+#### 定理4.3.2
+分区矩阵的逆矩阵.设有一个常规分区矩阵(general partitioned matrix):
+$$M=\begin{pmatrix}E&F\\ G&H
+\end{pmatrix}
+$$(4.92)
+
+假设其中的E和H都是可逆的,则有:
+$$
+\begin{aligned}
+M^{-1}&= \begin{pmatrix}(M/H)^{-1}&-(M/H)^{-1}FH^{-1}\\
+-H^{-1}G(M/H)^{-1}&H^{-1}+H^{-1}G(M/H)^{-1}FH^{-1}
+\end{pmatrix}
+&\text{(4.93)}\\
+&= \begin{pmatrix}E^{-1}+E^{-1}F(M/E)^{-1}GE^{-1} & -E^{-1}F(M/E)^{-1}\\
+-(M/E)^{-1}GE^{-1}& (M/E)^{-1}
+\end{pmatrix}
+&\text{(4.94)}
+\end{aligned}
+$$
+其中:
+$M/H*= E-FH^{-1}G$(4.95)
+$M/E*= H-GE^{-1}F$(4.96)
+
+我们就说$M/H$是$M wrt H$的Schur补(Schur complement).等式4.93就叫做分区求逆公式(partitioned inverse formula).
+
+
+#### 证明
+
+如果把矩阵M的对角(diagonalize)去掉(block),就更好求逆矩阵了.可以用如下方式预处理,矩阵M左侧乘以一个三角矩阵来得使矩阵M的右上角部分为零:
+$$
+\begin{pmatrix}
+I&-FH^{-1}\\
+0&I
+\end{pmatrix}
+\begin{pmatrix}
+E&F\\
+G&H
+\end{pmatrix}=
+\begin{pmatrix}
+E-FH^{-1}&0\\
+G&H
+\end{pmatrix}
+$$(4.97)
+
+用如下方式预处理,矩阵M右侧乘以一个三角矩阵来得使矩阵左下角部分为零:
+$$
+\begin{pmatrix}
+E-FH^{-1}&0\\
+G&H
+\end{pmatrix}
+\begin{pmatrix}
+I&0\\
+-H^{-1} G&I 
+\end{pmatrix}=\begin{pmatrix}
+E-FH^{-1}&0\\
+0&H
+\end{pmatrix}
+$$(4.98)
+
+把上面两步结合起来就得到了:
+$$
+\begin{pmatrix}
+I&-FH^{-1}\\
+0&I
+\end{pmatrix}
+\begin{pmatrix}
+E&F\\
+G&H
+\end{pmatrix}
+\begin{pmatrix}
+I&0\\
+-H^{-1} G&I 
+\end{pmatrix}=\begin{pmatrix}
+E-FH^{-1}&0\\
+0&H
+\end{pmatrix}
+$$(4.99)
+上面的四个矩阵从左到右分别为X,M,Z,W,对这几个矩阵同时求逆矩阵就得到了:
+$Z^{-1}M^{-1}X^{-1}=W^{-1}$(4.100)
+
+然后就能推出:
+$M^{-1}=ZW^{-1}X$(4.101)
+
+用定义拆解出来就得到了:
+$$
+\begin{aligned}
+\begin{pmatrix} E&F\\G&H \end{pmatrix}^{-1}
+&= \begin{pmatrix}I&0 \\-H^{-1}G&I 
+\end{pmatrix}
+\begin{pmatrix}(M/H)^{-1}&0 \\0&H^{-1} 
+\end{pmatrix}
+\begin{pmatrix}I&-FH^{-1} \\0&I 
+\end{pmatrix}
+&\text{(4.102)}\\
+&= \begin{pmatrix}(M/H)^{-1}&0 \\-H^{-1}G(M/H)^{-1}&H^{-1} 
+\end{pmatrix}
+\begin{pmatrix}I&-FH^{-1} \\0&I 
+\end{pmatrix}
+&\text{(4.103)}\\
+&= \begin{pmatrix}(M/H)^{-1}& -(M/H)^{-1}FH^{-1} \\-H^{-1}G(M/H)^{-1}&H^{-1} +H^{-1} G(M/H)^{-1}FH^{-1}
+\end{pmatrix}
+&\text{(4.104)}
+\end{aligned}
+$$
+
+或者也可以把矩阵M分解成用E来表示,这样就有$M/E=(H-GE^{-1}F)$,就得到了:
+$$
+\begin{aligned}
+\begin{pmatrix} E&F\\G&H \end{pmatrix}^{-1} 
+= \begin{pmatrix}E^{-1}+E^{-1}F(</E)^{-1}GE^{-1} & -E^{-1}F(M/E)^{-1} \\-H^{-1}-(M/E)^{-1}GE^{-1}&(M/E)^{-1}
+\end{pmatrix}
+\end{aligned}
+$$(4.105)
+
+证明完毕
+
+#### 4.3.4.2 矩阵求逆引理(the matrix inversion lemma)
+
+接下来要利用上面的结果推出一些有用的推论.
+
+#### 推论4.3.1 矩阵求逆引理(matrix inversion lemma)
+设有一个常规分区矩阵(general partitioned matrix)$M=\begin{pmatrix} E&F \\  G&H \end{pmatrix}$,假设E和H都可逆.则有:
+$(E-FH^{-1}G)^{-1}= E^{-1}+ E^{-1}F(H-GE ^{-1}F )^{-1}GE^{-1} $(4.106)
+$(E-FH^{-1}G)^{-1}FH^{-1}=E^{-1}F(H-GE^{-1}F)^{-1}$(4.107)
+$|E-FH^{-1}G|=|H-GE^{-1}F||H^{-1}||E|$(4.108)
+上式中前两个方程就叫做矩阵求逆引理(matrix inversion lemma)或者叫做Sherman Morrison-Woodbury 公式(Sherman Morrison-Woodbury formula).第三个等式叫做矩阵行列式引理(matrix determinant lemma).在机器学习和统计学中上面这些公式的典型用法如下所示.设$E=\Sigma$是一个$N\times N$的对角矩阵,设$F=G^T= X$规模为$N\times D$,其中的N远大于D,即$N>>D$,设$H^{-1}=-I$.则有:
+$(\Sigma+XX^T )^{-1} =\Sigma^{-1}-\Sigma^{-1}X(I+X^T\Sigma^{-1}X)^{-1}X^T\Sigma^{-1}  $(4.109)
+
+等号左侧的计算需要$O(N^ 3)$时间,等会右侧的计算需要$O(D^ 3)$时间.
+
+另外一种应用涉及到了对逆矩阵的一阶更新(rank one update)进行计算.设$H=-1$是一个标量(scalar),$F=u$是一个列向量(column vector),而$G=v^T$是一个行向量(row vector).然后则有:
+
+$$
+\begin{aligned}
+(E+uv^T)^{-1}&= E^{-1}+E^{-1}u(-1-v^TE^{-1}u)v^TE^{-1} &\text{(4.110)}\\
+&= E^{-1}- \frac{E^{-1}uv^TE^{-1}}{1+v^TE^{-1}u}&\text{(4.111)}\\
+\end{aligned}
+$$
+
+在对设计矩阵逐渐添加数据向量和对充分统计量进行更新的时候,可以用上上面的式子.(移除一个数据向量的方程与之类似,大家自己推导一下.)
+
+#### 证明
+
+要证明等式4.106,只需要把等式4.93的左上部分和4.94等同起来(equate).为了证明等式4.107,则将等式4.93的右上部分和4.94等同起来(equate).等式4.108的证明留作练习.
+
+
