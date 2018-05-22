@@ -532,7 +532,7 @@ $L_1\mu_{1|2}=-L_2x_2$(4.84)
 
 $L_1$是三角形矩阵,所以这解起来很容易.图4.10所示为这些等式的图像.从图中可见后验均值$\mu_{1|2}$等于特定各点的观测数据,而中间位置也都进行了光滑插值.
 图中灰色的部分是95%的逐点边界置信区间(pointwise marginal credibility intervals),$\mu_j\pm 2\sqrt{\Sigma_{1|2,jj}}$.观察这部分会发现,远离数据点则方差增大,降低先验精度$\lambda$也会导致方差的增大.不过有趣的是$\lambda$并不会影响后验均值,因为在乘以$\wedge_{11}$和$\wedge_{12}$的时候消掉了.与之形成对比的是本书4.4.2.3的有噪音数据,那时候咱们就能发现先验精度会影响后验均值估计的光滑程度了.
-边界置信区间并没有捕获到邻近位置上的相关性.对此可以从后验中推出完整的函数,也就是向量x,然后绘制函数图像.如图4.10中的细线所示.这就不想后验均值本身那么光滑了.这是因为先验只是处理了一阶差分(prior only penalizes ﬁrst-order differences).更多相关细节参考本书4.4.2.3.
+边界置信区间并没有捕获到邻近位置上的相关性.对此可以从后验中推出完整的函数,也就是向量x,然后绘制函数图像.如图4.10中的细线所示.这就不像后验均值本身那么光滑了.这是因为先验只是处理了一阶差分(prior only penalizes ﬁrst-order differences).更多相关细节参考本书4.4.2.3.
 
 #### 4.3.2.3 数据插补(Data imputation)
 
@@ -540,7 +540,7 @@ $L_1$是三角形矩阵,所以这解起来很容易.图4.10所示为这些等式
 
 然后可以用$var[x_{h_{ij}}|x_{v_i} ,\theta]$来衡量对这个猜测的信心,不过图中没有展示出来.或者可以从$p(x_{h_{ij}}|x_{v_i} ,\theta)$中进行多次取样,这样就叫做多重插补(multiple imputation).
 
-除了推算缺失值之外,我们可能还要计算表格中每个特定观测到的行(row)的似然率(likelihood),$p(x_{v_i}|\theta)$,这可以用等式4.68进行计算.这可以用于检测异常值(outliers)(也就是不太正常的观测结果,atypical observations)).
+除了推算缺失值之外,我们可能还要计算表格中每个特定观测到的行(row)的似然率(likelihood),$p(x_{v_i}|\theta)$,这可以用等式4.68进行计算.这可以用于检测异常值(outliers)(也就是不太正常的观测结果,atypical observations).
 
 此处参考原书图4.11
 
@@ -571,7 +571,7 @@ $N(\mu_f,\sigma_f^2)N(\mu_g,\sigma_g^2)=N(\frac{\mu_f\sigma_g^2+\mu_g\sigma_f^2}
 
 #### 4.3.4.1 使用Schur补(Schur complements)得到分区矩阵的逆矩阵(Inverse)
 
-要像个办法对一个分区矩阵求逆矩阵.可以使用下面的结论.
+要想个办法对一个分区矩阵求逆矩阵.可以使用下面的结论.
 #### 定理4.3.2
 分区矩阵的逆矩阵.设有一个常规分区矩阵(general partitioned matrix):
 $$M=\begin{pmatrix}E&F\\ G&H
@@ -700,7 +700,7 @@ $|E-FH^{-1}G|=|H-GE^{-1}F||H^{-1}||E|$(4.108)
 上式中前两个方程就叫做矩阵求逆引理(matrix inversion lemma)或者叫做Sherman Morrison-Woodbury 公式(Sherman Morrison-Woodbury formula).第三个等式叫做矩阵行列式引理(matrix determinant lemma).在机器学习和统计学中上面这些公式的典型用法如下所示.设$E=\Sigma$是一个$N\times N$的对角矩阵,设$F=G^T= X$规模为$N\times D$,其中的N远大于D,即$N>>D$,设$H^{-1}=-I$.则有:
 $(\Sigma+XX^T )^{-1} =\Sigma^{-1}-\Sigma^{-1}X(I+X^T\Sigma^{-1}X)^{-1}X^T\Sigma^{-1}  $(4.109)
 
-等号左侧的计算需要$O(N^ 3)$时间,等会右侧的计算需要$O(D^ 3)$时间.
+等号左侧的计算需要$O(N^ 3)$时间,等号右侧的计算需要$O(D^ 3)$时间.
 
 另外一种应用涉及到了对逆矩阵的一阶更新(rank one update)进行计算.设$H=-1$是一个标量(scalar),$F=u$是一个列向量(column vector),而$G=v^T$是一个行向量(row vector).然后则有:
 
