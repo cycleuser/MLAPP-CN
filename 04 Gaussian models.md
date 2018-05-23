@@ -713,8 +713,151 @@ $$
 
 在对设计矩阵逐渐添加数据向量和对充分统计量进行更新的时候,可以用上上面的式子.(移除一个数据向量的方程与之类似,大家自己推导一下.)
 
+
 #### 证明
 
 要证明等式4.106,只需要把等式4.93的左上部分和4.94等同起来(equate).为了证明等式4.107,则将等式4.93的右上部分和4.94等同起来(equate).等式4.108的证明留作练习.
+
+
+#### 4.3.4.3 高斯条件公式(Gaussian conditioning formulas)的证明
+
+接下来回到主线,也就是推导等式4.69.首先把联合概率分布$p(x_1,x_2)$因式分解成$p(x_2)p(x_1|x_2)$:
+$$
+E=\exp\{-\frac{1}{2}{\begin{pmatrix}  x_1-\mu_1\\x_2-\mu_2 \end{pmatrix}}^T{\begin{pmatrix} \Sigma_{11}&\Sigma_{12}\\ \Sigma_{21}&\Sigma_{22}\end{pmatrix}}^{-1}{\begin{pmatrix}  x_1-\mu_1\\x_2-\mu_2 \end{pmatrix}}\}
+$$(4.112)
+利用等式4.102,则有:
+
+
+$$
+\begin{aligned}
+E&=  \exp   \{-\frac{1}{2}{\begin{pmatrix}  x_1-\mu_1\\x_2-\mu_2 \end{pmatrix}}^T{\begin{pmatrix}I&0\\ -\Sigma_{22}^{-1}\Sigma_{21}&I\end{pmatrix}}^{-1}{\begin{pmatrix}  (\Sigma/\Sigma_{22})^{-1}&0\\0&\Sigma_{22}^{-1} \end{pmatrix}}        &\text{(4.113)}\\
+&\times   {\begin{pmatrix}  I & -\Sigma_{12}\Sigma_{22}^{-1}\\0&I\end{pmatrix}}{\begin{pmatrix}  x_1-\mu_1\\x_2-\mu_2 \end{pmatrix}}\}             &\text{(4.114)}\\
+&=    \exp\{     -\frac{1}{2}(x_1-\mu_1-\Sigma_{12}\Sigma_{22}^{-1}(x_2-\mu_2))^T(\Sigma/\Sigma_{22})^{-1})     &\text{(4.115)}\\
+& (x_1-\mu_1-\Sigma/\Sigma_{22})^{-1}(x_2-\mu_2)) \} \times \exp \{ -\frac{1}{2}(x_2-\mu_2)^T\Sigma_{-1}(x_2-\mu_2) \}           &\text{(4.116)}\\
+\end{aligned}
+$$
+
+这就成了下面这种形式:
+$\exp(x_1 , x_2 \text{的二次型(quadratic form)} ) \times \exp(x_2  \text{的二次型})$(4.117)
+
+因此就可以成功地将联合分布拆解开:
+$$
+\begin{aligned}
+p(x_1,x_2)&=   p(x_1|x_2) p(x_2)     &\text{(4.118)}\\
+&=   N(x_1|\mu_{1|2},\Sigma_{1|2})N(x_2|\mu_2,\Sigma_{22})      &\text{(4.119)}\\
+\end{aligned}
+$$
+通过上面的等式也可以得到条件概率分布的参数:
+$$
+\begin{aligned}
+\mu_{1|2}&=    \mu_1+\Sigma_{12}\Sigma_{22}^{-1}(x_2-\mu_2)     &\text{(4.120)}\\
+\Sigma_{1|2}&=   \Sigma/\Sigma_{22}=\Sigma_{11}-\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}      &\text{(4.121)}\\
+\end{aligned}
+$$
+
+还可以根据$|M| = |M/H||H|$来检验归一化常数(normalization constants)是否正确:
+
+$$
+\begin{aligned}
+(2\pi)^{(d_1+d_2)/2}|\Sigma|^{\frac{1}{2}} &=     (2\pi)^{(d_1+d_2)/2}(|\Sigma/\Sigma_{22}||\Sigma_{22}|)^{\frac{1}{2}}     &\text{(4.122)}\\
+&=   (2\pi)^{d_1/2}|\Sigma/\Sigma_{22}|^{\frac{1}{2}}(2\pi)^{d_2/2}|\Sigma_{22}|^{\frac{1}{2}}        &\text{(4.123)}\\
+\end{aligned}
+$$
+
+上式中的$d_1=\dim (x_1)$,$d_2=\dim (x_2)$.
+对等式4.69的其他形式证明留作练习了.
+
+## 4.4 线性高斯系统(Linear Gaussian systems)
+
+加入我们有两个变量x和y.然后设$x\in R^{D_x}$是隐藏变量(hidden variable),而$y\in R^{D_y}$是对x的有噪音观察(noisy observation).假设有下面的先验和似然率(重要公式): 
+$$
+\begin{aligned}
+p(x)&= N(x|\mu_x,\Sigma_x)   \\
+p(y|x)&= N(y|Ax+b,\Sigma_y)   \\
+\end{aligned}
+$$(4.124)
+上式中的A是一个$D_y \times D_x$的矩阵.这就是一个线性高斯系统(linear Gaussian system).可以表示为$x\rightarrow y$,意思也就是x生成(generates)了y.本节会讲如何去"逆转箭头方向(invert the arrow)",也就是根据y来推测x.首先是给出结论,然后举几个例子,最后给出推导结论的过程.后面的章节还能看到对这些结论的更多应用.
+
+### 4.4.1 结论表述
+
+#### 定理4.4.1
+线性高斯系统的贝叶斯规则.
+给定一个线性高斯系统,如等式4.124所述,则后验$p(x|y)$为(重要公式):
+$$
+\begin{aligned}
+p(x|y)&= N(x|\mu_{x|y},\Sigma_{x|y})   \\
+\Sigma_{x|y}^{-1}&=\Sigma_x^{-1}+A^T\Sigma_y^{-1}A  \\
+\mu_{x|y}&= \Sigma_{x|y}[A^T\Sigma_y^{-1}(y-b)+\Sigma_x^{-1}\mu_x] \\
+\end{aligned}
+$$(4.125)
+
+另外,归一化常数(normalization constant)$p(y)$为(重要公式):
+$p(y)=N(y|A\mu_x+b,\Sigma_y+A\Sigma_x A^T)$(4.126)
+证明过程参考本章4.4.3
+
+### 4.4.2 样例
+本节举几个对上述结论进行应用的例子.
+
+#### 4.4.2.1 从有噪音测量(noisy measurements)中推测位置标量(unknown scalar)
+
+加入我们队某个隐藏量(underlying quantity)x进行N此有噪音测量 $y_i$;然后假设测量噪音有固定的精确度(precision)$\lambda_y=\frac{1}{\sigma^2}$,则似然率(likelihood)为:
+
+$p(y_i|x)=N(y_i|x,\lambda_y^{-1})$(4.127)
+
+然后对未知源(unknown source)的值使用一个高斯先验:
+
+$p(x)=N(x|\mu_0,\lambda_0^{-1})$(4.128)
+
+我们需要计算的是$p(x|y_1,...,y_N,\sigma^2)$.可以把这个改写成一种形式,以便于使用对高斯分布的贝叶斯规则,可以通过定义$y=(y_1,...,y_N),A= a^T_N,\Sigma_y^{-1}=diag (\lambda_yI)$,其中的A的意思是一个$1\times N$的由1构成的行向量(row vector).则有:
+
+$$\begin{aligned}
+p(x|y)&=N(x|\mu_N,\lambda_N^{-1})&\text{(4.129)}\\
+\lambda_N&=\lambda_0+N\lambda_y&\text{(4.130)}\\
+\mu_N&=\frac{N\lambda_y\bar y+\lambda_0\mu_0}{\lambda_N}=\frac{N\lambda_y}{N\lambda_y+\lambda_0}\bar y +\frac{\lambda_0}{N\lambda_y+\lambda_0}\mu_0&\text{(4.131)}\\
+\end{aligned}
+$$
+
+这几个等式很直观了:后验精度(posterior precision)$\lambda_N$就正好是先验精度(prior precision)$\lambda_0$和N个单位的测量精度(measurement precision)$\lambda_y$的和.另外后验均值(posterior mean)$\mu_N$也就是最大似然估计(MLE)$\bar y$和先验均值(prior mean)$\mu_0$的凸组合(convex combination).很明显,这就表明了后验均值是在最大似然估计(MLE)和先验(prior)之间的妥协折中(compromise).如果先验相对于信号强度来说比较弱(即$\lambda_0$相对于$\lambda_y$来说较小),就赋予最大似然估计(MLE)更多权重.如果先验相对信号强度更强(即$\lambda_0$相对于$\lambda_y$来说更大),就给先验(prior)更高权重.这如图4.12所示,这和图3.6当中的$\beta$二项模型(beta-binomial model)的模拟结果(analogous results)很相似.
+
+这里要注意后验均值写成了$N\lambda_y \bar y$的形式,因此具有测量N次,每次精度$\lambda_y$就相当于进行一次测量得到值$\bar y$而精度为$N\lambda_y$.
+
+
+此处查看原书图4.12
+
+我们可以把上面的结果写成后验方差(posterior variance)的形式,而不用后验精度(posterior precision),如下所示:
+$$
+\begin{aligned}
+p(x|D,\sigma^2)&= N(x|\mu_N,\tau_N^2 &\text{(4.132)}\\
+\tau_N^2&=\frac{1}{\frac{N}{\sigma^2}+\frac{1}{\tau_0^2} } =\frac{\sigma^2\tau_0^2}{N\tau_0^2+\sigma^2}&\text{(4.133)}\\
+\mu_N&= \tau_N^2 (\frac{\mu_0}{\tau_0^2}+\frac{N\bar y}{\sigma^2}) =\frac{\sigma^2}{N\tau_0^2+\sigma^2}\mu_0+\frac{N\tau_0^2}{N\tau_0^2+\sigma^2}\bar y&\text{(4.134)}\\
+\end{aligned}
+$$
+
+上式中的$\tau_0^2=1/\lambda_0$是先验方差(prior variance),而$\tau_N^2 =1/\lambda_N$是后验方差(posterior variance).
+
+我们也可以通过每次观测后更新来逐渐计算后验.如果$N=1$,在进行一次单独观测后就可以重写后验,如下所示(下面定义了$ \Sigma_y =\sigma^2,\Sigma_0= \tau_0^2, \Sigma_1=\tau_1^2 $分别是似然函数/先验/后验的方差):
+
+$$
+\begin{aligned}
+p(x|y)&= N(x|\mu_1,\Sigma_1) &\text{(4.135)}\\
+\Sigma_1&= (\frac{1}{\Sigma_0}+\frac{1}{\Sigma_y})^{-1} = \frac{\Sigma_y\Sigma_0}{\Sigma_0+\Sigma_y}&\text{(4.136)}\\
+\mu_1&= \Sigma_1(\frac{\mu_0}{\Sigma_0}+\frac{y}{\Sigma_y})&\text{(4.137)}\\
+\end{aligned}
+$$
+
+可以以下面三种不同形式来写出后验均值(posterior mean):
+$$
+\begin{aligned}
+\mu_1 &=  \frac{\Sigma_y}{\Sigma_y+\Sigma_0}\mu_0+\frac{\Sigma_0}{\Sigma_y+\Sigma_0}y&\text{(4.138)}\\
+&=\mu_0+(y-\mu_0)\frac{\Sigma_0}{\Sigma_y+\Sigma_0} &\text{(4.139)}\\
+&=y-(y-\mu_0)\frac{\Sigma_y}{\Sigma_y+\Sigma_0} &\text{(4.140)}\\
+\end{aligned}
+$$
+
+上面的三个等式中,第一个十字就是对先验和数据的凸组合(convex combination).第二个是将先验均值朝向数据进行调整.第三个是将数据朝向先验均值调整,这也叫做收缩过程(shrinkage).这三者都是等价的,都表达了在似然率和先验之间的权衡妥协.如果$\Sigma_0$相对于$\Sigma_Y$较小,对应的就是强先验(strong prior),收缩规模(amount of shrinkate)就很大,参考图4.12(a),而如果反过来$\Sigma_0$相对于$\Sigma_Y$更大,对应的就是弱先验(weak prior)收缩规模就小了,参考图4.12(b).
+
+另外一种对收缩规模定量的方法是用信噪比(signal-to-noise ratio,缩写为SNR),定义如下:
+$SNR*= \frac{E[X^2]}{E[\epsilon^2]}= \frac{\Sigma_0+\mu_0^2}{\Sigma_y}$(4.141)
+上式中的$x ∼ N(\mu_0,\Sigma_0)$是真是信号(true signal),而$y=x+\epsilon$是观测信号,而$\epsilon ∼ N(0,\Sigma_y)$就是噪音项.
 
 
