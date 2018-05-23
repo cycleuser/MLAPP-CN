@@ -800,7 +800,7 @@ $p(y)=N(y|A\mu_x+b,\Sigma_y+A\Sigma_x A^T)$(4.126)
 
 #### 4.4.2.1 从有噪音测量(noisy measurements)中推测位置标量(unknown scalar)
 
-加入我们队某个隐藏量(underlying quantity)x进行N此有噪音测量 $y_i$;然后假设测量噪音有固定的精确度(precision)$\lambda_y=\frac{1}{\sigma^2}$,则似然率(likelihood)为:
+假如我们对某个隐藏量(underlying quantity)x进行N此有噪音测量 $y_i$;然后假设测量噪音有固定的精确度(precision)$\lambda_y=\frac{1}{\sigma^2}$,则似然率(likelihood)为:
 
 $p(y_i|x)=N(y_i|x,\lambda_y^{-1})$(4.127)
 
@@ -854,7 +854,7 @@ $$
 \end{aligned}
 $$
 
-上面的三个等式中,第一个十字就是对先验和数据的凸组合(convex combination).第二个是将先验均值朝向数据进行调整.第三个是将数据朝向先验均值调整,这也叫做收缩过程(shrinkage).这三者都是等价的,都表达了在似然率和先验之间的权衡妥协.如果$\Sigma_0$相对于$\Sigma_Y$较小,对应的就是强先验(strong prior),收缩规模(amount of shrinkate)就很大,参考图4.12(a),而如果反过来$\Sigma_0$相对于$\Sigma_Y$更大,对应的就是弱先验(weak prior)收缩规模就小了,参考图4.12(b).
+上面的三个等式中,第一个式子就是对先验和数据的凸组合(convex combination).第二个是将先验均值朝向数据进行调整.第三个是将数据朝向先验均值调整,这也叫做收缩过程(shrinkage).这三者都是等价的,都表达了在似然率和先验之间的权衡妥协.如果$\Sigma_0$相对于$\Sigma_Y$较小,对应的就是强先验(strong prior),收缩规模(amount of shrinkate)就很大,参考图4.12(a),而如果反过来$\Sigma_0$相对于$\Sigma_Y$更大,对应的就是弱先验(weak prior)收缩规模就小了,参考图4.12(b).
 
 另外一种对收缩规模定量的方法是用信噪比(signal-to-noise ratio,缩写为SNR),定义如下:
 $SNR*= \frac{E[X^2]}{E[\epsilon^2]}= \frac{\Sigma_0+\mu_0^2}{\Sigma_y}$(4.141)
