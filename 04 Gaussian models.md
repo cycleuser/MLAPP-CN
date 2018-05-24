@@ -798,7 +798,7 @@ $p(y)=N(y|A\mu_x+b,\Sigma_y+A\Sigma_x A^T)$(4.126)
 ### 4.4.2 样例
 本节举几个对上述结论进行应用的例子.
 
-#### 4.4.2.1 从有噪音测量(noisy measurements)中推测位置标量(unknown scalar)
+#### 4.4.2.1 从有噪音测量(noisy measurements)中推测未知标量(unknown scalar)
 
 假如我们对某个隐藏量(underlying quantity)x进行N此有噪音测量 $y_i$;然后假设测量噪音有固定的精确度(precision)$\lambda_y=\frac{1}{\sigma^2}$,则似然率(likelihood)为:
 
@@ -859,5 +859,119 @@ $$
 另外一种对收缩规模定量的方法是用信噪比(signal-to-noise ratio,缩写为SNR),定义如下:
 $SNR*= \frac{E[X^2]}{E[\epsilon^2]}= \frac{\Sigma_0+\mu_0^2}{\Sigma_y}$(4.141)
 上式中的$x ∼ N(\mu_0,\Sigma_0)$是真是信号(true signal),而$y=x+\epsilon$是观测信号,而$\epsilon ∼ N(0,\Sigma_y)$就是噪音项.
+
+
+#### 4.4.2.2 从有噪音测量(noisy measurements)中推测未知矢量(unknown vector)
+
+
+接下来考虑一个N次向量值的观测$y_i ∼ N(x, \Sigma_y )$,有高斯先验$x ∼ N(\mu_0 ,\Sigma_0)$.设$A=I,b=0$,精度为$N\Sigma_y^{-1}$的有效观测设为$\bar y$,则有:
+$$
+\begin{aligned}
+p(x|y_1,...,y_N)&= N(x|\mu_N,\Sigma_N)&\text{(4.142)}\\
+\Sigma_N^{-1}&= \Sigma_0^{-1} +N\Sigma_y^{-1}&\text{(4.143)}\\
+\mu_N&= \Sigma_N(\Sigma_y^{-1}(N\bar y)+\Sigma_0^{-1}\mu_0)  &\text{(4.144)}\\
+\end{aligned}
+$$
+
+
+
+图4.13所示是一个二维情况下的样例.可以把x理解为一个物体在二维空间内的真实位置,但这个位置是位置的,可以想象成导弹或者飞机,然后$y_i$就是带噪音的观测,也就类似雷达上面的信号点.随着收到的信号点越来越多了,就更好去对信号源的位置进行定位了.具体参考本书18.31,其中讲述了对这个例子进行扩展,去追踪运动物体,使用著名的卡尔曼滤波算法(Kalman ﬁlter algorithm).
+
+然后设想我们有多个测量设备,然后想要将他们结合起来;这也就是传感器融合(sensor fusion).如果我们进行了多次观测,每次都有不同的协方差(covariances)(对应的就是不同可靠程度的传感器),后验分布就应当是适当地对数据的加权平均.如图4.14所示.采用的是对x的无信息先验(uninformative prior),名为$p(x)=N(\mu_0,\Sigma_0)=N(0,10^{10}I_2)$.进行了两次有噪音的观测,分别为$y_1 ∼ N(x, \Sigma_{y,1} )$和$y_2 ∼ N(x, \Sigma_{y,2} )$.然后就可以计算$p(x|y_1,y_2)$.
+
+在图4.14(a)中,设置了$\Sigma_{y,1} =\Sigma_{y,2} =0.01I_2$,所以两个传感器就都是可靠程度相同.这时候后验均值就是两次观测$y_1,y_2$的均值.在图4.14(b)中,设置的是$\Sigma_{y,1} =0.05I_2,\Sigma_{y,2} =0.01I_2$,这也就意味着第二个传感器比第一个更可靠.,这时候后验均值就距离$y_2$更近了.在图4.14(c)中,设置有:
+
+$\Sigma_{y,1} =  0.01\begin{pmatrix} 10& 1\\1&1 \end{pmatrix}  , \Sigma_{y,2} = 0.01 \begin{pmatrix}  1&1\\1&10 \end{pmatrix}  $(4.145)
+
+所以也就是说第一个传感器对于$y_2$成分(component)(竖着的方向)更可靠,而第二个传感器对于$y_1$成分(横着的方向)更可靠.这时候后验均值就使用了$y_1$的竖直元素和$y_2$的水平元素.
+
+此处查看原书图4.13
+
+此处查看原书图4.14
+
+
+要注意,这个方法关键在于对每个传感器的不确定性的建模;没有考虑权重就计算均值会得到错误结果.不过这是已经假设了没给传感器的精度都已知了.如果不知道每个传感器的精确度,也还是要对$\Sigma_1,\Sigma_2$的精确度进行建模.更多细节参考本书4.6.4.
+
+
+#### 4.4.2.3 插入噪音数据
+
+再回头看看本书4.3.2.2当中的例子.这次咱们不再假设观测是无噪音的.而是假设进行了N次的有噪音观测$y_i$,为了通用,就假设对应了$x_1,...,x_N$.可以用一个线性高斯系统来对此进行建模:
+$y=Ax+\epsilon$(4.146)
+上式中的$\epsilon∼ N(0, \Sigma_ y ), \Sigma_ y= \sigma^2 I$,$\sigma^2$就是观测噪音,而A是一个$N\times D$的投影矩阵(projection matrix),对观测到的元素进行了筛选.例如,如果N =2,D =4,则有:
+$A=\begin{pmatrix} 1&0&0&0\\0&1&0&0 \end{pmatrix}$(4.147)
+
+还是用同样的不适用先验(improper prior)$\Sigma_x=(L^TL)^{-1}$,可以很容易计算得出后验均值和方差.如图4.15所示,对后验均值/后验方差以及一些后验样本进行投图.然后可以看出先验精确度$\lambda$同时影响着后验的均值和方差.对于一个强先验(大的$\lambda$),这时候的估计就很光滑,而不确定性就很低.但对于弱先验(小的$\lambda$),估计结果就扭来扭曲,远离数据部分的估计结果的不确定性就高了.
+
+解下面的优化问题就能计算出后验均值:
+$\min_x\frac{1}{2\sigma^2}\sum^N_{i=1}(x_i-y_i)^2+\frac{\lambda}{2}\sum^D_{j=1}[(x_j-x_{j-1})^2+(x_j-x_{j+1})^2]$(4.148)
+
+上式中定义了$x_0=x_1,x_{D+1}=x_D$来简化记号.这实际上是对下面问题的离散近似:
+$\min_f\frac{1}{2\sigma^2}\in(f(t)-y(t))^2dt+\frac{\lambda}{2}\int[f'(t)]^dt$(4.149)
+
+其中的$f'(t)$是f的一阶导数(first derivative).第一项用于拟合数据,第二项用于抑制函数避免过于扭曲.这是Tikhonov正则化(Tikhonov regularization)的一个例子,这是一种很流行的函数数据分析方法.参见本书第十五章可以看到更高级的方法,保证了更高阶的光滑性(也就是得到的结果不会看上去有很多锯齿).
+
+此处查看原书图4.15
+
+### 4.4.3 结论证明*
+
+接下来推导一下等式4.125.基本思想是推导联合分布$p(x,y)=p(x)p(y|x)$,然后使用本书4.3.1的结论来计算$p(x|y)$.
+
+更详细来说,按照下面的步骤进行.首先是得到联合分布函数的对数形式,如下所示(取对数是去除了不相关的常数项):
+
+$\log p(x,y)=-\frac{1}{2}(x-\mu_x)^T\Sigma_x^{-1}(x-\mu_x)-\frac{1}{2}(y-Ax-b)^T\Sigma_y^{-1}(y-Ax-b)$(4.150)
+
+很明显这就是一个联合高斯分布,因为是一个二次型的指数.
+
+扩展有x和y的二次项,然后线性项和常数项全部忽略掉,就得到了:
+
+$$
+\begin{aligned}
+Q&=  -\frac{1}{2}x^T\Sigma_x^{-1}x - \frac{1}{2}y^T\Sigma_y^{-1}y-\frac{1}{2}(Ax)^T\Sigma_t^{-1}(Ax)+y^T\Sigma_y^{-1}Ax  &\text{(4.151)}\\
+&= \frac{1}{2}\begin{pmatrix} x\\y \end{pmatrix}^T  \begin{pmatrix}  \Sigma_x^{-1}+A^T\Sigma_y^{-1}A& -A^T\Sigma_y^{-1}\\-\Sigma_y^{-1}A&\Sigma_y^{-1}\end{pmatrix}  \begin{pmatrix} x\\y \end{pmatrix}   &\text{(4.152)}\\
+&= \frac{1}{2}\begin{pmatrix}x\\y  \end{pmatrix} ^T\Sigma^{-1} \begin{pmatrix} x\\y \end{pmatrix}     &\text{(4.153)}\\
+\end{aligned}
+$$
+
+
+联合分布的精度矩阵则定义为:
+$\Sigma^{-1}=\begin{pmatrix}  \Sigma_x^{-1}+A^T\Sigma_y^{-1}A& -A^T\Sigma_y^{-1}\\-\Sigma_y^{-1}A&\Sigma_y^{-1}\end{pmatrix}*= \wedge=\begin{pmatrix}   \wedge_{xx} & \wedge_{xy} \\\wedge_{yx} &\wedge_{yy}     \end{pmatrix}$(4.154)
+
+
+$$
+\begin{aligned}
+p(x|y)&=  N(\mu_{x|y},\Sigma_{x|y})  &\text{(4.155)}\\
+\Sigma_{x|y}&= \wedge^{-1}_{xx}= (\Sigma_x^{-1}+A^T\Sigma_y^{-1}A)^{-1}    &\text{(4.156)}\\
+\mu_{x|y}&= \Sigma_{x|y}(\wedge_{xx}\mu_x-\wedge_{xy}(y-\mu_y))    &\text{(4.157)}\\
+&=  \Sigma_{x|y}(\Sigma_x^{-1}\mu+A^T\Sigma_y^{-1}(y-b))   &\text{(4.158)}\\
+\end{aligned}
+$$
+
+
+## 4.5 题外话(Digression):威沙特分布(Wishart distribution)
+
+威沙特分布(Wishart distribution)是将$\gamma$分布(Gamma distrustion)对正定矩阵(positive deﬁnite matrices)的推广.(Press 2005, p107) 称:按照重要性和有用性的顺序来排列,在多元统计中,威沙特分布仅次于正态分布.通常用这个模型来对协方差矩阵$\Sigma$或者逆矩阵$\wedge=\Sigma^{-1}$的不确定性来进行建模.
+
+
+
+Wishart 分布的概率密度函数定义如下:
+$Wi(\wedge|S,v)=\frac{1}{Z_{Wi}}|\wedge|^{(v-D-1)/2}\exp(-\frac{1}{2}tr(\wedge S^{-1}) $(4.159)
+上式中的v也叫做自由度(degrees of freedom),S就是缩放矩阵(scale matrix).稍后会对这些参数的含义给出更多讲解.
+这个分布的归一化常数(normalization constant)(需要在整个对称的概率密度矩阵上进行积分)为下面的表达式:
+$Z_{Wi}=2^{vD/2} \Gamma_D(v/2)|S|^{v/2}  $(4.160)
+上式中的$\tau_D$是多元$\gamma$函数(multivariate gamma function):
+
+$\Gamma _D(x)= \pi^{D(D-1)/4 }\prod^D_{i=1}\Gamma(x+(1-i)/2)$(4.161)
+因此$\Gamma_1(a)=\Gamma(a)$,以及:
+$\Gamma_D(v_0/2)=\prod^D_{i=1}\Gamma(\frac{v_0+1-i}{2})$(4.162)
+
+只有当$v>D-1$的时候才存在归一化常数,因此概率密度函数也仅在此时有意义.
+
+Wishart分布和正态分布之间有一定联系.具体来说就是,设$x_i ∼ N(0,\Sigma)$为正态分布,那么散点矩阵(scatter matrix)$S=\sum^N_{i=1}x_ix_i^T$就有一个Wishart分布:$S ∼ Wi(\Sigma, 1)$.因此$E[S]=N\Sigma$.另外可以得出分布$Wi(S,v)$的均值(mean)和模(mode)为:
+
+$mean=vS, mode=(v-D-1)S$(4.163)
+
+其中模(mode)仅当$v>D+1$的时候才存在.
+如果D=1,那么Wishart就降回到了$\gamma$分布(Gamma distribution):
+$Wi(\lambda|s^{-1},v)=Ga(\lambda|\frac{v}{2},\frac{s}{2})$(4.164)
 
 
