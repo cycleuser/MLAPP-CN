@@ -139,7 +139,7 @@ $p(h)=\pi_0 p_{rules}(h)+( -\pi_0)p_{interval}()h$(3.10)
 
 ### 3.3.1 似然率(Likelihood)
 
-设 X 服从伯努利(Bernoulli)分布,即 $X_i ∼ Ber(\theta)$,$X_i=1$表示人头,$X_i=0$表示背面,$\theta \in [0, 1] $是频率参数(人头出现的概率).如果实验事件是独立同分布的,那么似然率(likelihood)为:
+设 X 服从伯努利(Bernoulli)分布,即 $X_i \sim  Ber(\theta)$,$X_i=1$表示人头,$X_i=0$表示背面,$\theta \in [0, 1] $是频率参数(人头出现的概率).如果实验事件是独立同分布的,那么似然率(likelihood)为:
 
 $p(D|\theta) =\theta^{N_1}(1-\theta)^{N-0}$(3.11)
 
@@ -148,7 +148,7 @@ $p(D|\theta) =\theta^{N_1}(1-\theta)^{N-0}$(3.11)
 
 正规表达下,若$p(\theta|D) = p(\theta|s(data))$,则就可以称$s(D)$是对数据D的一个充分统计.如果使用均匀分布作为先验,也就等价说$p(D|\theta) \propto p(s(D)|\theta)$.如果我们有两个集合,有同样的充分统计,就会推出同样的参数值$\theta$.
 
-接下来设想在固定的总实验次数$N = N_0 + N_1$的情况下,数据中包含了人头朝上的次数为$N_1$.这时候就有$N_1$服从二项分布,即$N_1 ∼ Bin(N, \theta)$,其中这个Bin的意思就是二项分布(binomial distribution),其概率质量函数(pmf)如下所示:
+接下来设想在固定的总实验次数$N = N_0 + N_1$的情况下,数据中包含了人头朝上的次数为$N_1$.这时候就有$N_1$服从二项分布,即$N_1 \sim  Bin(N, \theta)$,其中这个Bin的意思就是二项分布(binomial distribution),其概率质量函数(pmf)如下所示:
 
 $Bin(k|n,\theta))*=(\begin{aligned}n\\k\end{aligned})\theta^k(1-\theta)^{n-k}$(3.12)
 
@@ -430,7 +430,7 @@ $\hat\pi_c =\frac{N_c}{N}$(3.57)
 
 上式中的$N_c*=\sum_iI(y_i=c)$,是类c中的样本个数.
 
-对似然率的最大似然估计(MLE)依赖于我们对特征所选的分布类型.简单起见,假设所有特征都是二值化的,这样使用伯努利分布,即$x_j|y=c∼ Ber(\theta_{jc} )$.这时候最大似然估计(MLE)则为:
+对似然率的最大似然估计(MLE)依赖于我们对特征所选的分布类型.简单起见,假设所有特征都是二值化的,这样使用伯努利分布,即$x_j|y=c\sim  Ber(\theta_{jc} )$.这时候最大似然估计(MLE)则为:
 $\hat\theta_{jc}=\frac {N_{jc}}{N_c}$(3.58)
 
 

@@ -238,7 +238,7 @@ $std[X]*= \sqrt {var[X]}$(2.27)
 
 ### 2.3.1 二项分布和伯努利分布
 
-设咱们抛硬币 n 次，设$X\in \{0,...,n\}$ 是人头朝上的次数。如果头朝上的概率是$\theta$，这就可以说 X 是一个二项分布（binomial distribution），记作$X∼Bin(n,\theta)$。则 pmf（概率质量函数）可以写作：
+设咱们抛硬币 n 次，设$X\in \{0,...,n\}$ 是人头朝上的次数。如果头朝上的概率是$\theta$，这就可以说 X 是一个二项分布（binomial distribution），记作$X\sim Bin(n,\theta)$。则 pmf（概率质量函数）可以写作：
 $Bin(k|n,\theta)*= \binom{n}{k} \theta ^k  (1- \theta)^{n-k}$（2.28）
 上式中的
 $ \binom{n}{k} *= \frac{n!}{(n-k)!k!}$(2.29)
@@ -251,7 +251,7 @@ $ \binom{n}{k} *= \frac{n!}{(n-k)!k!}$(2.29)
 这个分布的均值和方差如下所示：
 $mean=\theta, var =n\theta(1-\theta)$（2.30）
 
-换个思路，如果只抛硬币一次，那么$X\in \{0,1 \}$就是一个二值化的随机变量，成功或者人头朝上的概率就是$\theta$。这时候就说 X 服从伯努利分布（Bernoulli distribution），记作$X∼Ber(\theta)$，其中的 pmf 定义为：
+换个思路，如果只抛硬币一次，那么$X\in \{0,1 \}$就是一个二值化的随机变量，成功或者人头朝上的概率就是$\theta$。这时候就说 X 服从伯努利分布（Bernoulli distribution），记作$X\sim Ber(\theta)$，其中的 pmf 定义为：
  
 $Ber(x|\theta)=\theta^{\prod (x=1)}(1-\theta)^{\prod (x=0)}$(2.31)
 
@@ -283,7 +283,7 @@ $Mu(x|1,\theta)=\prod^K_{j=1 }\theta_j ^{\prod(x_j=1)}$(2.35)
 
 $Cat(x|\theta)*= Mu(x|1,\theta)$(2.36)
 
- 换句话说，如果$x∼Cat(\theta)$，则$p(x=j|theta)=\theta_j$。参考表2.1。
+ 换句话说，如果$x\sim Cat(\theta)$，则$p(x=j|theta)=\theta_j$。参考表2.1。
 
 
 
@@ -308,7 +308,7 @@ $\hat\theta_t =N_t/N$(2.38)
 
 
 
-如果一个离散随机变量$X\in \{0,1,2,...\}$服从泊松分布，即$X∼ Poi(\lambda)$，其参数$\lambda >0$，其概率质量函数 pmf 为：
+如果一个离散随机变量$X\in \{0,1,2,...\}$服从泊松分布，即$X\sim  Poi(\lambda)$，其参数$\lambda >0$，其概率质量函数 pmf 为：
 
 $Poi(x|\lambda )=e^{-\lambda}\frac{\lambda ^x}{x!}$(2.39) 
 
@@ -346,7 +346,7 @@ $N(x|\mu,\sigma^2) *= \frac {1}{\sqrt{2\pi \sigma^2}} e^ {-\frac{1}{2 \sigma^2}(
 
 上式中的$\mu=E[X]$是均值（mean）也是模（mode）,$\sigma^2=var[X]$ 是方差（variance）。$\sqrt{2\pi \sigma^2}$是归一化常数（normalization constant），用于确保整个密度函数的积分是1，具体可以参考练习2.11。
 
-可以写成$X ∼ N(\mu,\sigma^2) $来表示$p(X=x)=N(x|\mu,\sigma^2)$。$X ∼ N(0,1)$就是标准正态分布（standard normal distribution）。图2.3（b）是这样一个标准正态分布的概率密度函数图像，也被称作钟形曲线。
+可以写成$X \sim  N(\mu,\sigma^2) $来表示$p(X=x)=N(x|\mu,\sigma^2)$。$X \sim  N(0,1)$就是标准正态分布（standard normal distribution）。图2.3（b）是这样一个标准正态分布的概率密度函数图像，也被称作钟形曲线。
 
 所谓高斯分布的精确度（precision）就是方差的倒数$\lambda =1/\sigma^2$。精确度高的意思也就是方差低，而整个分布很窄，对称分布在均值为中心的区域。
 
@@ -443,9 +443,9 @@ $mean=\frac{a}{b}, mode=\frac{a-1}{b},var=\frac{a}{b^2}$(2.54)
 
 * 指数分布(Exponential distribution)定义是$Expon(x|\lambda)*= Ga(x|1,\lambda)$,其中的$\lambda$是频率参数(rate).这个分布描述的是泊松过程(Poisson process) 中事件之间的时间间隔.例如,一个过程可能有很多一系列事件按照某个固定的平均频率$\lambda$连续独立发生.
 * 厄兰分布(Erlang Distribution)就是一个形状参数 a 是整数的$\gamma$分布,一般会设置 a=2,产生的是一个单参数厄兰分布,$Erlang(x|\lambda) = Ga(x|2, \lambda),$,$\lambda$也是频率参数.
-* 卡方分布(Chi-squared distribution)定义为$\chi ^2 (x|ν) *=Ga(x|\fracν2,\frac12 )$.这个分布是高斯分布随机变量的平方和的分布.更确切地说,如果有一个高斯分布$Z_i ∼ N(0, 1),$,那么其平方和$S=\sum_{i=1}^vZ_i^2$则服从卡方分布$S ∼ \chi_v^2$.
+* 卡方分布(Chi-squared distribution)定义为$\chi ^2 (x|ν) *=Ga(x|\fracν2,\frac12 )$.这个分布是高斯分布随机变量的平方和的分布.更确切地说,如果有一个高斯分布$Z_i \sim  N(0, 1),$,那么其平方和$S=\sum_{i=1}^vZ_i^2$则服从卡方分布$S \sim  \chi_v^2$.
 
-另一个有用的结果是:如果一个随机变量服从$\gamma$分布:$X ∼ Ga(a,b)$ 那么这个随机变量的导数就服从一个逆$\gamma$分布(inverse gamma),即$\frac 1X ∼ IG(a,b)$,这个在练习2.10里面有详细描述.逆$\gamma$分布(inverse gamma)定义如下:
+另一个有用的结果是:如果一个随机变量服从$\gamma$分布:$X \sim  Ga(a,b)$ 那么这个随机变量的导数就服从一个逆$\gamma$分布(inverse gamma),即$\frac 1X \sim  IG(a,b)$,这个在练习2.10里面有详细描述.逆$\gamma$分布(inverse gamma)定义如下:
 
 
 $IG(x|shape =a,scale =b)*= \frac{b^a}{\tau (a)}x^{-(a+1)} e^{-\frac b x}$(2.58)
@@ -541,7 +541,7 @@ $$(2.69)
 
 根据直觉可能有人会觉得相关系数和回归线的斜率有关,比如说像$Y = aX + b$这个表达式当中的系数 a 一样.然而并非如此,如公式7.99中所示,实际上回归系数的公式是$a = cov [X, Y ] /var [X]$.可以将相关系数看做对线性程度的衡量,参考图2.12.
 
-回想本书的2.2.4,如果 X 和 Y 相互独立,则有$p(X, Y ) = p(X)p(Y )$,这样二者的协方差$cov[X,Y]=0$,相关系数$ corr[X,Y]=0$, 很好理解,相互独立就是不相关了.但反过来可不成立,不相关并不能意味着相互独立.例如设$X ∼ U(-1,1), Y=X^2$. 很明显吧,这两个是相关的对不对,甚至 Y 就是 X 所唯一决定的,然而如练习4.1所示,这两个变量的相关系数算出来等于零啊,即$corr[X,Y]=0$.图2.12有更多直观的例子,都是两个变量 X 和 Y 显著具有明显的相关性,而计算出来的相关系数却都是0.实际上更通用的用来衡量两组随机变量之间是否独立的工具是互信息量(mutual information),这部分在本书2.8.3当中有设计.如果两个变量真正不相关,这个才会等于0.
+回想本书的2.2.4,如果 X 和 Y 相互独立,则有$p(X, Y ) = p(X)p(Y )$,这样二者的协方差$cov[X,Y]=0$,相关系数$ corr[X,Y]=0$, 很好理解,相互独立就是不相关了.但反过来可不成立,不相关并不能意味着相互独立.例如设$X \sim  U(-1,1), Y=X^2$. 很明显吧,这两个是相关的对不对,甚至 Y 就是 X 所唯一决定的,然而如练习4.1所示,这两个变量的相关系数算出来等于零啊,即$corr[X,Y]=0$.图2.12有更多直观的例子,都是两个变量 X 和 Y 显著具有明显的相关性,而计算出来的相关系数却都是0.实际上更通用的用来衡量两组随机变量之间是否独立的工具是互信息量(mutual information),这部分在本书2.8.3当中有设计.如果两个变量真正不相关,这个才会等于0.
 
 此处查看原书图2.13
 
@@ -605,7 +605,7 @@ $ E[x_k]=\frac{\alpha_k}{\alpha_0},mode[x_k]=\frac{\alpha_k-1}{\alpha_0-K},var[x
 
 ## 2.6 随机变量变换
 
-如果有一个随机变量$x ∼p()$,还有个函数$y=f(x)$,那么 y 的分布是什么?这就是本节要讨论的内容.
+如果有一个随机变量$x \sim p()$,还有个函数$y=f(x)$,那么 y 的分布是什么?这就是本节要讨论的内容.
 
 
 ### 2.6.1 线性变换
@@ -653,7 +653,7 @@ $p_y(y)*= \frac{d}{dy}P_y(y)=\frac{d}{dy}P_x(f^{-1}(y)=\frac{dx}{dy}\frac{d}{dx}
 
 $p_y(y)=p_x(x)|\frac{dx}{dy}|$(2.87)
 
-这也叫变量转换公式(change of variables formula).按照下面的思路来理解可能更容易.落在区间$(x, x+\delta x)$的观测被变换到区间$(y, y+\delta y)$ , 其中$p_x (x)\delta x \approx p_y (y)\delta  y$.因此$p_y(y)\ approx p_x(x)|\frac{\delta x}{\delta y}|$.例如,假如有个随机变量$X ∼ U(-1,1) , Y=X^2$.那么则有$p_y(y)=\frac12y^{-\frac12}$. 具体看练习2.10.
+这也叫变量转换公式(change of variables formula).按照下面的思路来理解可能更容易.落在区间$(x, x+\delta x)$的观测被变换到区间$(y, y+\delta y)$ , 其中$p_x (x)\delta x \approx p_y (y)\delta  y$.因此$p_y(y)\ approx p_x(x)|\frac{\delta x}{\delta y}|$.例如,假如有个随机变量$X \sim  U(-1,1) , Y=X^2$.那么则有$p_y(y)=\frac12y^{-\frac12}$. 具体看练习2.10.
 
 
 #### 2.6.2.1 变量的多重变化(Multivariate change of variables)
@@ -745,7 +745,7 @@ $ Z_N *= \frac{S_N-N_{\mu}}{\sigma\sqrt N} = \frac{\bar X-\mu}{\sigma/\sqrt N} $
 
 $E[f(X)]=\int f(xp(x)dx\approx \frac1S\sum^S_{s=1}f(x_s)$(2.98)
 
-上式中$x_s ∼ p(X)$.这就叫做蒙特卡罗积分(Monte Carlo integration),相比数值积分(numerical integration)的一个优势就是在蒙特卡罗积分中只在具有不可忽略概率的地方进行评估计算,而数值积分会对固定网格范围内的所有点的函数进行评估计算.
+上式中$x_s \sim  p(X)$.这就叫做蒙特卡罗积分(Monte Carlo integration),相比数值积分(numerical integration)的一个优势就是在蒙特卡罗积分中只在具有不可忽略概率的地方进行评估计算,而数值积分会对固定网格范围内的所有点的函数进行评估计算.
 
 通过调整函数$f()$,就能对很多有用的变量进行估计,比如:
 * $\bar x =\frac 1S \sum^S_{s=1}x_s\rightarrow E[X]$
@@ -757,7 +757,7 @@ $E[f(X)]=\int f(xp(x)dx\approx \frac1S\sum^S_{s=1}f(x_s)$(2.98)
 
 ### 2.7.1 样例:更改变量,使用 MC (蒙特卡罗)方法
 
-在2.6.2，我们讨论了如何分析计算随机变量函数的分布$y = f(x)$.更简单的方法是使用蒙特卡罗方法估计.例如,若$x ∼ Unif(−1, 1) ,  y = x^2$.就可以这样估计$p(y)$:从 $p(x)$ 中去多次取样,取平方,计算得到的经验分布.如图2.18所示.后文中还要广泛应用这个方法.参考图5.2.
+在2.6.2，我们讨论了如何分析计算随机变量函数的分布$y = f(x)$.更简单的方法是使用蒙特卡罗方法估计.例如,若$x \sim  Unif(−1, 1) ,  y = x^2$.就可以这样估计$p(y)$:从 $p(x)$ 中去多次取样,取平方,计算得到的经验分布.如图2.18所示.后文中还要广泛应用这个方法.参考图5.2.
 
 此处查看原书图2.19
 

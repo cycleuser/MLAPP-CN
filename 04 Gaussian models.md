@@ -51,7 +51,7 @@ $\frac{y_1^2}{\lambda_1}+\frac{y_2^2}{\lambda_2}=1$(4.5)
 接下来说的是使用最大似然估计(MLE)来估计多元正态分布(MVN)的参数.在后面的章节里面还会说道用贝叶斯推断来估计参数,能够减轻过拟合,并且能对估计值的置信度提供度量.
 
 #### 定理4.1.1(MVN的MLE)
-如果有N个独立同分布样本符合正态分布,即$x_i ∼ N(\mu,\Sigma)$,则对参数的最大似然估计为:
+如果有N个独立同分布样本符合正态分布,即$x_i \sim  N(\mu,\Sigma)$,则对参数的最大似然估计为:
 $\hat\mu_{mle}=\frac{1}{N}\sum^N_{i=1}x_i *= \bar x$(4.6)
 $\hat\Sigma_{mle}=\frac{1}{N}\sum^N_{i=1}(x_i-\bar x)(x_i-\bar x)^T=\frac{1}{N}(\sum^N_{i=1}x_ix_i^T)-\bar x\bar x^T$(4.7)
 
@@ -481,7 +481,7 @@ $x_j=f(s_j),s_j=jh,h=\frac{T}{D},1\le j\le D$(4.74)
 
 $x_j=\frac{1}{2}(x_{j-1}+x_{j+1})+\epsilon_j ,2\le j\le D-2$(4.75)
 
-上式中的$\epsilon ∼ N(0, (1/\lambda)I)$.精度项(precision term)$\lambda$控制了函数波动幅度:大的$\lambda$表示我们认为函数非常光滑,而小的$\lambda$则表示这个函数可能"拐来拐去的(wiggly)".用向量形式可以将上面的等式写成如下所示:
+上式中的$\epsilon \sim  N(0, (1/\lambda)I)$.精度项(precision term)$\lambda$控制了函数波动幅度:大的$\lambda$表示我们认为函数非常光滑,而小的$\lambda$则表示这个函数可能"拐来拐去的(wiggly)".用向量形式可以将上面的等式写成如下所示:
 $Lx=\epsilon$(4.76)
 上式中的L是一个$(D − 2) \times D$的二阶有限差分矩阵(second order ﬁnite difference matrix):
 $$
@@ -547,7 +547,7 @@ $L_1$是三角形矩阵,所以这解起来很容易.图4.10所示为这些等式
 ### 4.3.3 信息形式(Information form)
 
 
-设$x ∼ N(\mu,\Sigma)$.很明显$E[x]=\mu$就是均指向量,而$cov[x]=\Sigma$就是协方差矩阵(covariance matrix).这些都叫做分布的矩参数(moment parameters).不过有时候可能使用规范参数(canonical parameters)或者自然参数(natural parameters)更有用,具体定义如下所示:
+设$x \sim  N(\mu,\Sigma)$.很明显$E[x]=\mu$就是均指向量,而$cov[x]=\Sigma$就是协方差矩阵(covariance matrix).这些都叫做分布的矩参数(moment parameters).不过有时候可能使用规范参数(canonical parameters)或者自然参数(natural parameters)更有用,具体定义如下所示:
 $\wedge *= \Sigma^{-1},\xi *=  \Sigma^{-1} \mu$(4.85)
 还可以转换回矩参数:
 $ \mu=\wedge^{-1}\xi,\Sigma =\wedge^{-1}$(4.86)
@@ -858,13 +858,13 @@ $$
 
 另外一种对收缩规模定量的方法是用信噪比(signal-to-noise ratio,缩写为SNR),定义如下:
 $SNR*= \frac{E[X^2]}{E[\epsilon^2]}= \frac{\Sigma_0+\mu_0^2}{\Sigma_y}$(4.141)
-上式中的$x ∼ N(\mu_0,\Sigma_0)$是真是信号(true signal),而$y=x+\epsilon$是观测信号,而$\epsilon ∼ N(0,\Sigma_y)$就是噪音项.
+上式中的$x \sim  N(\mu_0,\Sigma_0)$是真是信号(true signal),而$y=x+\epsilon$是观测信号,而$\epsilon \sim  N(0,\Sigma_y)$就是噪音项.
 
 
 #### 4.4.2.2 从有噪音测量(noisy measurements)中推测未知矢量(unknown vector)
 
 
-接下来考虑一个N次向量值的观测$y_i ∼ N(x, \Sigma_y )$,有高斯先验$x ∼ N(\mu_0 ,\Sigma_0)$.设$A=I,b=0$,精度为$N\Sigma_y^{-1}$的有效观测设为$\bar y$,则有:
+接下来考虑一个N次向量值的观测$y_i \sim  N(x, \Sigma_y )$,有高斯先验$x \sim  N(\mu_0 ,\Sigma_0)$.设$A=I,b=0$,精度为$N\Sigma_y^{-1}$的有效观测设为$\bar y$,则有:
 $$
 \begin{aligned}
 p(x|y_1,...,y_N)&= N(x|\mu_N,\Sigma_N)&\text{(4.142)}\\
@@ -877,7 +877,7 @@ $$
 
 图4.13所示是一个二维情况下的样例.可以把x理解为一个物体在二维空间内的真实位置,但这个位置是位置的,可以想象成导弹或者飞机,然后$y_i$就是带噪音的观测,也就类似雷达上面的信号点.随着收到的信号点越来越多了,就更好去对信号源的位置进行定位了.具体参考本书18.31,其中讲述了对这个例子进行扩展,去追踪运动物体,使用著名的卡尔曼滤波算法(Kalman ﬁlter algorithm).
 
-然后设想我们有多个测量设备,然后想要将他们结合起来;这也就是传感器融合(sensor fusion).如果我们进行了多次观测,每次都有不同的协方差(covariances)(对应的就是不同可靠程度的传感器),后验分布就应当是适当地对数据的加权平均.如图4.14所示.采用的是对x的无信息先验(uninformative prior),名为$p(x)=N(\mu_0,\Sigma_0)=N(0,10^{10}I_2)$.进行了两次有噪音的观测,分别为$y_1 ∼ N(x, \Sigma_{y,1} )$和$y_2 ∼ N(x, \Sigma_{y,2} )$.然后就可以计算$p(x|y_1,y_2)$.
+然后设想我们有多个测量设备,然后想要将他们结合起来;这也就是传感器融合(sensor fusion).如果我们进行了多次观测,每次都有不同的协方差(covariances)(对应的就是不同可靠程度的传感器),后验分布就应当是适当地对数据的加权平均.如图4.14所示.采用的是对x的无信息先验(uninformative prior),名为$p(x)=N(\mu_0,\Sigma_0)=N(0,10^{10}I_2)$.进行了两次有噪音的观测,分别为$y_1 \sim  N(x, \Sigma_{y,1} )$和$y_2 \sim  N(x, \Sigma_{y,2} )$.然后就可以计算$p(x|y_1,y_2)$.
 
 在图4.14(a)中,设置了$\Sigma_{y,1} =\Sigma_{y,2} =0.01I_2$,所以两个传感器就都是可靠程度相同.这时候后验均值就是两次观测$y_1,y_2$的均值.在图4.14(b)中,设置的是$\Sigma_{y,1} =0.05I_2,\Sigma_{y,2} =0.01I_2$,这也就意味着第二个传感器比第一个更可靠.,这时候后验均值就距离$y_2$更近了.在图4.14(c)中,设置有:
 
@@ -897,7 +897,7 @@ $\Sigma_{y,1} =  0.01\begin{pmatrix} 10& 1\\1&1 \end{pmatrix}  , \Sigma_{y,2} = 
 
 再回头看看本书4.3.2.2当中的例子.这次咱们不再假设观测是无噪音的.而是假设进行了N次的有噪音观测$y_i$,为了通用,就假设对应了$x_1,...,x_N$.可以用一个线性高斯系统来对此进行建模:
 $y=Ax+\epsilon$(4.146)
-上式中的$\epsilon∼ N(0, \Sigma_ y ), \Sigma_ y= \sigma^2 I$,$\sigma^2$就是观测噪音,而A是一个$N\times D$的投影矩阵(projection matrix),对观测到的元素进行了筛选.例如,如果N =2,D =4,则有:
+上式中的$\epsilon\sim  N(0, \Sigma_ y ), \Sigma_ y= \sigma^2 I$,$\sigma^2$就是观测噪音,而A是一个$N\times D$的投影矩阵(projection matrix),对观测到的元素进行了筛选.例如,如果N =2,D =4,则有:
 $A=\begin{pmatrix} 1&0&0&0\\0&1&0&0 \end{pmatrix}$(4.147)
 
 还是用同样的不适用先验(improper prior)$\Sigma_x=(L^TL)^{-1}$,可以很容易计算得出后验均值和方差.如图4.15所示,对后验均值/后验方差以及一些后验样本进行投图.然后可以看出先验精确度$\lambda$同时影响着后验的均值和方差.对于一个强先验(大的$\lambda$),这时候的估计就很光滑,而不确定性就很低.但对于弱先验(小的$\lambda$),估计结果就扭来扭曲,远离数据部分的估计结果的不确定性就高了.
@@ -966,7 +966,7 @@ $\Gamma_D(v_0/2)=\prod^D_{i=1}\Gamma(\frac{v_0+1-i}{2})$(4.162)
 
 只有当$v>D-1$的时候才存在归一化常数,因此概率密度函数也仅在此时有意义.
 
-Wishart分布和正态分布之间有一定联系.具体来说就是,设$x_i ∼ N(0,\Sigma)$为正态分布,那么散点矩阵(scatter matrix)$S=\sum^N_{i=1}x_ix_i^T$就有一个Wishart分布:$S ∼ Wi(\Sigma, 1)$.因此$E[S]=N\Sigma$.另外可以得出分布$Wi(S,v)$的均值(mean)和模(mode)为:
+Wishart分布和正态分布之间有一定联系.具体来说就是,设$x_i \sim  N(0,\Sigma)$为正态分布,那么散点矩阵(scatter matrix)$S=\sum^N_{i=1}x_ix_i^T$就有一个Wishart分布:$S \sim  Wi(\Sigma, 1)$.因此$E[S]=N\Sigma$.另外可以得出分布$Wi(S,v)$的均值(mean)和模(mode)为:
 
 $mean=vS, mode=(v-D-1)S$(4.163)
 
@@ -974,4 +974,98 @@ $mean=vS, mode=(v-D-1)S$(4.163)
 如果D=1,那么Wishart就降回到了$\gamma$分布(Gamma distribution):
 $Wi(\lambda|s^{-1},v)=Ga(\lambda|\frac{v}{2},\frac{s}{2})$(4.164)
 
+
+
+### 4.5.1 逆威沙特分布(Inverse Wishart distribution)
+
+在练习2.10中,如果$\lambda\sim  Ga(a, b)$则有$\frac{1}{\lambda}\sim  IG(a, b)$.类似地,如果有$\Sigma^{-1} \sim Wi(S, v)$,则有$\Sigma\sim  IW(S^{-1}, v+D+1)$,IW就是逆威沙特分布(inverse Wishart),是对逆$\gamma$分布(inverse Gamma)的多维推广.定义方式为:对于$v>D-1,S\succ 0$:
+
+$$
+\begin{aligned}
+IW(\Sigma|S,v) &= \frac{1}{Z_{IW}}|\Sigma|^{-(v+D+1)/2}\exp(-\frac{1}{2}tr(S^{-1}\Sigma^{-1}))
+&\text{(4.165)}\\
+Z_{IW}&= |S|^{-v/2}2^{vD/2}\tau _D(v/2)  &\text{(4.166)}
+\end{aligned}$$
+
+很显然,这个分布有如下的性质:
+
+$mean =\frac{S^{-1}}{v-D-1} , mode=\frac{S^{-1}}{v+D+1}$(4.167)
+
+如果D=1,这个分布就降到了拟$\gamma$分布了:
+
+$IW(\sigma^2|S^{-1},v)=IG(\sigma^2||v/2,S/2)$(4.168)
+
+
+此处查看原书图4.16
+
+
+### 4.5.2 威沙特分布可视化*
+
+威沙特分布(Wishart)是矩阵的分布,所以很难画出密度函数.不过在二维情况下,可以对其进行取样,使用取样结果矩阵的特征向量来定义一个椭圆,具体如本书4.1.2所述.图4.16是一些样例.
+
+对更高维度的矩阵,就可以投影威沙特分布的边缘分布(marginals).威沙特分布的矩阵的对角元素服从$\gamma$分布,所以也容易投影出来.非对角元素的分布通常就比较难以解出来了,不过可以从分钟抽样矩阵,然后根据经验计算抽样得到的矩阵的分布.可以把抽样得到的矩阵转各自转换成一个相关矩阵(correlation matrix)然后进行蒙特卡洛估计(参考本书2.7),来得到相关系数期望:
+
+$E[R_{ij}]\approx \frac{1}{S}\sum^S_{s=1}R(\Sigma^s)_{ij}$(4.169)
+
+其中的$\Sigma^{(s)} \sim Wi(\Sigma,v)$和$R(\Sigma)$就把矩阵$\Sigma$转换成了一个相关矩阵:
+$R_{ij}=\frac{\Sigma_{ij}}{ \sqrt{\Sigma_{ii}\Sigma_{jj}}   }$(4.170)
+
+可以用核密度估计(kernel density estimation,参考本书14.7.2)来对单变量密度$E[R_{ij}]$生成一个光滑近似来投图.图4.16是一些例子.
+
+## 4.6 多元正态分布(MVN)的参数推测
+
+之前已经讲的是在已知参数$\theta=(\mu,\Sigma)$的时候对一个高斯分布(正态分布)的推测.现在来讨论对这些参数本身的推测.假设数据形式为$x_i\sim N(\mu,\Sigma),i= 1:N$的全部范围都得到了观测,所以就没有缺失数据(本书11.6.1是讨论在有缺失数据的情况下对多元正态分布(MVN)进行参数估计).简单来说,就是把后验推断分成三部分,首先是计算$p(\mu|D,\Sigma)$,然后计算$p(\Sigma|D,\mu)$,最后计算联合分布$p(\mu,\Sigma|D)$.
+
+
+### 4.6.1 $\mu$的后验分布
+
+
+之前说过如何对$\mu$进行最大似然估计(MLE)了,现在说下如何计算其后验,这对于对其本身值的不确定性进行建模很有用.
+
+似然函数形式为:
+
+$p(D|\mu)=N(\bar x|\mu,\frac{1}{N}\Sigma)$(4.171)
+
+为了简化,使用共轭先验(conjugate prior),这里用的是一个高斯分布.具体来说就是如果$p(\mu)=N(\mu|m_0,V_0)$,然后就可以推出一个对$\mu$的高斯后验分布,这要基于本书4.4.2.2的结论.这样得到了:
+
+$$
+\begin{aligned}
+p(\mu|D,\Sigma)&= N(\mu|m_N,V_N) &\text{(4.172)}\\
+V_N^{-1}&= V_0^{-1}+N\Sigma^{-1} &\text{(4.173)}\\
+m_N&=V_N (\Sigma^{-1}(N\bar x)+V_0^{-1}m_0)  &\text{(4.174)}\\
+\end{aligned}
+$$
+
+这就跟基于有噪音的雷达光电来推测目标位置是一模一样的过程,只不过这时候在推测的是一个分布的均值,而不是有噪音的样本.(对于一个贝叶斯方法来说,参数的不确定性和其他任何事情的不确定性没有区别.)
+
+可以设置$V_0=\infty I$来建立一个无信息先验.这样则有$p(\mu|D,\Sigma)=N(\bar x \frac{1}{N}\Sigma)$,所以后验均值就等于最大似然估计(MLE).另外我们还能发现后验方差降低到了$\frac{1}{N}$,这是频率视角概率统计(frequentist statistics)的标准结果. 
+
+### 4.6.2 $\Sigma$的后验分布*
+
+然后说如何计算$p(\Sigma|D,\mu)$.似然函数形式如下:
+$p(D|\mu,\Sigma)\propto |\Sigma|^{-\frac{N}{2}}\exp(-\frac{1}{@}tr(S_{\mu}\Sigma^{-1}))$(4.175)
+
+对应的共轭先验正好是逆威沙特分布,参考4.5.1.还记得这就有下面的概率密度函数(pdf):
+
+$IW(\Sigma|S_0^{-1} ,v_0)\propto |\Sigma|^{-(v_0+D+1)/2} \exp(-\frac{1}{2}tr(S_0\Sigma^{-1}))$(4.176)
+
+上式中$v_0\D-1$就是自由度(degrees of freedom,缩写为dof),而$S_0$是对称的概率密度矩阵(symmetric pd matrix).$S_0^{-1}$就是先验散布矩阵(prior scatter matrix),而$N_0*=v_0+D+1$控制了先验强度,所以扮演的角色也就类似于取样规模N.
+
+此处查看原书图4.17
+
+
+把似然函数和先验乘在一起,就可以发现后验也是一个逆威沙特分布(inverse Wishart):
+
+
+$$
+\begin{aligned}
+p(\Sigma|D,\mu)&\propto |\Sigma|^{\frac N2}\exp(-\frac12tr(\Sigma^{-1}S_{\mu})|\Sigma|^{-(v_0+D+1)/2}))  \exp(-\frac12 tr(\Sigma^{-1}S_0) )&\text{(4.177)}\\
+&= |\Sigma|^{-\frac{N+(v_0+D+1)}{2}} \exp(-\frac12tr[\Sigma^{-1}(S_{\mu}+S_0 )] ) &\text{(4.178)}\\
+&= IW(\Sigma|S_N,v_N)&\text{(4.179)}\\
+v_N&=v_0+N &\text{(4.180)}\\
+S_N^{-1}&=S_0+S_{\mu} &\text{(4.181)}\\
+\end{aligned}
+$$
+
+用文字来表述,就是说后验强度(posterior strength)$v_N$就是先验强度(prior strength) $v_)$加上观测次数N,而后验散布矩阵(posterior scatter matrix)$S_N$也就是先验散布矩阵(prior scatter matrix)$S_0$加上数据散布矩阵(data scatter matrix)$S_{\mu}$.
 
