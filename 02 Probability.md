@@ -448,7 +448,7 @@ $mean=\frac{a}{b}, mode=\frac{a-1}{b},var=\frac{a}{b^2}$(2.54)
 另一个有用的结果是:如果一个随机变量服从$\gamma$分布:$X \sim  Ga(a,b)$ 那么这个随机变量的导数就服从一个逆$\gamma$分布(inverse gamma),即$\frac 1X \sim  IG(a,b)$,这个在练习2.10里面有详细描述.逆$\gamma$分布(inverse gamma)定义如下:
 
 
-$IG(x|shape =a,scale =b)*= \frac{b^a}{\tau (a)}x^{-(a+1)} e^{-\frac b x}$(2.58)
+$IG(x|shape =a,scale =b)*= \frac{b^a}{\Gamma  (a)}x^{-(a+1)} e^{-\frac b x}$(2.58)
 
 这个逆$\gamma$分布的三个属性 如下所示:
 
@@ -469,7 +469,7 @@ $Beta(x|a,b)=\frac{1}{B(a,b)}x^{a-1 }(1-x)^{b-1}$(2.60)
 
 上式中的$B(a,b)$是一个$\beta$函数,定义如下:
 
-$B(a,b)*=\frac{\tau(a)\tau(b)}{\tau(a+b)}$(2.61)
+$B(a,b)*=\frac{\Gamma (a)\Gamma (b)}{\Gamma (a+b)}$(2.61)
 
 这个分布的函数图像可以参考图2.10.需要 a 和 b 都大于零来确保整个分布可以积分,这是为了保证$B(a,b)$存在.如果 a=b=1, 得到的就是均匀分布(uniform distirbution),如图2.10中红色虚线所示.如果 a 和 b 都小于1,那么得到的就是一个双峰分布(bimodal distribution),两个峰值在0和1位置上,如图2.10中的蓝色实线所示.如果 a 和 b 都大于1了,得到的就是单峰分布(unimodal distribution) 了,如图2.10中的另外两条虚线所示.这部分内容在练习2.16里会用到.这个分布的属性如下:
 
@@ -562,9 +562,9 @@ $N(x|\mu,\Sigma)*= \frac{1}{(2\pi )^{\frac D2} |\Sigma|^{\frac12}}\exp [-\frac12
 相比多元正态分布 MVN, 多元学生T 分布更加健壮,其概率密度函数为:
 $$
 \begin{aligned}
-\tau(x|\mu,\Sigma,v)&=\frac{\tau(v/2+D/2)}{\tau(v/2+D/2)}  \frac{|\Sigma|^{-1/2}}{v^{D/2}\pi^{D/2}}\times [1+\frac1v(x-\mu )^T\Sigma^{-1}(x-\mu)]^{-(\frac{v+D}{2})}
+\Gamma (x|\mu,\Sigma,v)&=\frac{\Gamma (v/2+D/2)}{\Gamma (v/2+D/2)}  \frac{|\Sigma|^{-1/2}}{v^{D/2}\pi^{D/2}}\times [1+\frac1v(x-\mu )^T\Sigma^{-1}(x-\mu)]^{-(\frac{v+D}{2})}
 &\text{   (2.71)}\\
-&=\frac{\tau(v/2+D/2)}{\tau(v/2+D/2)} |\pi V|^{-1/2}\times [1+(x-\mu)^T\Sigma^{-1}(x-\mu)]^{-(\frac{v+D}{2})}
+&=\frac{\Gamma (v/2+D/2)}{\Gamma (v/2+D/2)} |\pi V|^{-1/2}\times [1+(x-\mu)^T\Sigma^{-1}(x-\mu)]^{-(\frac{v+D}{2})}
  &\text{   (2.72)}\\
 \end{aligned}
 $$
@@ -592,7 +592,7 @@ $Dir(x|\alpha)*= \frac{1}{B(\alpha)} \prod^K_{k=1} x_k^{\alpha_k -1}\prod(x\in S
 
 上式中的$B(\alpha_1,...,\alpha_K)$是将$\beta$函数在 K 个变量上的自然推广(natural generalization),定义如下:
 
-$B(\alpha)*= \frac{\prod^K_{k=1}\tau(\alpha_k)}{\tau(\alpha_0)}$(2.76)
+$B(\alpha)*= \frac{\prod^K_{k=1}\Gamma (\alpha_k)}{\Gamma (\alpha_0)}$(2.76)
 其中的$\alpha_0*= \sum^K_{k=1}\alpha_k$.
 
 图2.14展示的是当 K=3的时候的一些狄利克雷函数图像,图2.15是一些概率向量样本.很明显其中$\alpha_0*= \sum^K_{k=1}\alpha_k$控制了分布强度,也就是峰值位置.例如Dir(1, 1, 1)是一个均匀分布,Dir(2, 2, 2) 是以为(1/3, 1/3, 1/3)中心的宽分布(broad distribution),而Dir(20, 20, 20) 是以为(1/3, 1/3, 1/3)中心的窄分布(narrow distribution).如果对于所有的 k  都有$\alpha_k <1$,那么峰值在单纯形的角落.

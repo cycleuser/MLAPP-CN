@@ -827,15 +827,15 @@ $$
 我们可以把上面的结果写成后验方差(posterior variance)的形式,而不用后验精度(posterior precision),如下所示:
 $$
 \begin{aligned}
-p(x|D,\sigma^2)&= N(x|\mu_N,\tau_N^2 &\text{(4.132)}\\
-\tau_N^2&=\frac{1}{\frac{N}{\sigma^2}+\frac{1}{\tau_0^2} } =\frac{\sigma^2\tau_0^2}{N\tau_0^2+\sigma^2}&\text{(4.133)}\\
-\mu_N&= \tau_N^2 (\frac{\mu_0}{\tau_0^2}+\frac{N\bar y}{\sigma^2}) =\frac{\sigma^2}{N\tau_0^2+\sigma^2}\mu_0+\frac{N\tau_0^2}{N\tau_0^2+\sigma^2}\bar y&\text{(4.134)}\\
+p(x|D,\sigma^2)&= N(x|\mu_N,\Gamma_N^2 &\text{(4.132)}\\
+\Gamma_N^2&=\frac{1}{\frac{N}{\sigma^2}+\frac{1}{\Gamma_0^2} } =\frac{\sigma^2\Gamma_0^2}{N\Gamma_0^2+\sigma^2}&\text{(4.133)}\\
+\mu_N&= \Gamma_N^2 (\frac{\mu_0}{\Gamma_0^2}+\frac{N\bar y}{\sigma^2}) =\frac{\sigma^2}{N\Gamma_0^2+\sigma^2}\mu_0+\frac{N\Gamma_0^2}{N\Gamma_0^2+\sigma^2}\bar y&\text{(4.134)}\\
 \end{aligned}
 $$
 
-上式中的$\tau_0^2=1/\lambda_0$是先验方差(prior variance),而$\tau_N^2 =1/\lambda_N$是后验方差(posterior variance).
+上式中的$\Gamma_0^2=1/\lambda_0$是先验方差(prior variance),而$\Gamma_N^2 =1/\lambda_N$是后验方差(posterior variance).
 
-我们也可以通过每次观测后更新来逐渐计算后验.如果$N=1$,在进行一次单独观测后就可以重写后验,如下所示(下面定义了$ \Sigma_y =\sigma^2,\Sigma_0= \tau_0^2, \Sigma_1=\tau_1^2 $分别是似然函数/先验/后验的方差):
+我们也可以通过每次观测后更新来逐渐计算后验.如果$N=1$,在进行一次单独观测后就可以重写后验,如下所示(下面定义了$ \Sigma_y =\sigma^2,\Sigma_0= \Gamma_0^2, \Sigma_1=\Gamma_1^2 $分别是似然函数/先验/后验的方差):
 
 $$
 \begin{aligned}
@@ -958,7 +958,7 @@ $Wi(\wedge|S,v)=\frac{1}{Z_{Wi}}|\wedge|^{(v-D-1)/2}\exp(-\frac{1}{2}tr(\wedge S
 上式中的v也叫做自由度(degrees of freedom),S就是缩放矩阵(scale matrix).稍后会对这些参数的含义给出更多讲解.
 这个分布的归一化常数(normalization constant)(需要在整个对称的概率密度矩阵上进行积分)为下面的表达式:
 $Z_{Wi}=2^{vD/2} \Gamma_D(v/2)|S|^{v/2}  $(4.160)
-上式中的$\tau_D$是多元$\gamma$函数(multivariate gamma function):
+上式中的$\Gamma_D$是多元$\gamma$函数(multivariate gamma function):
 
 $\Gamma _D(x)= \pi^{D(D-1)/4 }\prod^D_{i=1}\Gamma(x+(1-i)/2)$(4.161)
 因此$\Gamma_1(a)=\Gamma(a)$,以及:
@@ -984,7 +984,7 @@ $$
 \begin{aligned}
 IW(\Sigma|S,v) &= \frac{1}{Z_{IW}}|\Sigma|^{-(v+D+1)/2}\exp(-\frac{1}{2}tr(S^{-1}\Sigma^{-1}))
 &\text{(4.165)}\\
-Z_{IW}&= |S|^{-v/2}2^{vD/2}\tau _D(v/2)  &\text{(4.166)}
+Z_{IW}&= |S|^{-v/2}2^{vD/2}\Gamma_D(v/2)  &\text{(4.166)}
 \end{aligned}$$
 
 很显然,这个分布有如下的性质:
@@ -1068,4 +1068,125 @@ S_N^{-1}&=S_0+S_{\mu} &\text{(4.181)}\\
 $$
 
 用文字来表述,就是说后验强度(posterior strength)$v_N$就是先验强度(prior strength) $v_)$加上观测次数N,而后验散布矩阵(posterior scatter matrix)$S_N$也就是先验散布矩阵(prior scatter matrix)$S_0$加上数据散布矩阵(data scatter matrix)$S_{\mu}$.
+
+
+#### 4.6.2.1 最大后验估计(MAP estimation)
+
+通过等式4.7可知$\hat\Sigma_{mle}$是一个秩(rank)为$\min(N,D)$的矩阵.如果$N<D$,就是一个非满秩的(not full rank),因此就不可逆(uninvertible).而如果$N>D$,也可能$\hat\Sigma$是病态的(ill-conditioned)(意思就是近乎奇异矩阵).
+
+要解决这些问题,可以用后验模(posterior mode)或者均值(mean).使用和最大似然估计(MLE)推导类似的技巧,就可以推出最大后验估计(MAP):
+$\hat\Sigma_{map}=\frac{S_N}{v_N+D+1}=\frac{S_0+S_{\mu}}{N_0+N}$(4.182)
+
+如果用一个不适用均匀先验(improper uniform prior),对应的就是$N_0=0,S_0=0$,也就恢复到了最大似然估计(MLE).
+
+如果使用一个适当的含信息先验(proper informative prior),只要$D/N$比较大,比如超过0.1的时候,就很被咬了.设$\mu=\bar x$,则$S_{\mu}=S_{\bar x}$.然后就可以吧最大后验估计(MAP)写成一个先验模(prior mode)和最大似然估计(MLE)的凸组合(convex combination).设$\Sigma_0*= \frac{S_0}{N_0}$为先验模(prior mode).然后可以把后验模(posterior mode)写成如下形式:
+
+$\hat\Sigma_{map}=\frac{S_0+S_{\bar x}}{N_0+N}=\frac{N_0}{N_0+N}\frac{S_0}{N_0}   + \frac{N_0}{N_0+N} \frac{S}{N}=\lambda\Sigma_0+(1-\lambda)\hat\Sigma_{mle}$(4.183)
+
+其中的$\lambda=\frac{N_0}{N_0+N}$,控制的是朝向先验收缩(shrinkage)的规模(amount).
+
+这就引出了另外一个问题:先验的那些参数都是哪来的?通常可以通过交叉验证来设置$\lambda$.或者可以使用闭合形式公式(closed-form formula),出自(Ledoit and Wolf 2004b,a; Schaefer and Strimmer 2005),是在使用平方损失(squared loss)的情况下的频率论角度的最优估计(optimal frequentist estimate).关于这是不是对协方差矩阵(covariance matrices)最自然的损失函数(loss function)还有争议,因为忽略了正定约束(positive deﬁnite constraint),不过确实能得到一个简单的估计器(estimator),本书配套的PMTK软件中的shrinkcov函数是一个实现.稍后再讨论贝叶斯角度对$\lambda$的估计.
+
+
+至于先验协方差矩阵(prior covariance matrix)$S_0$,可以用下面的(依赖数据的)先验:$S_0=diag(\hat\Sigma_{mle})$.这时候最大后验估计为:
+$\hat\Sigma_{map}(i,j)=\begin{cases} \hat\Sigma_{mle}(i,j) & \text{if } i=j\\ (1-\lambda)\hat\Sigma_{mle}(i,j)  &\text{otherwise}\end{cases}$(4.184)
+
+这样就能发现对角项目等于他们的最大似然估计(MLE),而非对角元素就朝着0收缩了.这也叫收缩估计(shrinkage estimation)或者正则化估计(regularized estimation).
+
+图4.17中就展示了最大后验估计(MAP)的好处.设对一个50维的正态分布进行拟合,分别使用$N=100,N=50,N=25$个数据点.很明显最大后验分布总是良好状态的(well-conditioned),而不像最大似然估计(MLE)会有病态的情况出现.特别是最大后验估计(MAP)的特征谱(eigenvalue spectrum)会比最大似然估计(MLE)的更接近真是矩阵.不过特征向量(eigenvectors)不受影响.
+
+在后面的章节中,当我们要对高维度数据的协方差矩阵进行拟合的时候,对$\Sigma$的正则估计的重要性就很明显了.
+
+
+#### 4.6.2.2 单变量后验(Univariate posterior)
+
+在一维情况下,似然函数(likelihood)形式如下所示:
+
+$p(D|\sigma^2)\propto (\sigma^2)^{-N/2}\exp (-\frac{1}{2\sigma^2}\sum^N_{i=1}(x_i-\mu)^2)$(4.185)
+
+标准共轭先验(standard conjugate prior)正好就是一个逆$\gamma$分布(inverse Gamma distribution),也就是标量版本的逆威沙特分布(inverse Wishart):
+$IG(\sigma^2|a_0,b_0)\propto (\sigma^2)^{1(a_0+1)}\exp(-\frac{b_0}{\sigma^2})$(4.186)
+
+
+此处参考原书图4.18
+
+把似然函数(likelihood)和先验(prior)乘起来就会发现后验(posterior)也是IG:
+$$
+\begin{aligned}
+p(\sigma^2|D)&=IG(\sigma^2|a_N,b_N)    &\text{(4.187)}\\
+a_N&= a_0+N/2   &\text{(4.188)}\\
+b_N&= b_0+\frac{1}{2}\sum^N_{i=1}(x_i-\mu)^2   &\text{(4.189)}\\
+\end{aligned}
+$$
+图4.18为图示.
+
+后验的形式不想多元情况下的那样好看,因为有了个因子$\frac{1}{2}$.这是因为$IW(\sigma^2|s_0,v_0)=IG(\sigma^2|\frac{s_0}{2},\frac{v_0}{2})$.使用逆正态分布$IG(a_0,b_0)$的另一个问题是先验同时对$a_0,b_0$进行编码(encoded).要避免这些问题,通常从统计学角度来说,都是使用对逆向高斯分布(IG distribution)的替代参数化,也就是(缩放)逆卡方分布((scaled) inverse chi-squared distribution),定义如下所示:
+$ \chi^{-2}(\sigma^2|v_0,\sigma_0^2)=IG(\sigma^2|\frac{v_0}{2})\frac{v_0\sigma^2_0}{2}\propto (\sigma^2)^{-v_0/2-1}\exp(-\frac{v_0\sigma^2_0}{2\sigma^2})$(4.190)
+
+上式中的$v_0$控制了先验的强度,而$\sigma^2$对先验的值进行了编码.这样后验则成了:
+
+$$
+\begin{aligned}
+p(\sigma^2|D,\mu)&= \chi^{-2}(\sigma^2|v_N,\sigma^2_N)  &\text{(4.191)}\\
+v_N&= v_0+N  &\text{(4.192)}\\
+\sigma^2_N&=  \frac{v_0\sigma_0^2+\sum^N_{i=1}(x_i-\mu)^2}{v_N} &\text{(4.193)}\\
+\end{aligned}
+$$
+
+
+可见后验的自由度(dof)$v_N$是先验自由度(dof)$v_0$加上N,而后验平方和$v_n\sigma^2_N$就是先验平方和$v_0\sigma^2_0$加上数据的平方和.
+
+可以设$v_0=0$来模拟一个无信息先验(uninformative prior)$p(\sigma^2)\propto\sigma^{-2}$,也很好直观理解,就是对应着零虚拟样本规模(zero virtual sample size).
+
+## 4.6.3 $\mu$和$\Sigma$的后验分布*
+
+现在来讨论一下如何计算$p(\mu,\Sigma|D)$.这些结论有点复杂,不过在本书后面的章节会很有用.对于第一次阅读的读者来说,可以先跳过.
+
+#### 4.6.3.1 似然函数(likelihood)
+
+似然函数为:
+
+$p(D|\mu,\Sigma) = (2\pi)^{-ND/2}|\Sigma|^{-\frac{N}{2}}\exp(-\frac{N}{2}(x_i-\mu)^T\Sigma^{-1}(x_i-\mu)  )  $(4.194)
+
+很明显:
+
+$\sum^N_{i=1}(x_i-\mu)^T\Sigma^{-1}(x_i-\mu)=tr(\Sigma^{-1}S_{\bar x})+ N(\bar x-\mu)^T\Sigma^{-1}(\bar x-\mu)$(4.195)
+
+因此可以把似然函数写成如下的形式:
+$$
+\begin{aligned}
+p(D|\mu,\Sigma)&= (2\pi)^{-ND/2}|\Sigma|^{-\frac{N}{2}}\exp(-\frac{N}{2}(\mu-\bar x)^T\Sigma^{-1} (\mu-\bar x)  )   &\text{(4.196)}\\
+&\exp(-\frac{N}{2}tr(\Sigma^{-1}S_{\bar x })) &\text{(4.197)}
+\end{aligned}
+$$
+后面会用到这个形式.
+ 
+ 
+#### 4.6.3.2 先验(Prior)
+
+
+先验形式为:
+$p(\mu,\Sigma)=N(\mu|m_0,V_0)IW(\Sigma|S_0,v_0)$(4.198)
+
+很不幸,这和似然函数不共轭(not conjugate).为什么呢?注意$\mu$和$\Sigma$在似然函数(likelihood)中以非因子形式(non-factorized way)共同出席,因此在后验中也会耦合在一起(coupled together).
+
+上面的先验就也被叫做半共轭(semi-conjugate)或者条件共轭(conditionally conjugate),因为两个条件分布$p(\mu|\Sigma),p(\Sigma|\mu )$都是独立共轭(individually conjugate)的.要建立一个完全共轭先验(full conjugate prior),需要让$\mu,\Sigma$两者相互依赖.所以可以使用下面这样形式的联合分布:
+
+$p(\mu,\Sigma)=p(\Sigma)p(\mu|\Sigma)$(4.199)
+
+参考一下等式4.197中的似然函数等式,就可以发现自然共轭先验(natural conjugate prior)的形式为正态逆威沙特分布(Normal-inverse-wishart,缩写为 NIW),定义形式如下所示:
+$$
+\begin{aligned}
+NIW(\mu,\Sigma|m_0,k_0,v_0,S_0)& *=& \text{(4.200)}\\
+ & N(\mu|m_0,\frac{1}{k_0}\Sigma)\times IW(\Sigma|S_0,v_0 )   & \text{(4.201)}\\
+&=\frac{1}{Z_{NIW}}|\Sigma|^{\frac{1}{2}}\exp(-\frac{k_0}{2}\mu-m_0()^T\Sigma^{-1}(\mu-m_0))   & \text{(4.202)}\\
+&\times |\Sigma|^{-\frac{v_0+D+1}{2}}\exp(-\frac{1}{2}tr(\Sigma^{-1}S_0))   & \text{(4.203)}\\
+& = \frac{1}{Z_{NIW}}|\Sigma|^{-\frac{v_0+D+2}{2}}  & \text{(4.204)}\\
+&\times \exp(-\frac{k_0}{2}(\mu-m_0)^T\Sigma^{-1}(\mu-m_0) -\frac{1}{2}tr(\Sigma^{-1}S_0))   & \text{(4.205)}\\
+Z_{NIW}&= 2^{V_0D/2}\Gamma_D(v_0/2)(2\pi/k_0)^{D/2} |S_0|^{-v_0/2}  & \text{(4.206)}\\
+\end{aligned}
+$$
+
+上式中的$\Gamma_D(a)$是多元$\gamma$分布(multivariate Gamma function).
+
 
