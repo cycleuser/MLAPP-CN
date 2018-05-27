@@ -1188,5 +1188,148 @@ Z_{NIW}&= 2^{V_0D/2}\Gamma_D(v_0/2)(2\pi/k_0)^{D/2} |S_0|^{-v_0/2}  & \text{(4.2
 $$
 
 上式中的$\Gamma_D(a)$是多元$\gamma$分布(multivariate Gamma function).
+上面这个逆威沙特分布的参数可以通过如下步骤来进行推断:$m_0$就是$\mu$的先验均值,而$k_0$就是对这个先验的相信程度,$S_0$ 是正比于$\Sigma$的先验均值,而$v_0$ 是对这个先验的相信程度.
+
+参考(Minka 2000f)可以发现,(不适用(improper))无信息先验(uninformative prior)的形式如下所示:
+$$
+\begin{aligned}
+\lim _{k\rightarrow 0} N(\mu|m_0,\Sigma/k)IW(\Sigma|S_0,k&\propto |2\pi\Sigma|^{\frac{1}{2}}|\Sigma|^{-(D+1)/2} &\text{(4.207)}\\
+&\propto |\Sigma|^{-(D/2+1)}\propto NIW(\mu,\Sigma|0,0,0,0I)   &\text{(4.208)}\\
+\end{aligned}
+$$
+
+在实践中,一般都是使用弱含信息数据依赖先验(weakly informative data-dependent prior)比较好.常规选择(参考(Chipman et al. 2001, p81), (Fraley and Raftery 2007, p6))是设置$S_0=diag(S_{\bar x})/N, v_0=D+2$来确保$E[\Sigma]=S_0$,然后设$\mu_0=\bar x$以及$k_0$为比较小的数值,比如0.01.
+
+
+
+#### 4.6.3.3 后验
+
+如练习4.11所示,后验可以表示成更新过参数的逆威沙特分布(NIW):
+$$
+\begin{aligned}
+p(\mu,\Sigma|D)&=  NIW(\mu,\Sigma|m_N,k_N,v_N,S_N) &\text{(4.209)}\\
+m_N&= \frac{k_0m_0+N\bar x}{k_N} =\frac{k_0}{k_0+N}m_0+\frac{N}{k_0+N} \bar x &\text{(4.210)}\\
+k_N&=k_0+N   &\text{(4.211)}\\
+v_N&=v_0+N   &\text{(4.212)}\\
+S_N&= S_0+S_{\bar x}+\frac{k_)N}{k_0+N}(\bar x-m_0)(\bar x-m_0)^T  &\text{(4.213)}\\
+&= S_0+S+k_0m_0m_0^T-k_Nm_Nm_N^T  &\text{(4.214)}\\
+\end{aligned}
+$$
+
+上式中我们定义了$S*= \sum^N_{i=1}x_ix_i^T$,这是一个未中心化的平方和矩阵(uncentered sum-of-squares matrix),相比中心化矩阵这样的更容易进行渐进的增量更新.
+
+结果很直观:后验均值(posterior mean)就是对先验均值(prior mean)和最大似然估计(MLE)的凸组合(convex combination),附带上强度控制项$k_0+N$.而后验散布矩阵(posterior scatter matrix)$S_N$就是先验散布矩阵(prior scatter matrix)$S_0$加上经验散布矩阵(empirical scatter matrix)$S_\bar x$,再加上由均值不确定性带来的附加项(这也创造了自己的一个虚拟散布矩阵(virtual scatter matrix)).
+
+#### 4.6.3.4 后验模(Posterior mode)
+
+联合分布的模(mode)如下所示:
+$\arg\max p(\mu,\Sigma|D) = (m_N,\frac{S_N}{v_N+D+2})         $(4.215)
+
+如果设置$k_0=0$,就降低(reduce)成了:
+$\arg\max p(\mu,\Sigma|D) = (\bar x,\frac{S_0+S_{\bar x}}{v_N+N+D+2})  $(4.216)
+
+对应的估计$\hat \Sigma$几乎和等式4.183所述一样,唯一区别是分母上差了一个1,这是因为这个模(mode)是联合分布的,而不是边缘分布的.
+
+
+##### 4.6.3.5 后验边缘分布
+
+$\Sigma$的后验边缘分布就很简单了,如下所示:
+
+$p(\Sigma|D) =\int p(\mu,\Sigma|D)d\mu=IW(\Sigma|S_N,v_N)   $(4.217)
+
+这个边缘分布的模(mode)和均值(mean)分别为:
+
+$\hat\Sigma_{map}=\frac{S_N}{v_N+D+1}, E[\Sigma]=\frac{S_N}{v_N-D-1}$(4.218)
+
+不难发现对$\mu$的后验边缘分布正好就是一个多元学生Ｔ分布:
+
+$p(\mu|D)=\int p(\mu,\Sigma|D)d\Sigma = T(\mu|m_N,\frac{１}{v_N－Ｄ＋１}S_N,v_N－Ｄ＋１)       $(4.219)
+
+这是由于学生分布可以表示做多个高斯分布（正态分布）的缩放混合，参考本书等式11.61.
+
+
+此处参考原书图4.19
+
+
+#### 4.6.3.6 后验预测
+
+后验预测(posterior predictive)如下所示:
+$p(x|D)=\frac{p(x,D)}{p(D)}$(4.220)
+
+所以很容易用一系列边缘似然函数(marginal likelihood)的比值的形式来进行估算.
+结果这个比值也是多元学生T分布:
+
+$$
+\begin{aligned}
+p(x|D)&= \int \int N(x|\mu,\Sigma)NIW(\mu,\Sigma|m_N,k_N,S_N)d\mu d\Sigma   &\text{(4.221)}\\
+&= T(x|m_N,\frac{k_N+1}{k_N(v_N-D+1)}S_N,v_N-D+1)  &\text{(4.222)}\\
+\end{aligned}
+$$
+
+### 4.6.3.7 标量数据的后验
+
+现在把上面的结论用到一个特殊情况,即$x_i$是一维的.这些结果在统计领域中有很广泛的应用.如本书4.6.2.2所示,通常可能不适用正常逆威沙特分布(normal inverse Wishart),而是使用正常逆卡方分布(normal inverse chi-squared,缩写为NIX),定义如下所示:
+
+$$
+\begin{aligned}
+NI\chi^2(\mu,\sigma^2|m_0,k_0,v_0,\sigma_0^2)& *=N(\mu|m_0,\sigma^2/k_0)\chi^{-2}(\sigma^2|v_0,\sigma_0^2)  &\text{(4.223)}
+&\propto (\frac{1}{\sigma^2})^{(v_0+3)/2} \exp (-\frac{v_0\sigma_0^2+k_0(]mu-m_0)^2}{2\sigma^2}) &\text{(4.224)}
+\end{aligned}
+$$
+
+图4.19所示为其图像.沿着$\mu$轴,分布形状类似正态分布,而沿着$\sigma^2$轴分布形状就像是逆卡方分布($\chi^{-2}$);整个联合概率密度函数的轮廓形状就像是压扁的蛋.有意思的是我们会发现$\mu$的形状比较小数值的$\sigma^2$有更显著的峰值,这也很好理解,因为数据本身方差小(low variance),就能进行更准确的估计了.
+
+后验如下所示
+
+$$
+\begin{aligned}
+p(\mu,\sigma^2|D)&=   NI\chi^2(\mu,\sigma^2|m_N,k_N,v_N,\sigma^2_N)       &\text{(4.225)}
+m_N&= \frac{k_0m_0+N\bar x}{k_N}  &\text{(4.226)}
+k_N&= k_0+N   &\text{(4.227)}
+v_N&= v_0+N   &\text{(4.228)}
+v_N\sigma^2_N&=  v_0\sigma^2_0+\sum^N_{i=1}(x_i-\bar x)^2+\frac{Nk_)}{k_0+N}(m_0-\bar x)^2        &\text{(4.229)}
+\end{aligned}
+$$
+
+$\sigma^2$的后验边缘分布为:
+
+$p(\sigma^2|D)=\int p(\mu,\sigma^2|D)d\mu =\chi^{-2}(\sigma^2|v_N,\sigma^2_N)$(4.230)
+
+其后验均值为:$E[\sigma^2|D]=\frac{v_N}{v_N-2}\sigma^2_N$
+
+$\mu$的后验边缘分布为学生T分布,是学生分布的缩放混合姓氏,如下所示:
+
+$p(\mu|D)= \int  p(\mu,\sigma^2|D)d\sigma^2 =T(\mu|m_N,\sigma^2_N/k_N,v_N)  $(4.231)
+其后验均值为:$E[\mu|D]=m_N$
+
+如果我们使用下面的无信息先验,结果会是什么样呢?
+$p(\mu,\sigma^2)\propto p(\mu)p(\sigma^2)\propto \sigma^{-2}\propto NI\chi^2(\mu,\sigma^2|\mu_0=0,k_0=0,v_0=-1,\sigma^2_0=0)$(4.232)
+
+有了上面的先验,后验形式如下所示:
+
+$p(\mu,\sigma^2|D)= NI\chi^2(\mu,\sigma^2|\mu_N=\bar x,k_N=N,v_N=N-1,\sigma^2_N=是^2)$(4.233)
+
+上式中的:
+
+$s^2*= \frac{1}{N-1}\sum^N_{i=1}(x_i-\bar x)^2 =   \frac{N}{N-1}\sigma^2_{mle}$(4.234)
+
+就是标准取样偏差(sample standard deviation).在本书6.4.2中会说明这是一个对方差的无偏见估计(unbiased estimate).这样后验均值的边缘分布为:
+
+$p(\mu|D)=T(\mu|\bar x,\frac{s^2}{N},N-1)$(4.235)
+
+而$\mu$的后验方差为:
+$\var[\mu|D]=\frac{v_N}{v_N-2}\sigma^2_N$(4.236)
+
+上面这个后验方差的平方根就是均值的标准差(standard error of the mean):
+
+$\sqrt{ \var[\mu|D]}\approx \frac{s}{\sqrt{N}}$(4.237)
+
+然后均值的估计95%后验置信区间(credible interval)为:
+
+$I_{.95}(\mu|D)=\bar x \pm 2\frac{s}{\sqrt{N}}$(4.238)
+
+
+
+
 
 
