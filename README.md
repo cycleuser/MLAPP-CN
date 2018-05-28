@@ -44,6 +44,10 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 "Table 3.1 illustrates what happens if we apply this to the binary bag of words dataset used in Figure 3.8."
 
 
+#### 140页公式4.261最右侧
+原文错写成了$I\propto \int p(D_x|\mu,\lambda_x)p(\lambda_x|\mu)d\lambda_x  \propto (\bar x -\mu)^2+s_x^2)^{-1}$(4.261)
+应该是$I\propto \int p(D_x|\mu,\lambda_x)p(\lambda_x|\mu)d\lambda_x  \propto [(\bar x -\mu)^2+s_x^2]^{-1}$(4.261)
+
 2018年05月17日08:34:22
 
 #### 100页第四章的(4.19)尼玛是空白?
