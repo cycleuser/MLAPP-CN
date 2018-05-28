@@ -1330,6 +1330,168 @@ $I_{.95}(\mu|D)=\bar x \pm 2\frac{s}{\sqrt{N}}$(4.238)
 
 
 
+(贝叶斯理论的置信空间在本书的5.2.2有更多讲解,而频率论的置信区间与之对比的内容在本书6.6.1.)
+
+
+#### 4.6.3.8 贝叶斯T检验
+
+架设我们要检验一个假设:给定正态分布$x \sim N(\mu,\sigma^2)$,对某个未知值$\mu_0$(通常都是0),$\mu \ne \mu_0$,这叫做双面单样本t检验(two-sided, one-sample t-test).简单方法就是检查$\mu_0\in I_{0.95+(\mu|D)$是否成立.如果不成立,则有95%的信心认为$\mu\ne \mu_0$.更普遍的做法是检验两对样本是否有同样的均值.更确切来说,设$y_i \sim N(\mu_1,\sigma^2),z_i\sim N(\mu_2,\sigma^2)$.就可以使用$x_i=y_i-z_i$来验证是否有$\mu=\mu_1-\mu_2 >0$.可以用下面的形式来对这个量进行估计:
+$p(\mu>\mu_0|D)= \int^{\infty}_{\mu_0}p(\mu|D)d{\mu}  $(4.239)
+
+这也叫做单面成对T检验(one sided paired t-text).(对未配对测试(unpaired test)有类似的方法,对比在二项比例(binomial proportions)上有所不同,本书5.2.3会介绍.)
+
+要计算这个后验,必须要指定一个先验.设用一个无信息先验.如上所述,这样$\mu$的后验边缘分布形式为:
+
+$p(\mu|D)= T(\mu|\bar x,\frac{s^2}{N},N-1)$(4.240)
+
+然后我们定一下吗的T统计(t statistic):
+
+$t*= \frac{\bar x -\mu_0}{s/\sqrt{N}}$(4.241)
+
+期中的分母是均值标准差.然后有:
+
+$p(\mu|D)=1-F_{N-1}(t)$(4.242)
+
+
+上式中的$F_v(t)$是标准学生Ｔ分布$T(0,1,v)$的累积密度函数(cdf).
+
+
+#### 4.6.3.9 和频率论统计学的联系
+
+如果我们使用了无信息先验,就会发现上面的贝叶斯分析给出的结果和使用频率论方法推导的一样.(关于频率论统计学的内容在本书第六章会有详细讲解.)比如从上面的结果中,会看到有:
+
+$\frac{\mu-\bar x}{\sqrt{s/N}}|D\sim t_{N-1}$(4.243)
+
+这也最大似然估计(MLE)的取样分布(sampling distribution)有一样的形式:
+$\frac{\mu-\bar x}{\sqrt{s/N}}|\mu \sim t_{N-1}$(4.244)
+
+这是因为学生T分布是关于前两个参数(arguments)对称的(symmetric),所以则有$T(\bar x|\mu,\sigma^2,v)=T(\mu|\bar x,\sigma^2,v)$;因此$\mu$的后验和$\bar x$的取样分布有一样的形式.结果导致了频率测试(frequentist test)返回的(单向(one sided))p值(在本书6.6.2中有定义)和贝叶斯方法返回的$p(\mu>\mu_0|D)$一样.具体参考本书配套的PMTK3当中的bayesTtestDemo为例.
+
+尽管看着非常相似,这两个结果还是有不同阐述的:在贝叶斯方法中,$\mu$是未知的,而$\bar x$是固定的,而在频率论方法中正好相反,$\bar X$是未知的,而$\mu$是固定的.使用无信息先验的简单模型时,频率论和贝叶斯方法还是有用执剑的更多共同点可以参考(Box and Tiao 1973),本书的7.6.3.3也有更多讲解.
+
+### 4.6.4 未知精度下的传感器融和*
+
+本节会利用4.6.3当中的结论来解决传感器融合的问题,每个测量设备的精确度都不知道.这对本书4.4.2.2的结论进行了泛化,在4.4.2.2里是设测量模型的位置精确度服从正态分布.未知的精确度会导致有定量意义的不同结果,产生一个潜在的多态后验(multi-modal posterior).这里的内容参考了 (Minka 2001e).
+
+假如我们想要从多个来源汇集数据,来估计某个量$\mu\in R$,但是信号源的可靠性都不值得.例如有两个不同的测试设备 x 和 y,有不同的精确度:$x_i|\mu \sim N(\mu,\lambda_x^{-1},y_i|\mu \sim N(\mu,\lambda_y^{-1}$.对两个设备各自进行独立测量,就得到了:
+
+
+$x_1=1.1,x_2=1.9,y_1=2.9,y_2=4.2$(4.245)
+
+
+对$\mu,p(\mu)\propto 1$使用一个无信息先验(non-imformative prior),使用一个无限宽度的正态分布$p(\mu)=N(\mu|m_0=0,\lambda_0^{-1}=\infty)$来模拟.如果$\lambda_x,\lambda_y$都知道了,那么后验就也是正态分布了:
+
+$$
+\begin{aligned}
+p(\mu|D,\lambda_x,\lambda_y)&= N(\mu|m_N,\lambda_N^{-1}) &\text{(4.246)}\\
+\lambda_N &= \lambda_0 +N_x\lambda_x+N_y\lambda_y  &\text{(4.247)}\\
+m_N &= \frac{\lambda_xN_x\bar x+\lambda_yN_y\bar y}{N_x\lambda_x+N_y\lambda_y} &\text{(4.248)}\\
+\end{aligned}
+$$
+
+
+上式中的$N_x=2,N_y=2$分别是x和y的观测次数,而$\bar x =\frac{1}{N_x}\sum^N_{i=1}x_i=1.5,\bar y =\frac{1}{N_y}\sum^N_{i=1}y_i=3.5$.这是因为后验精度(posterior precision)是测量精度的综合,而后验均值是先验均值(这里是0)和数据均值的加权和.
+
+不过测试精度还是不知道啊.开始用最大似然估计来估计一下吧.对数似然函数(log-likelihood)为:
+
+$l(\mu,\lambda_x,\lambda_y)=\log \lambda_x-\frac{\lambda_x}{2}\sum_i(x_i-\mu)^2+\log \lambda_y-\frac{\lambda_y}{2}\sum_i(y_i-\mu)^2$(4.249)
+
+解出下面的联立方程,就能得到最大似然估计(MLE)了:
+
+$$
+\begin{aligned}
+\frac{\partial l}{\partial \mu}&= \lambda_xN_x(\bar x-\mu)+\lambda_yN_y(\bar y-\mu)=0  &\text{(4.250)}\\
+\frac{\partial l}{\partial \lambda_x} &= \frac{1}{\lambda_x}-\frac{1}{N_x}\sum^{N_x}^{i=1}(x_i-\mu)^2=0 &\text{(4.251)}\\
+\frac{\partial l}{\partial \lambda_y} &= \frac{1}{\lambda_y}-\frac{1}{N_y}\sum^{N_y}_{i=1}(y_i-\mu)^2=0 &\text{(4.252)}\\
+\end{aligned}
+$$
+
+解出来就是:
+
+
+$$
+\begin{aligned}
+\hat \mu &=  \frac{N_x\hat{\lambda_x}\bar x+N_y\hat{\lambda_y}\bar y}{N_x\hat{\lambda_x}+N_y\hat{\lambda_y}}&\text{(4.253)}\\
+\frac{1}{\hat{\lambda_x}}&= \frac{1}{N_x}\sum_i(x_i-\hat \mu)^2  &\text{(4.254)}\\
+\frac[1}{\hat{\lambda_y}}&= \frac{1}{N_y}\sum_i(y_i-\hat \mu)^2 &\text{(4.255)}\\
+\end{aligned}
+$$
+
+
+很明显,$\mu$的最大似然估计(MLE)与后验均值$m_N$有同样的形式.
+
+使用固定点迭代(fixed point iteration)就可以解出来了.首先初始化估计$\lambda_x=1/s_x^2,\lambda_y=1/s_y^2$,其中的$s_x^2=\frac{1}{N_x}\sum^{N_x}_{i=1}(x_i-\bar x)^2=0.16,s_y^2=\frac{1}{N_y}\sum^{N_y}_{i=1}(y_i-\bar y)^2=0.36$.
+然后就解出来了$\hat \mu =2.1154$,所以有$p(\mu|D,\hat \lambda_x,\hat \lambda_y)=N\mu|2.1154,0.0554)$.如果现在进行迭代,最终会收敛到:$\hat \lambda_x=1/0.1662,\hat \lambda_y=1/4.0509,p(\mu|D,\hat \lambda_x,\hat \lambda_y)= N(\mu|,1.5788,0.0798)$.
+
+对这个后验的擦只顾及如图4.20(a)所示.每个传感器的权重是根据其估计误差赋予的.由于估计误差标明传感器y远不如传感器x可靠,所以就有$E[\mu|D\hat \lambda_x,\hat \lambda_y]\approx \bar x$,实际上就是忽略了传感器y.
+
+接下来我们用贝叶斯方法来来积分求未知精度,而不对其进行估计.也就是要计算:
+
+
+$p(\mu|D)\propto p(\mu)[\int p(D_x|\mu,\lambda_x)p(\lambda_x|\mu)d\lambda_x][\int p(D_y|\mu,\lambda_y)p(\lambda_y|\mu)d\lambda_y]$(4.256)
+
+
+使用无信息Jeffrey先验(uninformative Jeffrey’s priors)$p(\mu)\propto 1,p(\lambda_x|\mu)\propto 1/\lambda_x,p(\lambda_y|mu)\propto 1/\lambda_y$.x和y两项对称,所以只看其中一个就可以了.关键的积分步骤是:
+
+
+
+$$
+\begin{aligned}
+I= \int p(D_x|\mu,\lambda_x)p(\lambda_x|\mu)d\lambda_x \propto & \int \lambda_x^{-1}(N_x\lambda_x)^{N_x/2}   &\text{(4.257)}
+& \exp( -\frac{N_x}{2}\lambda_x(\bar x-\mu)^2-\frac{N_x}{2}s^2_x\lambda_x  )d\lambda_x  &\text{(4.258)}
+\end{aligned}
+$$
+
+
+利用$N_x=2$来简化到:
+
+$I=\int \lambda_x^{-1}\lambda_x^1\exp(-\lambda_x[(\bar x-\mu)^2+s_x^2])d\lambda_x $(4.259)
+
+看出来了吧,这个和一个非正则$\gamma$密度函数(unnormalized Gamma density)的积分成正比:
+
+$Ga(\lambda|a,b)\propto \lambda^{a-1}e^-\lambda b}     $(4.260)
+
+其中的$a=1,b=(\bar x -\mu)^2+s^2_x$.因此这个积分也就和$\gamma$分布的归一化常数(normalizing constant)$\Gamma(a)b^{-a}$成正比,就得到了:
+
+
+$I\propto \int p(D_x|\mu,\lambda_x)p(\lambda_x|\mu)d\lambda_x  \propto [(\bar x -\mu)^2+s_x^2]^{-1}$(4.261)
+
+然后后验则成了:
+
+$p(\mu|D)\propto \frac{1}{(\bar x -\mu)^2+s^2_x} \frac{1}{(\bar y -\mu)^2+s^2_y}  $(4.262)
+
+
+
+
+具体的后验如图4.20(b)所示.可以看到有两个模(mode),分别在$\bar x=1.5, \bar y=3.5$这两个位置.对应的就是x传感器比y传感器更精确.第一个模(mode)的权重更高,因为x传感器给出的数据互相更接近,所以看上去就是这个传感器更可靠.(很明显不可能两个都可靠,因为他们给出的值都不一样的.)不过贝叶斯的方案保持了开放性,就是始终保持了y传感器可能更可靠的概率;从两次测量,其实还不能说就按照差值估计得到的结果一样来选择x传感器,这个结果可能过分有信心了,后验太窄了.
+
+练习略.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
