@@ -1400,8 +1400,8 @@ $l(\mu,\lambda_x,\lambda_y)=\log \lambda_x-\frac{\lambda_x}{2}\sum_i(x_i-\mu)^2+
 
 $$
 \begin{aligned}
-\frac{\partial l}{\partial \mu}&= \lambda_xN_x(\bar x-\mu)+\lambda_yN_y(\bar y-\mu)=0  &\text{(4.250)}\\
-\frac{\partial l}{\partial \lambda_x} &= \frac{1}{\lambda_x}-\frac{1}{N_x}\sum^{N_x}^{i=1}(x_i-\mu)^2=0 &\text{(4.251)}\\
+\frac{\partial l}{\partial \mu} &= \lambda_x N_x(\bar x- \mu)+\lambda_y N_y(\bar y-\mu)=0  &\text{(4.250)}\\
+\frac{\partial l}{\partial \lambda_x} &= \frac{1}{\lambda_x}-\frac{1}{N_x}\sum^{N_x}_{i=1}(x_i-\mu)^2=0 &\text{(4.251)}\\
 \frac{\partial l}{\partial \lambda_y} &= \frac{1}{\lambda_y}-\frac{1}{N_y}\sum^{N_y}_{i=1}(y_i-\mu)^2=0 &\text{(4.252)}\\
 \end{aligned}
 $$
@@ -1411,9 +1411,9 @@ $$
 
 $$
 \begin{aligned}
-\hat \mu &=  \frac{N_x\hat{\lambda_x}\bar x+N_y\hat{\lambda_y}\bar y}{N_x\hat{\lambda_x}+N_y\hat{\lambda_y}}&\text{(4.253)}\\
-\frac{1}{\hat{\lambda_x}}&= \frac{1}{N_x}\sum_i(x_i-\hat \mu)^2  &\text{(4.254)}\\
-\frac[1}{\hat{\lambda_y}}&= \frac{1}{N_y}\sum_i(y_i-\hat \mu)^2 &\text{(4.255)}\\
+\hat \mu &=  \frac { N_x\hat \lambda_x \bar x+N_y\hat\lambda_y\bar y}{N_x\hat\lambda_y +N_y\hat \lambda_y }  &\text{(4.253)}\\
+\frac{1}{\hat\lambda_x}&= \frac{1}{N_x}\sum_i (x_i-\hat \mu)^2  &\text{(4.254)}\\
+\frac{1}{\hat\lambda_y}&= \frac{1}{N_y}\sum_i (y_i-\hat \mu)^2 &\text{(4.255)}\\
 \end{aligned}
 $$
 
@@ -1449,7 +1449,7 @@ $I=\int \lambda_x^{-1}\lambda_x^1\exp(-\lambda_x[(\bar x-\mu)^2+s_x^2])d\lambda_
 
 看出来了吧,这个和一个非正则$\gamma$密度函数(unnormalized Gamma density)的积分成正比:
 
-$Ga(\lambda|a,b)\propto \lambda^{a-1}e^-\lambda b}     $(4.260)
+$Ga(\lambda|a,b)\propto \lambda^{a-1}e^{-\lambda b}     $(4.260)
 
 其中的$a=1,b=(\bar x -\mu)^2+s^2_x$.因此这个积分也就和$\gamma$分布的归一化常数(normalizing constant)$\Gamma(a)b^{-a}$成正比,就得到了:
 
