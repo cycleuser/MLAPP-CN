@@ -2,6 +2,10 @@
 A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/python-kivy
 
 
+#本项目不支持在线浏览器直接读取，自己clone到本地想办法解决阅读问题。
+
+
+
 # 笔记项目概述
 本系列是一个新坑，之前读到了Christopher M. Bishop的 《PRML》（Pattern Recognition and Machine Learning） 和 周志华老师的《机器学习》（西瓜书），但由于我自身水平所限，接受起来还挺困难。**（但是老子不是没读！）**
 
