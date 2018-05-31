@@ -2,7 +2,7 @@
 A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/python-kivy
 
 
-#本项目不支持在线浏览器直接读取，自己clone到本地想办法解决阅读问题。
+# 本项目不支持在线浏览器直接读取，自己clone到本地想办法解决阅读问题。
 
 
 
