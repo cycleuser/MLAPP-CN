@@ -273,13 +273,13 @@ $$
 
 
 
-一般来说,直接计算等式5.13里面的积分还挺难的.一种简单又流行的金丝方法是使用贝叶斯信息量(Bayesian information criterio,缩写为BIC),形式如下所示(Schwarz 1978):
+一般来说,直接计算等式5.13里面的积分还挺难的.一种简单又流行的近似方法是使用贝叶斯信息量(Bayesian information criterio,缩写为BIC),形式如下所示(Schwarz 1978):
 
 $BIC*=\log p(D|\hat \theta) -\frac{dof(\hat \theta)}{2}\log N\approx \log p(D) $(5.30)
 
 上式中的$dof(\hat\theta)$是模型中的自由度个数(number of degrees of freedom),而$\hat\theta$是模型的最大似然估计(MLE).这有一种类似惩罚对数似然函数(penalized log likelihood)的形式,其中的惩罚项(penalty term)依赖于模型的复杂度.具体信息可以从本书8.4.2查看贝叶斯信息量评分的推导过程.
 
-以一个线性回归威力.如本书7.3所示,最大似然估计为$\hat w = (X^TX)^{-1}X^Ty, \hat\sigma^2= RSS/N,RSS=\sum^N_{i=1}(y_i-\hat^T_{mle}x_i)^2$.对应的对数似然函数为:
+以一个线性回归为例.如本书7.3所示,最大似然估计为$\hat w = (X^TX)^{-1}X^Ty, \hat\sigma^2= RSS/N,RSS=\sum^N_{i=1}(y_i-\hat^T_{mle}x_i)^2$.对应的对数似然函数为:
 
 $\log p(D|\hat\theta)=-\frac{N}{2}\log(2\pi\hat\sigma^2)-\frac{N}{2}$(5.31)
 
@@ -287,18 +287,18 @@ $\log p(D|\hat\theta)=-\frac{N}{2}\log(2\pi\hat\sigma^2)-\frac{N}{2}$(5.31)
 因此对应的贝叶斯信息量(BIC)评分为(去掉了常数项):
 $BIC=-\frac{N}{2}\log (\hat\sigma^2)-\frac{D}{2}\log(N)$(5.32)
 
-其中的Ｄ是模型中的变两个数．在统计学中，通常对BIC有另外的一中定义,称之为贝叶斯信息量损失(BIC cost,因为目的是将其最小化):
+其中的Ｄ是模型中的变两个数．在统计学中，通常对BIC有另外的一种定义,称之为贝叶斯信息量损失(BIC cost,因为目的是将其最小化):
 $BIC-cost*= -2\log p(D|\hat\theta)+dof(\hat\theta)\log(N)\approx -2\log p(D)$(5.33)
 
 在线性回归的情况下,这就变成了:
 $BIC-cost= N\log(\hat\sigma^2)+D \log (N)$(5.34)
 
-贝叶斯信息量(BIC)方法非常类似于最小描述长度原则(minimum description length,缩写为MDL),这个原则是根据模型拟合数据的成都以及定义复杂度来对模型进行评分.更多细节参考(Hansen and Yu 2001).
+贝叶斯信息量(BIC)方法非常类似于最小描述长度原则(minimum description length,缩写为MDL),这个原则是根据模型拟合数据的程度以及定义复杂度来对模型进行评分.更多细节参考(Hansen and Yu 2001).
 
 还有一个和BIC/MDL非常相似的概念叫做赤池信息量(Akaike information criterion,缩写为AIC),定义如下所示:
 $AIC(m,D)*=\log p(D|\hat\theta_{MLE})-dof(m)$(5.35)
 
-这个概念是从频率论统计学的框架下推导出来的,不能被解释为对边缘似然函数的近似.虽然它的形式和BIC很相似.可以看出AIC当中的称发现该(penalty)要比BIC里面小.这就导致了AIC会挑选比BIC更复杂的模型.不过这也会导致更好的预测精度.具体参考(Clarke et al. 2009, sec 10.2)来了解更多讨论以及这类信息量.
+这个概念是从频率论统计学的框架下推导出来的,不能被解释为对边缘似然函数的近似.虽然它的形式和BIC很相似.可以看出AIC当中的惩罚项(penalty)要比BIC里面小.这就导致了AIC会挑选比BIC更复杂的模型.不过这也会导致更好的预测精度.具体参考(Clarke et al. 2009, sec 10.2)来了解更多讨论以及这类信息量.
 
 
 
