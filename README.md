@@ -64,13 +64,18 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 2018年06月03日08:31:16
 #### 166页第五章的(5.52)公式,应该是$I(\phi) *= -E[(\frac{d\log p(X|\phi)}{d\phi} )^2]$(5.52),而原文错写成了$I(\phi) *= -E[(\frac{d\log p(X|\phi)}{d\phi} )2]$(5.52)
 
+
+2018年06月04日07:02:50
+
+#### 170页第五章 5.4.4.2 第二段第三行的 $Z _1 = 1$ 明显是错的,应该是 $Z _t= 1$ .
+
 ## 翻译进度追踪
 
 - [x] 01 Introduction 1~26
 - [x] 02 Probability 27~64 (练习略)
 - [x] 03 Generative models for discrete data 65~96(练习略)
 - [x] 04 Gaussian models 97~148(练习略)
-- [ ] 05 Bayesian statistics 149~190(当前页面168)
+- [ ] 05 Bayesian statistics 149~190(当前页面171)
 - [ ] 06 Frequentist statistics 191~216
 - [ ] 07 Linear regression 217~244
 - [ ] 08 Logistic regression 245~280
