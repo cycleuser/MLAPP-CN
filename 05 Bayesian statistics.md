@@ -377,6 +377,150 @@ $p(D|M_1)=\int p(D|\theta)p(\theta)d\theta=\frac{B(\alpha_1+N_1,\alpha_0+N_0)}{B
 
 
 
+### 5.3.4 杰弗里斯 - 林德利悖论(Jeffreys-Lindley paradox)*
+
+当使用不适当先验(improper priors,比如积分不为1的先验)来进行模型选择和假设测试的时候,会遇到各种问题,即便这些闲言对于其他目的来说可能还都是可用的.例如,假如测试假设$M_0:\theta\in \Theta_0$和$M_1:\theta\in \Theta_1$.要定义在$\theta$上的边缘分布密度(marginal density),使用下面的混合模型:
+
+$p(\theta)=p(\theta|M_0)p(M_0)+p(\theta|M_1)p(M_1)$(5.43)
+
+只有当$p(\theta|M_0),p(\theta|M_1)$都是适当(归一化的)密度函数的时候,上式才有意义.这种情况下,后验为:
+
+$$
+\begin{aligned}
+p(M_0|D)& =  \frac{p(M_0)p(D|M_0)}{p(M_0)p(D|M_0)+p(M_1)p(D|M_1)}   & \text{(5.44)}\\
+& = \frac{p(M_0)\int_{\Theta_0} p(D|\theta)p(\theta|M_0)d\theta}{p(M_0)\int _{\Theta_0}p(D|\theta)p(\theta|M_0)d\theta + p(M_1)\int _{\Theta_1}p(D|\theta)p(\theta|M_1)d\theta}    & \text{(5.45)}\\    
+\end{aligned}
+$$
+
+然后假设使用了不适当先验,即有$p(\theta|M_0)\propto c_0,p(\theta|M_1)\propto c_1$.则:
+
+$$
+\begin{aligned}
+p(M_0|D)& =   \frac{p(M_0)c_0 \int_{\Theta_0} p(D|\theta)d\theta}{ p(M_0)c_0 \int_{\Theta_0} p(D|\theta)d\theta  + p(M_1)c_1 \int_{\Theta_1} p(D|\theta)d\theta  }    & \text{(5.46)}\\
+& =  \frac{p(M_0)c_0 l_0}{p(M_0)c_0 l_0+p(M_1)c_1 l_1}   & \text{(5.47)}\\    
+\end{aligned}
+$$
+
+上式中$l_i=\int_{\Theta_i}p(D|\theta)d\theta$是模型i的整合/边缘似然函数(integrated or marginal likelihood).然后设$p(M_0)+p(M_1)=\frac{1}{2}$.则有:
+
+$p(M_0|D)= \frac{c_0 l_0}{c_0 l_0+c_1 l_1} =\frac{l_0}{l_0+(c_1/c_0)l_1} $(5.48)
+
+然后就可以任意选择$c_1,c_0$来改变后验.要注意,如果使用了适当(proper)但很模糊(vague)先验也能导致类似问题.具体来说,贝叶斯因数总会倾向于选择更简单的模型,因为使用非常分散的先验的复杂模型观察到数据的概率是非常小的.这就叫做杰弗里斯 - 林德利悖论(Jeffreys-Lindley paradox).
+
+所以在进行模型选择的时候选择适当先验是很重要的.不过还是要注意,如果$M_0,M_1$在参数的一个子集上分享了同样的先验,那么这部分先验就可能是不适当的,因为对应的归一化常数会被约掉无效.
+
+
+## 5.4 先验
+
+贝叶斯统计小最受争议的就是对先验的依赖.贝叶斯主义者认为这是不能以面单,因为没有人是白板一片(tabula rasa/blank slate):所有的推测都必须是以客观世界的某些假设为条件的.不过人们还是希望能够尽量缩小事先假设的影响.接下来就简要讲一下实现这个目的的几种方法.
+
+
+
+### 5.4.1 无信息先验
+
+如果关于$\theta$应该是啥样没有比较强的事先认识,通常都会使用无信息先验(uninformative or non-informative prior),然后就去"让数据自己说话".
+
+不过设计一个无信息先验还是需要点技巧的.例如,伯努利参数$\theta\in [0,1]$.有人可能会觉得最无信息的先验应该是均匀分布$Beta(1,1)$.不过这时候后验均值就是$E[\theta|D]=\frac{N_1+1}{N_1+N_0+2}$,其中的最大似然估计(MLE)为$\frac{N_1}{N_1+N_0}$.因此就可以发现这个先验也并不是完全无信息的.
+
+很显然,通过降低伪计数(pseudo counts)的程度(magnitu),就可以降低先验的影响.综上所述,最无信息的先验应该是:
+
+$\lim_{c\rightarrow 0}Beta(c,c)=Beta(0,0)$(5.49)
+
+上面这个是在0和1两个位置有质量的等价点的混合(a mixture of two equal point masses at 0 and 1),参考(Zhu and Lu 2004).这也叫做Haldane先验(Haldane prior).要注意这个Haldane先验是一个不适当先验,也就是积分不为1.不过只要能看到至少有一次人头朝上以及至少有一次背面朝上,这个后验就是适当的.
+
+在本书5.4.2.1,会论证"正确"的无信息先验是$Beta(\frac12,\frac12)$.很明显这三个先验在实际使用的时候差异很可能是可以忽略不计的.通常来说,都可以进行敏感度分析,也就是检测建模假设的变化对模型结论和预测变化的影响,这种敏感度分析包含了对先验的选择,也包含了似然率的选择以及对数据的处理过程.如果结论是对于模型假设来说并不敏感,那么就可以对结果更有信心了.
+
+
+### 5.4.2 杰弗里斯先验论(Jeffreys priors)*
+
+哈罗德 杰弗里斯(Harold Jeffreys)设计了一个通用技巧来创建无信息先验.得到的就是杰弗里斯先验论(Jeffreys prior).关键之处是观察到如果$p(\phi)$是无信息的,那么对这个先验重新参数化,比如使用某函数h得到的$\theta=h(\phi)$,应该也是无信息的.然后就可以更改方程变量:
+
+$p_\theta(\theta)= p_\phi(\phi)|\frac{d\phi}{d\theta}|$(5.50)
+
+所以先验会总体上有变化.然后选择
+
+$p_\phi(\phi)\propto (I(\phi))^{\frac12}$(5.51)
+
+其中的$I(\phi)$是费舍信息矩阵(Fisher information matrix):
+
+$I(\phi) *= -E[(\frac{d\log p(X|\phi)}{d\phi} )^2]$(5.52)
+
+这是对预期的负对数似然函数的度量,也是对最大似然估计的稳定性的度量,参考本书6.2.2.于是就有:
+
+$\frac{d\log p(x|\theta)}{d\theta}=\frac{d\log p(x|\phi)}{d\phi}\frac{d\phi}{d\theta}$(5.53)
+
+开平方,然后去对x的期望,就得到了:
+
+$$
+\begin{aligned}
+I(\theta)&= -E[(\frac{d\log p(X|\theta)}{d\theta} )^2]=I(\phi)(\frac{d\phi}{d\theta})^2 &\text{(5.54)}\\
+I(\theta)^{\frac{1}{2}} &= I(\phi)^{\frac12}|\frac{d\phi}{d\theta}|  &\text{(5.55)}\\
+\end{aligned}
+$$
+
+所以能发现变换后的先验是:
+
+$p_\theta(\theta)=p_\phi(\phi)|\frac{d\phi}{d\theta}|\propto (I(\phi))^{\frac12}|\frac{d\phi}{d\theta}| =I(\theta)^{\frac12}$(5.56)
+
+所以就说明$p_\theta(\theta)$和$p_\phi(\phi)$是一样的.
+接下来举几个例子.
+
+#### 5.4.2.1 样例:伯努利模型和多重伯努利模型的杰弗里斯先验论(Jeffreys priors)
+
+设X服从伯努利分布,即$X\sim Ber(\theta)$.一个单独样本(single sample)的对数似然函数为:
+
+$\log p(X|\theta) =X|log \theta(1-X)\log(1-\theta)$(5.57)
+
+得分函数(score function)正好就是对数似然函数的梯度:
+
+$s(\theta)*=\frac{d}{d\theta}\log p(X|\theta)=\frac{X}{\theta}-\frac{1-X}{(1-\theta)^2}$(5.58)
+
+观测信息(observed information)就是对数似然函数的二阶导数(second derivative):
+
+$J(\theta)=-\frac{d^2}{d\theta^2}\log p(X|\theta)=-s'(\theta|X)=\frac{X}{\theta^2}+\frac{1-X}{(1-\theta)^2}$(5.59)
+
+费舍信息矩阵(Fisher information)正好就是期望信息矩阵(expected information):
+
+$I(\theta)=E[J(\theta|X)|X\sim \theta]=\frac{\theta}{\theta^2}+\frac{1-\theta}{(1-\theta)^2}=\frac{1}{\theta(1-\theta)}$(5.60)
+
+因此杰弗里斯先验(Jeffreys’ prior)为:
+
+$p(\theta)\propto \theta^{-\frac12}(1-\theta)^{-\frac12}=\frac{1}{\sqrt{\theta(1-\theta)}}\propto Beta(\frac12,\frac12)  $(5.61)
+
+
+然后考虑有K个状态的多重伯努利随机变量.很明显对应的杰弗里斯先验(Jeffreys’ prior)为:
+
+
+$p(\theta)\propto Dir(\frac12,...,\frac12)$(5.62)
+
+要注意这个和更明显的选择 $Dir(\frac1K,...,\frac1K),Dir(1,...,1) $是不一样的.
+
+#### 5.4.2.2 样例:局部和缩放参数的杰弗里斯先验论(Jeffreys priors)
+
+可以对一个局部参数(location parameter)取杰弗里斯先验(Jeffreys prior),比如以正态分布均值为例,就是$p(\mu)\propto 1$.这是一个转换不变先验(translation invariant prior),满足下述性质,即分配到任意区间[A,B]的概率质量等于分配另一个等宽区间[A-c,B-c]的概率质量.也就是:
+
+$\int^{B-c}_{A-c}p(\mu)d\mu=(A-c)-(B-c)=(A-B)=\int^B_Ap(\mu)d\mu$(5.63)
+
+这可以通过使用$p(\mu)\propto 1$来实现,可以使用一个有限变量的正态分布来近似,即$p(\mu)= N(\mu|0,\infty)$.要注意这也是一个不适当先验(improper prior),因为积分不为1.只要后验适当,使用不适当先验也没问题,也就是有$N\ge 1$个数据点的情况,因为只要有一个单独数据点就可以"确定"区域位置了.
+
+与之类似,也可以对缩放参数(scale parameter)取杰弗里斯先验(Jeffreys prior),比如正态分布的方差,$p(\sigma^2\propto 1/\sigma^2)$.这是一个缩放独立先验(scale invariant prior)满足下面的性质:分配到任意区间[A,B]的概率质量等于分配另一个缩放区间[A/c,B/c]的概率质量,其中的c是某个常数$c>0$.(例如,如果将单位从米换成影驰,还不希望影响参数推导过程等等).这可以使用:
+
+$p(s)\propto 1/s$(5.64)
+
+要注意:
+
+$$
+\begin{aligned}
+\int ^{B/c}_{A/c}&=  [\log s]^{B/c}_{A/c} = \log(B/c)-\log(A/c) &\text{(5.65)}\\
+&= \log(B)-\log(A)=\int^B_Ap(s)ds  &\text{(5.66)}\\
+\end{aligned}
+$$
+
+可以使用退化$\gamma$分布(degenerate Gamma distribution)来近似,(参考本书2.4.4),即$p(s)=Ga(S|0,0)$.这个先验$p(s)\propto 1/s$也是不适当先验,但只要有观测到超过$N\ge 2$个数据点,就能保证后验是适当的,也就可以了.(因为只要最少有两个数据点就可以估计方差了.)
+
+
+
+
 
 
 
