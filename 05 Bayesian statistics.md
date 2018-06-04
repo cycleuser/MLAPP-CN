@@ -596,6 +596,93 @@ $p(\theta|Z_t=1)=\frac14Dir(\theta|(10,1,1,1))+...+\frac14Dor(\theta|(1,1,1,10))
 
 
 
+## 5.5 分层贝叶斯(Hierarchical Bayes)
+
+计算后验$p(\theta|D)$的一个关键要求就是特定的先验$p(\theta|\eta)$,其中的$\eta$是超参数(hyper-parameters).如果不知道怎么去设置$\eta$咋办呢?有的时候可以使用无信息先验,之前液晶说过了.一个更加贝叶斯风格的方法就是对先验设一个先验!用本书第十章的图模型的术语来说,可以用下面的方式来表达:
+$\eta \rightarrow \theta \rightarrow D$(5.76)
+
+这就是一个分层贝叶斯模型(hierarchical Bayesian model),也叫作多层模型(multi-level model),因为有多层的未知量.下面给一个简单样例,后文还会有更多其他的例子.
+
+### 5.5.1 样例:与癌症患病率相关的模型
+
+考虑在不同城市预测癌症患病率的问题(这个样例来自Johnson and Albert 1999, p24).具体来说,加入我们要测量不同城市的人口,$N_i$,然后对应城市死于癌症的人口数$x_i$.假设$x_i\sim Bin(N_i,\theta_i)$,然后要估计癌症发病率$\theta_i$.一种方法是分别进行估计,不过这就要面对稀疏数据问题(低估了人口少即$N_i$小的城市的癌症发病率).另外一种方法是假设所有的$\theta_i$都一样;这叫做参数绑定(parameter tying.结果得到的最大似然估计(MLE)正好就是$\hat\theta =\frac{\Sigma_ix_i}{\Sigma_iN_i}$.可是很明显假设所有城市癌症发病率都一样有点太牵强了.有一种折中的办法,就是估计$\theta_i$是想死的,但可能随着每个城市的不同而又发生变化.这可以通过假设$\theta_i$服从某个常见分布来实现,比如$\beta$分布,即$\theta_i\sim Beta(a,b)$.这样就可以把完整的联合分布写成下面的形式:
+
+$p(D,\theta,\eta|N)=p(\eta)\prod^N_{i=1}Bin(x_i|N_i,\theta_i)Beta(\theta_i|\eta)$(5.77)
+
+
+上式中的$\eta=(a,b)$.要注意这里很重要的一点是要从数据中推测$\eta=(a,b)$;如果只是随便设置成一个常数,那么$\theta_i$就会是有件独立的(conditionally independent),在彼此之间就没有什么信息联系了.与之相反的,若将$\eta$完全看做一个未知量(隐藏变量),就可以让数据规模小的城市从数据规模大的城市借用统计强度(borrow statistical strength).
+
+要计算联合后验$p(\eta,\theta|D)$.从这里面可以得到后验边缘分布$p(\theta_i|D)$.如图5.11(a)所示,图中的蓝色柱状是后验均值$E[\theta_i|D]$,红色线条是城市人口均值$E[a/(a+b_|D]$(这代表了$\theta_i$的均值).很明显可以看到后验均值朝向有小样本$N_i$的城市的汇总估计方向收缩.例如,城市1和城市20都观察到有0的癌症发病率,但城市20的人口数较少,所以其癌症发病率比城市1更朝向人口估计方向收缩(也就是距离水平的红色线更近).
+
+图5.11(b)展示的是$\theta_i$的95%后验置信区间.可以看到城市15有特别多的人口(53637),后验不确定性很低.所以这个城市对$\eta$的后验估计的影响最大,页会影响其他城市的癌症发病率的估计.城市10和19有最高的最大似然估计(MLE),也有最高的后验不确定性,反映了这样高的估计可能和先验相违背(先验视从所有其他城市估计得到的).
+
+上面这个例子中,每个城市都有一个参数,然后对相应的概率进行建模.通过设置伯努利分布的频率参数为一个协变量的函数,即$\theta_i=sigm(w^T_ix)$,就可以对多个相关的逻辑回归任务进行建模了.这也叫座多任务学习(multi-task learning),在本书9.5会有详细讲解.
+
+## 5.6 经验贝叶斯(Empirical Bayes)
+
+
+在分层贝叶斯模型中,我们需要计算多层的潜在变量的后验.例如,在一个两层模型中,需要计算:
+$p(\eta,\theta|D)\propto p(D|\theta)p(\theta|\eta)p(\eta)$(5.78)
+
+有的时候可以通过分析将$\theta$边缘化;这就将问题简化成只去计算$p(\eta|D)$了.
+
+作为计算上的简化,可以对超参数后验进行点估计来近似,即$p(\eta|D)\approx \delta_{\hat\eta}(\eta)$,其中的$\hat\eta=\arg\max p(\eta|D)$.因为$\eta$通常在维数上都比$\theta$小很多,这个模型不太容易过拟合,所以我们可以安全地来对$\eta$使用均匀显眼.这样估计就成了:
+
+
+
+$\hat\eta =\arg\max p(D|\eta)=\arg\max[\int p(D|\theta)p(\theta|\eta)d\theta]$(5.79)
+
+其中括号里面的量就是边缘似然函数或整合似然函数(marginal or integrated likelihood),也叫证据(evidence).这个方法总体上叫做经验贝叶斯(Empirical Bayes,缩写为EB)或这也叫座第二类最大似然估计(Type II Maximum Likelihood).在机器学习里面,也叫作证据程序(evidence procedure).
+
+经验贝叶斯违反了先验应该独立于数据来选择的原则.不过可以将其视作是对分层贝叶斯模型中的推导的一种近似,计算开销更低.就好比是讲最大后验估计(MAP estimation)看作是对单层模型$\theta\rightarrow D$的推导的近似一样.实际上,可以建立一个分层结构,其中进行的积分越多,就越"贝叶斯化":
+
+|方法(Method)|定义(Definition)|
+|---|---|
+|最大似然估计(Maximum Likelihood)|$\hat\theta=\arg\max_\theta p(D|\theta)$|
+|最大后验估计(MAP estimation)|$\hat\theta=\arg\max_\theta p(D|\theta)p(\theta|\eta)$|
+|经验贝叶斯的最大似然估计(ML-II Empirical Bayes)|$\hat\theta=\arg\max_\eta \int p(D|\theta)p(\theta|\eta)d\theta=\arg\max p(D|\eta)$|
+|经验贝叶斯的最大后验估计(MAP-II)|$\hat\theta=\arg\max_\eta \int p(D|\theta)p(\theta|\eta)p(\eta)d\theta=\arg\max p(D|\eta)$|
+|全贝叶斯(Full Bayes)|$p(\theta,\eta|D)\propto p(D|\theta)p(\theta|\eta)p(\eta)$|
+
+
+要注意,经验贝叶斯(EB)也有很好的频率论解释(参考Carlin and Louis 1996; Efron 2010),所以在非贝叶斯模型中也被广泛使用.例如很流行的詹姆斯-斯坦因估计器(James-Stein estimator)就是用经验贝叶斯推导的,更多细节参考本书6.3.3.2.
+
+
+### 5.6.1 样例:$\beta$-二项模型
+
+还回到癌症发病率的模型上.可以积分掉$\theta_i$,然后直接写出边缘似然函数,如下所示:
+
+$$
+\begin{aligned}
+p(D|a,b)&=\prod_i \int Bin(x_i|N_i,\theta_i)Beta(\theta_i|a,b)d\theta_i  & \text{(5.80)}\\
+	&=\prod_i \frac{B(a+x_i,b+N_i-x_i)}{B(a,b)}  & \text((5.81)}\\
+\end{aligned}
+$$
+
+关于a和b来最大化有很多方法,可以参考(Minka 2000e).
+
+估计完了a和b之后,就可以代入到超参数里面来计算后验分布$p(\theta_i|\hat a,\hat b,D)$,还按照之前的方法,使用共轭分析.得到的每个$\theta_i$的后验均值就是局部最大似然估计(local MLE)和先验均值的加权平均值,依赖于$\eta=(a,b)$;但由于$\eta$是根据所有数据来估计出来的,所以每个$\theta_i$也都受到全部数据的影响.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
