@@ -668,12 +668,12 @@ $$
 
 接下来这个例子和癌症发病率的例子相似,不同之处是这个例子中的数据是实数值的(real-valued).使用一个高斯(正态)似然函数(Gaussian likelihood)和一个高斯(正态)先验(Gaussian prior).这样就能写出来解析形式的解.
 
-设我们有来自多个相关群体的数据.比如$x_{ij}$表示的就是学生i在学校j得到的测试分数,觉得反胃从!到D,而i是从1到$N_j$,即$j=1:D,i=1:N_j$.然后想要估计每个学校的平均分$\theta_j$.可是样本规模$N_j$对于一些学校来说可能很小,所以可以用分层贝叶斯模型(hierarchical Bayesian model)来规范化这个问题,也就是假设$\theta_j$来自一个常规的先验(common prior)$N(\mu,\tau^2)$.
+设我们有来自多个相关群体的数据.比如$x_{ij}$表示的就是学生i在学校j得到的测试分数,j的取值范围从1到D,而i是从1到$N_j$,即$j=1:D,i=1:N_j$.然后想要估计每个学校的平均分$\theta_j$.可是样本规模$N_j$对于一些学校来说可能很小,所以可以用分层贝叶斯模型(hierarchical Bayesian model)来规范化这个问题,也就是假设$\theta_j$来自一个常规的先验(common prior)$N(\mu,\tau^2)$.
 
 这个联合分布的形式如下所示:
 $p(\theta,D|\eta,\sigma^2)=\prod^D_{j=1}N(\theta_j|\mu,\tau^2)\prod^{N_j}_{i=1}N(x_{ij}|\theta_j,\sigma^2)$(5.82)
 
-上式中为了简化,假设了$\sigma^2$是已知的.(这个假设在练习24.4中.)接下来将如何估计$\eta$.一旦估计了$\eta=(\mu,\tau)$,就可以计算$\theta_j$的后验了.要进行这个计算,只需要将联合分布改写成下面的形式,这个过程利用值$x_{ij}$和方差为$\sigma^2$的$N_j$次高斯观测等价于值为$\bar x_j *= \frac{1}{N_j}\sum^{N_j}_{i=1}x_{ij}$方差为$\sigma^2_j*=\sigma^2/N_j$的一次观测这个定理.这就得到了:
+上式中为了简化,假设了$\sigma^2$是已知的.(这个假设在练习24.4中.)接下来将估计$\eta$.一旦估计了$\eta=(\mu,\tau)$,就可以计算$\theta_j$的后验了.要进行这个计算,只需要将联合分布改写成下面的形式,这个过程利用值$x_{ij}$和方差为$\sigma^2$的$N_j$次高斯观测等价于值为$\bar x_j *= \frac{1}{N_j}\sum^{N_j}_{i=1}x_{ij}$方差为$\sigma^2_j*=\sigma^2/N_j$的一次观测这个定理.这就得到了:
 
 
 $p(\theta,D|\hat\eta,\sigma^2)=\prod^D_{j=1}N(\theta_j|\hat\mu,\hat\tau^2)N(\bar x_j|\theta_j,\sigma^2_j)$(5.83)
@@ -691,14 +691,14 @@ $$
 
 $0\le \hat B_j \le 1$这个量控制了朝向全局均值(overall mean)$\mu$的收缩程度(degree of shrinkage).如果对于第j组来说数据可靠(比如可能是样本规模$N_j$特别大),那么$\sigma^2_j$就会比$\tau^2$小很多;因此这样$\hat B_j$也会很小,然后就会在估计$\theta_j$的时候给$\bar x_j$更多权重.而样本规模小的群组就会被规范化(regularized),也就是朝向全局均值$\mu$的方向收缩更严重.接下来会看到一个例子.
 
-如果对于所有的组j拉说都有$\sigma_j=\sigma$,那么后验均值就成了:"
+如果对于所有的组j来说都有$\sigma_j=\sigma$,那么后验均值就成了:"
 $\hat\theta_j= \hat B\bar x+(1-\hat B)\bar x_j=\bar x +(1-\hat B)(\bar x_j-\bar x) $(5.86)
 
 这和本书在6.3.3.2中讨论到的吉姆斯-斯坦因估计器(James Stein estimator)的形式一模一样.
 
 #### 5.6.2.1 样例:预测棒球得分
 
-接下来这个例子是把上面的收缩(shrinkage)方法用到棒球击球平均数(baseball batting averages, 引自 Efron and Morris 1975).观察D=18个求援在前T=45场比赛中的的击球次数.把这个击球次数设为$b_i$.假设服从二项分布,即$b_j\sim Bin(T,\theta_j)$,其中的$\theta_j$是选手j的"真实"击球平均值.目标是要顾及出来这个$\theta_j$.最大似然估计(MLE)自然是$\hat\theta_j=x_j$,其中的$x_j=b_j/T$是经验击球平均值.不过可以用经验贝叶斯方法来进行更好的估计.
+接下来这个例子是把上面的收缩(shrinkage)方法用到棒球击球平均数(baseball batting averages, 引自 Efron and Morris 1975).观察D=18个球员在前T=45场比赛中的的击球次数.把这个击球次数设为$b_i$.假设服从二项分布,即$b_j\sim Bin(T,\theta_j)$,其中的$\theta_j$是选手j的"真实"击球平均值.目标是要顾及出来这个$\theta_j$.最大似然估计(MLE)自然是$\hat\theta_j=x_j$,其中的$x_j=b_j/T$是经验击球平均值.不过可以用经验贝叶斯方法来进行更好的估计.
 
 要使用上文中讲的高斯收缩方法(Gaussian shrinkage approach),需要似然函数是高斯分布的,即对于一直的$\sigma^2$有$x_j\sim N(\theta_j,\sigma^2)$.(这里去掉了下标i因为假设了$N_j=1$而$x_j$已经代表了选手j的平均值了.)不过这个例子里面用的是二项似然函数.均值正好是$E[x_j]=\theta_j$,方差则是不固定的:
 
@@ -722,7 +722,7 @@ $\hat\theta_j=0.5(\sin(\hat\mu_j/\sqrt{T})+1)$(5.89)
 
 #### 5.6.2.2 估计超参数
 
-在本节会对估计$\eta$给出一个算法.加入最开始对于所有组来说都偶有$\sigma^2_j=\sigma^2$.这种情况下就可以以闭合形式(closed form)来推导经验贝叶斯估计(EB estimate).从等式4.126可以得到:
+在本节会对估计$\eta$给出一个算法.加入最开始对于所有组来说都有$\sigma^2_j=\sigma^2$.这种情况下就可以以闭合形式(closed form)来推导经验贝叶斯估计(EB estimate).从等式4.126可以得到:
 $p(\bar x_j|\mu,\tau^2,\sigma^2)=\int N(\bar x_j|\theta_j,\sigma^2)N(\theta_j|\mu,\tau^2)d\theta_j =N(\bar x_j|\mu,\tau^2+\sigma^2)$(5.90)
 
 然后边缘似然函数(marginal likelihood)为:
@@ -743,7 +743,7 @@ $\hat \tau^2+\sigma^2 =\frac{1}{D}\sum^D_{j]1}(\bar x_j-\bar x)^2*= s^2$(5.93)
 
 $\hat \tau^2=\max(0,s^2-\sigma^2)=(s^2-\sigma^2)_{+}$(5.94)
 
-这个月就得到了收缩因子(shrinkage factor):
+这样就得到了收缩因子(shrinkage factor):
 
 $\hat B=\frac{\sigma^2}{\sigma^2+\tau^2}=\frac{\sigma^2}{\sigma^2+(s^2-\sigma^2)_{+}}$(5.95)
 
