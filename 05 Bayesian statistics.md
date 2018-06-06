@@ -664,6 +664,90 @@ $$
 估计完了a和b之后,就可以代入到超参数里面来计算后验分布$p(\theta_i|\hat a,\hat b,D)$,还按照之前的方法,使用共轭分析.得到的每个$\theta_i$的后验均值就是局部最大似然估计(local MLE)和先验均值的加权平均值,依赖于$\eta=(a,b)$;但由于$\eta$是根据所有数据来估计出来的,所以每个$\theta_i$也都受到全部数据的影响.
 
 
+### 5.6.2 样例:高斯-高斯模型(Gaussian-Gaussian model)
+
+接下来这个例子和癌症发病率的例子相似,不同之处是这个例子中的数据是实数值的(real-valued).使用一个高斯(正态)似然函数(Gaussian likelihood)和一个高斯(正态)先验(Gaussian prior).这样就能写出来解析形式的解.
+
+设我们有来自多个相关群体的数据.比如$x_{ij}$表示的就是学生i在学校j得到的测试分数,觉得反胃从!到D,而i是从1到$N_j$,即$j=1:D,i=1:N_j$.然后想要估计每个学校的平均分$\theta_j$.可是样本规模$N_j$对于一些学校来说可能很小,所以可以用分层贝叶斯模型(hierarchical Bayesian model)来规范化这个问题,也就是假设$\theta_j$来自一个常规的先验(common prior)$N(\mu,\tau^2)$.
+
+这个联合分布的形式如下所示:
+$p(\theta,D|\eta,\sigma^2)=\prod^D_{j=1}N(\theta_j|\mu,\tau^2)\prod^{N_j}_{i=1}N(x_{ij}|\theta_j,\sigma^2)$(5.82)
+
+上式中为了简化,假设了$\sigma^2$是已知的.(这个假设在练习24.4中.)接下来将如何估计$\eta$.一旦估计了$\eta=(\mu,\tau)$,就可以计算$\theta_j$的后验了.要进行这个计算,只需要将联合分布改写成下面的形式,这个过程利用值$x_{ij}$和方差为$\sigma^2$的$N_j$次高斯观测等价于值为$\bar x_j *= \frac{1}{N_j}\sum^{N_j}_{i=1}x_{ij}$方差为$\sigma^2_j*=\sigma^2/N_j$的一次观测这个定理.这就得到了:
+
+
+$p(\theta,D|\hat\eta,\sigma^2)=\prod^D_{j=1}N(\theta_j|\hat\mu,\hat\tau^2)N(\bar x_j|\theta_j,\sigma^2_j)$(5.83)
+
+利用上面的式子,再利用本书4.4.1当中的结论,就能得到后验为:
+
+$$
+\begin{aligned}
+p(\theta_j|D,\hat\mu,\hat\tau^2)&= N(\theta_j|\hat B_j\hat\mu+(1-\hat B_j)\bar x_j,(1-\hat B_j)\sigma^2_j)  \text{(5.84)}\\
+\hat B_j &*=  \frac{\sigma^2_j}{\sigma^2_j+\hat\tau^2}\text{(5.85)}\\
+\end{aligned}
+$$
+
+其中的$\hat\mu =\bar x,\hat\tau^2$下面会给出定义.
+
+$0\le \hat B_j \le 1$这个量控制了朝向全局均值(overall mean)$\mu$的收缩程度(degree of shrinkage).如果对于第j组来说数据可靠(比如可能是样本规模$N_j$特别大),那么$\sigma^2_j$就会比$\tau^2$小很多;因此这样$\hat B_j$也会很小,然后就会在估计$\theta_j$的时候给$\bar x_j$更多权重.而样本规模小的群组就会被规范化(regularized),也就是朝向全局均值$\mu$的方向收缩更严重.接下来会看到一个例子.
+
+如果对于所有的组j拉说都有$\sigma_j=\sigma$,那么后验均值就成了:"
+$\hat\theta_j= \hat B\bar x+(1-\hat B)\bar x_j=\bar x +(1-\hat B)(\bar x_j-\bar x) $(5.86)
+
+这和本书在6.3.3.2中讨论到的吉姆斯-斯坦因估计器(James Stein estimator)的形式一模一样.
+
+#### 5.6.2.1 样例:预测棒球得分
+
+接下来这个例子是把上面的收缩(shrinkage)方法用到棒球击球平均数(baseball batting averages, 引自 Efron and Morris 1975).观察D=18个求援在前T=45场比赛中的的击球次数.把这个击球次数设为$b_i$.假设服从二项分布,即$b_j\sim Bin(T,\theta_j)$,其中的$\theta_j$是选手j的"真实"击球平均值.目标是要顾及出来这个$\theta_j$.最大似然估计(MLE)自然是$\hat\theta_j=x_j$,其中的$x_j=b_j/T$是经验击球平均值.不过可以用经验贝叶斯方法来进行更好的估计.
+
+要使用上文中讲的高斯收缩方法(Gaussian shrinkage approach),需要似然函数是高斯分布的,即对于一直的$\sigma^2$有$x_j\sim N(\theta_j,\sigma^2)$.(这里去掉了下标i因为假设了$N_j=1$而$x_j$已经代表了选手j的平均值了.)不过这个例子里面用的是二项似然函数.均值正好是$E[x_j]=\theta_j$,方差则是不固定的:
+
+$var[x_j]=\frac{1}{T^2}var[b_j]=\frac{T\theta_j(1-\theta_j)}{T^2}$(5.87)
+
+所以咱们对$x_j$应用一个方差稳定变换(variance stabilizing transform 5)来更好地符合高斯假设:
+$y_i=f(y_i)=\sqrt{T}\arcsin (2y_i-1)$(5.88)
+
+然后应用一个近似$y_i\sim N(f(\theta_j),1)=N(\mu_j,1)$.以$\sigma^2=1$代入等式5.86来使用高斯收缩对$\mu_j$进行估计,然后变换回去,就得到了:
+
+$\hat\theta_j=0.5(\sin(\hat\mu_j/\sqrt{T})+1)$(5.89)
+
+
+
+此处参考原书图5.12
+
+这个结果如图5.12(a-b)所示.在图(a)中,投图的是最大似然估计(MLE)$\hat\theta_j$和后验均值$\bar\theta_j$.可以看到所有的估计都朝向全局均值0.265收缩.在图(b)中,投图的是$\theta_j$的真实值,最大似然估计(MLE)$\hat\theta_j$和后验均值$\bar\theta_j$.(这里的$\theta_j$的真实值是指从更大规模的独立赛事之间得到的估计值.)可以看到平均来看,收缩的估计比最大似然估计(MLE)更加靠近真实值.尤其是均方误差,定义为$MSE=\frac{1}{N}\sum^D_{j=1}(\theta_j-\bar\theta_j)^2$,使用收缩估计的$\bar\theta_j$比最大似然估计的$\hat\theta_j$的均方误差小了三倍.
+
+
+
+
+#### 5.6.2.2 估计超参数
+
+在本节会对估计$\eta$给出一个算法.加入最开始对于所有组来说都偶有$\sigma^2_j=\sigma^2$.这种情况下就可以以闭合形式(closed form)来推导经验贝叶斯估计(EB estimate).从等式4.126可以得到:
+$p(\bar x_j|\mu,\tau^2,\sigma^2)=\int N(\bar x_j|\theta_j,\sigma^2)N(\theta_j|\mu,\tau^2)d\theta_j =N(\bar x_j|\mu,\tau^2+\sigma^2)$(5.90)
+
+然后边缘似然函数(marginal likelihood)为:
+
+$p(D|\mu,\tau^2,\sigma^2)=\prod^D_{j=1}N(\bar x_j|\mu,\tau^2+\sigma^2)$(5.91)
+
+接下来就可以使用对正态分布(高斯分布)的最大似然估计(MLE)来估计超参数了.例如对$\mu$就有:
+
+$\hat \mu =\frac{1}{D}\sum^D_{j=1}\bar x_j=\bar x$(5.92)
+
+上面这个也就是全局均值.
+
+对于方差,可以使用矩量匹配(moment matching,相当于高斯分布的最大似然估计):简单地把模型方差(model varianc)等同于经验方差(empirical variance):
+
+$\hat \tau^2+\sigma^2 =\frac{1}{D}\sum^D_{j]1}(\bar x_j-\bar x)^2*= s^2$(5.93)
+
+所以有$\hat \tau^2=s^2-\sigma^2$.因为已知了$\tau^2$必然是正的,所以通常都使用下面这个修订过的估计:
+
+$\hat \tau^2=\max(0,s^2-\sigma^2)=(s^2-\sigma^2)_{+}$(5.94)
+
+这个月就得到了收缩因子(shrinkage factor):
+
+$\hat B=\frac{\sigma^2}{\sigma^2+\tau^2}=\frac{\sigma^2}{\sigma^2+(s^2-\sigma^2)_{+}}$(5.95)
+
+如果$\sigma^2_j$各自不同,就没办法以闭合形式来推导出解了.练习11.13讨论的是如何使用期望最大化算法(EM algorithm)来推导一个经验贝叶斯估计(EB estimate),练习24.4讨论了如何在这个分层模型中使用全贝叶斯方法.
 
 
 
