@@ -277,7 +277,7 @@ $$
 这个积分正好就是$Beta(a+x, M−x+b)$这个分布的归一化常数.因此:
 $$(3.33)
 因此就能发现后验预测分布如下所示,是一个(复合)$\beta$-二项分布分布(beta-binomial distribution):
-$Bb(x|a,b,M)*= ({\begin{matrix}M\\x\end{matrix}}) \frac{B(x+a,M-x+b)}{B(a,b)}$(3.34)
+$Bb(x|a,b,M)*= ({\begin{matrix}M \\ x\end{matrix}}) \frac{B(x+a,M-x+b)}{B(a,b)}$(3.34)
 这个分布的均值和方差如下所示:
 $E[x]=M\frac{a}{a+b},var[x]=\frac{Mab}{(a+b)^2}\frac{(a+b+M)}{a+b+1}$(3.35)
 如果$M=1$,则$x\in \{0,1\}$,均值就成了$E[x|D]=p(x=1|D)=\frac{a}{a+b}$,和等式3.29一致.
