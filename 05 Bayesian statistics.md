@@ -752,6 +752,118 @@ $\hat B=\frac{\sigma^2}{\sigma^2+\tau^2}=\frac{\sigma^2}{\sigma^2+(s^2-\sigma^2)
 
 
 
+## 5.7 贝叶斯决策规则(Bayesian decision rule)
+
+之前的内容中,我们已经看到了概率理论可以用来表征和更新我们对客观世界状态的信念.不过我们最终目标是把信念转化成行动.在本节,讲的就是用最有方法来实现这个目的.
+
+我们可以把任何给定的统计决策问题规范表达成一个与自然客观世界作为对手的游戏(而不是和其他的玩家相对抗,和玩家对抗就是博弈论范畴了,可以参考Shoham and Leyton-Brown 2009).在这个游戏中,自然客观世界会选择一个状态/参数/标签,$y\in Y$,对我们来说是未知的,然后生成了一次观察$x\in X$,这是我们看到的.接下来我们就要做出一次决策(decision),也就是要从某个行为空间(action space)中选择一个行动a.最终会得到某种损失(loss),$L(y,a)$,这个损失函数测量了咱们选择的行为a和自然客观世界隐藏的状态y之间的兼容程度.例如,可以使用误分类损失(misclassitication loss)$L(y,a)= I(y\ne a)$,或者用平方误差损失(squared loss)$L(y,a)=(y-a)^2$.接下来是一些其他例子.
+
+我们的目标就是设计一个决策程序或者决策策略(decision procedure or policy)$\delta:X\rightarrow A$,对每个可能的输入指定了最优行为.这里的优化(optimal)的意思就是让行为能够使损失函数期望最小:
+
+$\delta(x)=\arg\min_{a\in A} E[L(y,a)]$(5.96)
+
+在经济学领域,更常见的属于是效用函数(utility function),其实也就是损失函数取负值,即$U(y,a)=-L(y,a)$.这样上面的规则就成了:
+
+$\delta(x)=\arg\max_{a\in A} E[U(y,a)]$(5.97)
+
+这就叫期望效用最大化规则(maximum expected utility principle),是所谓理性行为(rational behavior)的本质.
+
+这里要注意"期望(expected)"这个词,是可以有两种理解的.在贝叶斯统计学语境中的意思是给定了已经看到的数据之后,对y的期望值(expected value)后面也会具体讲.在频率论统计学语境中,意思是我们期待在未来看到y和x的期望值,具体会在本书6.3当中讲解.
+
+在贝叶斯决策理论的方法中,观察了x之后的最优行为定义是能后让后验期望损失(posterior expected loss)最小的行为.
+
+$\rho(a|x)*= E_{p(y|x)} [L(y,a)]=\sum_y L(y,a)p(y|x)$(5.98)
+
+(如果y是连续的,比如想要估计一个参数向量的时候,就应该吧上面的求和替换成为积分.)这样就有了贝叶斯估计器(Bayes estimator),也叫做贝叶斯决策规则(Bayes decision rule):
+
+$\delta(x)=\arg\min_{a\in A}\rho(a|x) $(5.99)
+
+### 5.7.1 常见损失函数的贝叶斯估计器
+
+这一节我们展示了对一些机器学习中常遇到的损失函数如何构建贝叶斯估计器.
+
+#### 5.7.1.1 最大后验估计(MAP estimate)最小化0-1损失
+
+0-1损失(0-1 loss)的定义是:
+$L(y,a)=I(y\ne a)=\begin{cases} 0 &\text{if} &a=y\\ 1 &\text{if} &a\ne y\end{cases}$(5.100)
+
+这通常用于分类问题中,其中的y是真实类标签(true class label),而$a=\hat y$是估计得到的类标签.
+
+例如,在二分类情况下,可以写成下面的损失矩阵(loss matrix):
+
+||\hat y=1|\hat y=0|
+|---|---|---|
+|y=1|0|1|
+|y=0|1|0|
+
+
+
+此处查看原书图master/Figure/5.13
+
+(在本书5.7.2,会把上面这个损失函数进行泛化,就可以应用到对偏离对角位置的两种错误的惩罚上了.)
+
+后验期望损失为:
+
+$\rho(a|x)=p(a\ne y|x)=1-p(y|x)$(5.101)
+
+所以能够最小化期望损失的行为就是后验众数(posterior mode)或者最大后验估计(MAP estimate):
+
+$y^{*}(x)=\arg\max_{y\in Y} p(y|x)$(5.102)
+
+#### 5.7.1.2 拒绝选项(Reject option)
+在分类问题中,$p(y|x)$是非常不确定的,所以我们可能更倾向去选择一个拒绝行为(reject action),也就是拒绝将这个样本分类到任何已有的指定分类中,而是告知"不知道".这种模糊情况可以被人类专家等来处理,比如图5.13所示.对于风险敏感的领域(risk averse domains)比如医疗和金融等,这是很有用处的.
+
+接下来讲这个拒绝选项用正规化语言表达一下.设选择一个$a=C+1$对应的就是选择了拒绝行为,然后选择$a\in \{1,...,C\}$对应的就是分类到类标签中去.然后就可以定义下面的损失函数:
+
+$L(y=j,a=i)=\begin{cases} 0 &\text{if} &i=j & i,j \in\{1,...,C\}\\ \lambda_r &\text{if} &i=C+1 \\ \lambda_s &\text{otherwise}\end{cases}$(5.103)
+
+此处查看原书图master/Figure/5.14
+
+
+#### 5.7.1.3 后验均值(Posterior mean)最小化$l_2$(二次)损失函数
+
+对于连续参数,更适合使用的损失函数是平方误差函数(squared error),也成为$l_2$损失函数,或者叫二次损失函数(quadratic loss),定义如下:
+
+$L(y,a)=(y-a)^2$(5.104)
+后验期望损失为:
+
+$\rho(a|x)=E[(y-a)^2|x|]=E[y^2|x]-2aE[y|x]+a^2$(5.105)
+
+这样最优估计就是后验均值:
+
+$\frac{\partial}{\partial a}\rho(a|x)= -2E[y|x]+2a=0  \Longrightarrow \hat y=E[y|x]=\int y p(y|x)dy $(5.106)
+
+这也叫做最小均值方差估计(minimum mean squared error,缩写为MMSE).
+
+在线性回归问题中有:
+
+$p(y|x,\theta)=N(y|x^Tw,\sigma^2)$(5.107)
+
+这时候给定某个训练集D之后的最优估计就是:
+
+$E[y|x,D]=x^TE[w|D]$(5.108)
+
+也就是将后验均值参数估计代入.注意不论对w使用什么样的先验,这都是最优选择.
+
+
+#### 5.7.1.4 后验中位数(Posterior median)最小化$l_1$(绝对)损失函数
+
+$l_2$(二次)损失函数以二次形式惩罚与真实值的偏离,因此对异常值(outliers)特别敏感.所以有一个更健壮的替换选择,就是绝对损失函数,或者也叫做$l_1$损失函数$L(y,a)=|y-a|$(如图5.14所示).这里的最优估计就是后验中位数,也就是使得$P(y < a|x) = P(y \ge a|x) = 0.5$的a值,具体证明参考本书练习5.9.
+
+
+#### 5.7.1.5 监督学习(Supervised learning)
+
+设想有一个预测函数$\delta: X\rightarrow Y$,然后设有某个损失函数$l(y,y')$,这个损失函数给出了预测出$y'$而真实值是$y$的时候的损失.这样就可以定义采取行为$\delta$(比如使用这个预测器)而未知自然状态为$\theta$(数据生成机制的参数)的时候的损失:
+
+$L(\theta,\delta)*= E_{(x,y) \sim p(x,y|\theta)}[l(y,\delta(x)]=\sum_x\sum_y L(y,\delta(x))p(x,y|\theta) $(5.109)
+
+这就是泛化误差(generalization error).咱们的目标是最小化后验期望损失,即:
+
+$\rho(\delta|D)=\int p(\theta|D)L(\theta,\delta)d\theta $(5.110)
+
+这和公式6.47当中定义的频率论中的风险(risk)相对应.
+
+
 
 
 
