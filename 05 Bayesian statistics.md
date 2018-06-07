@@ -774,7 +774,7 @@ $\delta(x)=\arg\max_{a\in A} E[U(y,a)]$(5.97)
 
 $\rho(a|x)*= E_{p(y|x)} [L(y,a)]=\sum_y L(y,a)p(y|x)$(5.98)
 
-(如果y是连续的,比如想要估计一个参数向量的时候,就应该吧上面的求和替换成为积分.)这样就有了贝叶斯估计器(Bayes estimator),也叫做贝叶斯决策规则(Bayes decision rule):
+(如果y是连续的,比如想要估计一个参数向量的时候,就应该把上面的求和替换成为积分.)这样就有了贝叶斯估计器(Bayes estimator),也叫做贝叶斯决策规则(Bayes decision rule):
 
 $\delta(x)=\arg\min_{a\in A}\rho(a|x) $(5.99)
 
