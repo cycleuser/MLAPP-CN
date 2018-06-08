@@ -905,12 +905,14 @@ $$
 |估计1|TP真阳性|FP假阳性|$\hat N_{+} =TP+FP$|
 |估计0|FN假阴性|TN真阴性|$\hat N_{-} =FN+TN$|
 |$\Sigma$|$N_{+} =TP+FN$|$N_{-}=FP+TN$|$N = TP + FP + FN + TN$|
+
 表5.2 从混淆矩阵(confusion matrix)可推导的量.$N_+$是真阳性个数,$\hat N_{+}$是预测阳性个数,$N_-$是真阴性个数,$\hat N_{-}$是预测阴性个数.
 
 ||$y=1$| $y=0$|
 |---|---|---|
 |$\hat y=1$|$TP/N_+=TPR=sensitivity=recall$ |$FP/N_− =FPR=type I$ |
 |$\hat y=0$|$FN/N_+ =FNR=miss rate=type II$| $TN/N_− =TNR=speciﬁty$|
+
 表5.3 从一个混淆矩阵中估计$p(\hat y|y)$.缩写解释:FNR = false negative rate 假阴性率, FPR = false positive rate 假阳性率, TNR = true negative rate 真阴性率, TPR = true positive rate 真阳性率.
 
 
@@ -930,6 +932,7 @@ $$
 |---|---|---|
 |$\hat y=1$|$TP/\hat N_+=precision =PPV$ |$FP/\hat N_+ =FDP$ |
 |$\hat y=0$|$FN/\hat N_-$| $TN/\hat N_− =NPV$|
+
 表5.4 从一个混淆矩阵中估计的量.缩写解释:FDP = false discovery probability 错误发现概率, NPV = negative predictive value 阴性预测值, PPV = positive predictive value阳性预测值.
 
 
@@ -977,6 +980,10 @@ $F_1 =\frac{2\sum^N_{i=1}y_i \hat y_i}{\sum^N_{i=1}y_i+\sum^N_{i=1}\hat y_i}$(5.
 
 表5.5给出了一个样例,可以比对这两种平均F1分数的区别.可见类别1的精确率是0.5,类别2是0.9.宏观平均精确率就是0.7,而微观平均精确率是0.83.后面这个更接近类别2的精确率而远离类别1的精确率,这是因为类别2是类别1的五倍.为了对每个类给予同样的权重,就要用宏观平均.
 
+<<<<<<< HEAD
+=======
+这个曲线可以用一个单一数值来概括,也就是均值精确度(mean precision,在识别到的值上求平均值),近似等于曲线下的面积.或者也可以用固定识别率下的精确度来衡量,比如在前K=10个识别到的项目中的精确率.这就叫做在K分数(K score)的平均精确度.这个指标在评估信息检索系统的时候用得很广.
+>>>>>>> dccc647bdce1dab49305b7df5608d379962b6d72
 
 #### 5.7.2.4 错误发现率(False discovery rates)*
 
