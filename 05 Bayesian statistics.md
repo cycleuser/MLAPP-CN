@@ -865,6 +865,89 @@ $\rho(\delta|D)=\int p(\theta|D)L(\theta,\delta)d\theta $(5.110)
 
 
 
+### 5.7.2 假阳性和假阴性的权衡
+
+本章关注的是二分类决策问题(binary decision problems),比如假设检验(hypothesis testing),二分类,对象事件监测等等.这种情况下就有两种错误类型:假阳性(false positive,也叫假警报false alarm),就是我们估计的$\hat y=1$而实际上真实的是$y=0$;或者就是假阴性(false negative,也叫做漏检测missed detection),就是我们估计的是$\hat y=0$而实际上真实的是$y=1$.0-1损失函数同等对待这两种错误.可以用下面这个更通用的损失矩阵来表征这种情况:
+
+
+||\hat y=1|\hat y=0|
+|---|---|---|
+|y=1|0|$L_{FN}$|
+|y=0|$L_{FP}$|0|
+
+上面的$L_{FN}$就是假阴性的损失,而$L_{FP}$是假阳性的损失.两种可能性微的后验期望损失为:
+
+$$
+\begin{aligned}
+\rho(\hat y=0|x)&= L_{FN} p(y=1|x) &\text{(5.111)}\\
+\rho(\hat y=1|x)&= L_{FP} p(y=0|x) &\text{(5.112)}\\
+\end{aligned}
+$$
+
+因此应选 $\hat y=1$ 当且仅当:
+
+$$
+\begin{aligned}
+\rho(\hat y=0|x) &>  \rho(\hat y=1|x)&\text{(5.113)}\\
+\frac{p(y=1|x) }{p(y=0|x) }&>\frac{L_{FP}}{L_{FN}}  &\text{(5.114)}\\
+\end{aligned}
+$$
+
+
+如果$L_{FN}=cL_{FP}$,很明显(如练习5.10所示)应该选$\hat y=1$,当且仅当$p(y=1|x)/p(y=0|x)> \tau $,其中的$\tau=c/(1+c)$(更多细节参考 Muller et al. 2004).例如,如果一个假阴性的损失是假阳性的两倍,就设$c=2$,然后在宣称预测结果为阳性之前要先使用一个2/3的决策阈值(decision threshold).
+
+接下来要讨论的是ROC曲线,这种方式提供了学习FP-FN权衡的一种方式,而不用必须去选择特定的阈值设置.
+
+#### 5.7.2.1 ROC 曲线以及相关内容
+
+||真实1| 真实0|$\Sigma$|
+|---|---|---|---|
+|估计1|TP真阳性|FP假阳性|$\hat N_{+} =TP+FP$|
+|估计0|FN假阴性|TN真阴性|$\hat N_{-} =FN+TN$|
+|$\Sigma$|$N_{+} =TP+FN$|$N_{-}=FP+TN$|$N = TP + FP + FN + TN$|
+表5.2 从混淆矩阵(confusion matrix)可推导的量.$N_+$是真阳性个数,$\hat N_{+}$是预测阳性个数,$N_-$是真阴性个数,$\hat N_{-}$是预测阴性个数.
+
+||$y=1$| $y=0$|
+|---|---|---|
+|$\hat y=1$|$TP/N_+=TPR=sensitivity=recall$ |$FP/N_− =FPR=type I$ |
+|$\hat y=0$|$FN/N_+ =FNR=miss rate=type II$| $TN/N_− =TNR=speciﬁty$|
+表5.3 从一个混淆矩阵中估计$p(\hat y|y)$.缩写解释:FNR = false negative rate 假阴性率, FPR = false positive rate 假阳性率, TNR = true negative rate 真阴性率, TPR = true positive rate 真阳性率.
+
+
+如果$f(x)>\tau$是决策规则,其中的$f(x)$是对$y=1$(应该与$p(y = 1|x)$单调相关,但不必要是概率函数)的信心的衡量,$\tau$是某个阈值参数.对于每个给定的$\tau$值,可以应用局Ce规则,然后统计真阳性/假阳性/真阴性/假阴性的各自出现次数,如表5.2所示./这个误差表格也叫作混淆矩阵(confusion matrix).
+
+从这个表中可以计算出真阳性率(TPR),也叫作敏感度(sensitivity)/识别率(recall)/击中率(hit rate),使用$TPR = TP/N_+ \approx p(\hat y = 1|y = 1)$就可以计算得到.还可以计算假阴性率(FPR),也叫作误报率(false alarm rate)/第一类错误率(type I error rate),利用$FPR = FP/N_− \approx p(\hat y = 1|y = 0)$.这些定义以及相关概念如表格5.3和5.4所示.在计算损失函数的时候可以任意组合这些误差.
+
+不过,与其使用某个固定阈值$\tau$来计算真阳性率TPR和假阳性率FPR,还不如使用一系列的阈值来运行监测器,然后投影出TPR关于FPR的曲线,作为$\tau$的隐含函数.这也叫受试者工作特征曲线(receiver operating characteristic curve，简称ROC曲线),又称为感受性曲线(sensitivity curve),如图5.15(a)就是一例.任何系统都可以设置阈值为1即$\tau =1$来实现左下角的点(FPR = 0, TPR = 0),这样也就是所有的都分类成为阴性了;类似的也可以设置阈值为0即$\tau =0$,都跑到右上角去,即(FPR = 1, TPR = 1),也就是都分类成阳性.如果一个系统在概率层面(chance level)上运行,就可以通过选择适当阈值来实现对角线上的$TPR = FPR$的任一点.一个能够完美区分开阴性阳性的系统的阈值可以使得整个出在图的左上方,即(FPR = 0, TPR = 1);通过变换阈值,这样的系统就可以从左边的轴移动到顶部轴,如图5.15(a)所示.
+
+一个ROC曲线的质量通常用一个单一数值来表示,也就是曲线所覆盖的面积(area under the curve,缩写为AUC).AUC分数越高就越好,最大的显然就是1了.另外一个统计量是相等错误率(equal error rate,缩写为EER),也叫做交错率(cross over rate),定义是满足FPR = FNR的值.由于FNR=1-TPR,所以可以画一条线从左上角到右下角然后看在哪里切穿ROC曲线就是了(参考图5.15(a)中的A和B两个点).EER分数越低越好,最小显然就是0.
+
+
+
+此处查看原书图5.15
+
+||$y=1$| $y=0$|
+|---|---|---|
+|$\hat y=1$|$TP/\hat N_+=precision =PPV$ |$FP/\hat N_+ =FDP$ |
+|$\hat y=0$|$FN/\hat N_-$| $TN/\hat N_− =NPV$|
+表5.4 从一个混淆矩阵中估计的量.缩写解释:FDP = false discovery probability 错误发现概率, NPV = negative predictive value 阴性预测值, PPV = positive predictive value阳性预测值.
+
+#### 5.7.2.2 精确度-识别率曲线(Precision recall curves)
+
+探测小概率的罕见事件(比如检索相关文档或在图中查找面孔)时候,阴性结果的数量会非常大.这样再去对比真阳性率$TPR = TP/N_+$和假阳性率$FPR = FP/N_−$就没啥用处了,因为假阳性率FPR肯定会很小的.因此在ROC曲线上的所有行为都会出现在最左边.这种情况下,通常就把真阳性率TPR和假阳性个数投一个曲线,而不用假阳性率FPR.
+
+不过有时候"阴性(negative)"还不太好定义.例如在图像中探测一个对象(参考本书1.2.1.3),如果探测器通过批量分块来进行探测,那么分块检验过的数目,也就是真阴性的数目,是算法的一个参数,而并不是问题本身定义的一部分.所以就要用一个只涉及阳性的概念来衡量.(注:这样就是问题定义控制的,而不是算法决定了.)
+
+精确度(precision)的定义是$TP/\hat N_+ =p(y=1|\hat y=1)$,识别率(recall)的定义是$TP/N_+ =p(\hat y=1|y=1)$.精确度衡量的是检测到的阳性中有多大比例是真正的阳性,而识别率衡量的是在阳性中有多少被我们检测到了.如果$\hat y_i \in \{0,1\}$是预测的分类标签,而$y_i \in \{0,1\}$是真实分类标签,就可以估计精确度和识别率,如下所示:
+
+$P=\frac{\sum_i y_i\hat y_i}{\sum_i \hat y _i},  R= \frac{\sum_iy_i\hat y_i}{\sum_i y_i}$(5.115)
+
+精确度-识别率曲线(precision recall curves)就是随着阈值参数$\tau$的变化对精确度与识别率直接的关系投图得到的曲线.如图5.15(b)所示.在图中曲线尽量往右上角去就好了.
+
+这个曲线可以用一个单一数值来概括,也就是均值精确度(mean precision,在识别到的值上求平均值),金斯等于曲线下的面积.或者也可以用固定识别率下的精确度来衡量,比如在前K=10个识别到的项目中的精确率.这就叫做在K分数(K score)的平均精确度.这个指标在评估信息检索系统的时候用得很广.
+
+
+
 
 
 
