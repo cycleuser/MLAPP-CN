@@ -905,12 +905,14 @@ $$
 |估计1|TP真阳性|FP假阳性|$\hat N_{+} =TP+FP$|
 |估计0|FN假阴性|TN真阴性|$\hat N_{-} =FN+TN$|
 |$\Sigma$|$N_{+} =TP+FN$|$N_{-}=FP+TN$|$N = TP + FP + FN + TN$|
+
 表5.2 从混淆矩阵(confusion matrix)可推导的量.$N_+$是真阳性个数,$\hat N_{+}$是预测阳性个数,$N_-$是真阴性个数,$\hat N_{-}$是预测阴性个数.
 
 ||$y=1$| $y=0$|
 |---|---|---|
 |$\hat y=1$|$TP/N_+=TPR=sensitivity=recall$ |$FP/N_− =FPR=type I$ |
 |$\hat y=0$|$FN/N_+ =FNR=miss rate=type II$| $TN/N_− =TNR=speciﬁty$|
+
 表5.3 从一个混淆矩阵中估计$p(\hat y|y)$.缩写解释:FNR = false negative rate 假阴性率, FPR = false positive rate 假阳性率, TNR = true negative rate 真阴性率, TPR = true positive rate 真阳性率.
 
 
@@ -930,6 +932,7 @@ $$
 |---|---|---|
 |$\hat y=1$|$TP/\hat N_+=precision =PPV$ |$FP/\hat N_+ =FDP$ |
 |$\hat y=0$|$FN/\hat N_-$| $TN/\hat N_− =NPV$|
+
 表5.4 从一个混淆矩阵中估计的量.缩写解释:FDP = false discovery probability 错误发现概率, NPV = negative predictive value 阴性预测值, PPV = positive predictive value阳性预测值.
 
 #### 5.7.2.2 精确度-识别率曲线(Precision recall curves)
@@ -944,7 +947,7 @@ $P=\frac{\sum_i y_i\hat y_i}{\sum_i \hat y _i},  R= \frac{\sum_iy_i\hat y_i}{\su
 
 精确度-识别率曲线(precision recall curves)就是随着阈值参数$\tau$的变化对精确度与识别率直接的关系投图得到的曲线.如图5.15(b)所示.在图中曲线尽量往右上角去就好了.
 
-这个曲线可以用一个单一数值来概括,也就是均值精确度(mean precision,在识别到的值上求平均值),金斯等于曲线下的面积.或者也可以用固定识别率下的精确度来衡量,比如在前K=10个识别到的项目中的精确率.这就叫做在K分数(K score)的平均精确度.这个指标在评估信息检索系统的时候用得很广.
+这个曲线可以用一个单一数值来概括,也就是均值精确度(mean precision,在识别到的值上求平均值),近似等于曲线下的面积.或者也可以用固定识别率下的精确度来衡量,比如在前K=10个识别到的项目中的精确率.这就叫做在K分数(K score)的平均精确度.这个指标在评估信息检索系统的时候用得很广.
 
 
 
