@@ -184,7 +184,7 @@ $p(D)=p(y_1)p(y_2|y_1)p(y_3|y_{1:2})...p(y_N|y_{1:N-1})$(5.14)
 
 此处查看原书图5.6
 
-另外一种理解贝叶斯奥卡姆剃刀效应的思路是参考概率总和积累起来必然是1.这样就有$\Sum_{D'}p(D'|m)=1$,其中的求和是在全部可能的数据点集合上进行的.复杂的模型可能进行很多预测,就必须把概率质量分散得特别细(thinkly),然后对任意给定数据就不能得到简单模型一样大的概率.这也叫做概率质量守恒原则(conservation of probability mass principle),如图5.6所示.水平方向的是所有可能的数据集,按照复杂性递增排序(以某种抽象概念来衡量).在纵轴上投下的是三个可能的概率模型:$M_1,M_2,M_3$复杂性递增.实际观测到底数据为竖直线条所示的$D_0$.图示可知,第一个模型太简单了,给$D_0$的概率太低.第三个模型给$D_0$的概率也很低,因为分布的更宽更窄.第二个模型就看上去正好,给已经观测到底数据给出了合理的置信程度,但又没有预测更多.因此第二个模型是最可选的模型.
+另外一种理解贝叶斯奥卡姆剃刀效应的思路是参考概率总和积累起来必然是1.这样就有$\sum_{D'}p(D'|m)=1$,其中的求和是在全部可能的数据点集合上进行的.复杂的模型可能进行很多预测,就必须把概率质量分散得特别细(thinkly),然后对任意给定数据就不能得到简单模型一样大的概率.这也叫做概率质量守恒原则(conservation of probability mass principle),如图5.6所示.水平方向的是所有可能的数据集,按照复杂性递增排序(以某种抽象概念来衡量).在纵轴上投下的是三个可能的概率模型:$M_1,M_2,M_3$复杂性递增.实际观测到底数据为竖直线条所示的$D_0$.图示可知,第一个模型太简单了,给$D_0$的概率太低.第三个模型给$D_0$的概率也很低,因为分布的更宽更窄.第二个模型就看上去正好,给已经观测到底数据给出了合理的置信程度,但又没有预测更多.因此第二个模型是最可选的模型.
 
 
 图5.7中的数据也是贝叶斯奥卡姆剃刀的一个样例.其中的多项式次数分别为1,2,3,对于N=5个数据点.另外还展示了各个模型的后验,其中使用了正态分布先验(更多细节参考本书7.6).由于没有足够的数据,不能判断复杂模型,所以最大后验估计模型(MAP model)就是d=1.图5.8展示的是当样本规模扩大到N=30的时候的情况.这时候就很明显了d=2是最佳模型(实际上这时候的数据就是用一个二次函数生成的).
@@ -226,8 +226,8 @@ $$
 $$
 \begin{aligned}
 p(\theta|D)&= \frac{p(D|\theta)p(\theta)}{p(D)}&\text{(5.19)}\\
-&= \frac{1}{p(D)}[\frac{1}{B(a,b)}\theta^{a-1}(1-\theta)^{b-1}][\begin{pmatrix}N\\N_1\end{pmatrix}\theta^{N_1}(1-\theta)^{N_0}] &\text{(5.20)}\\
-&= \begin{pmatrix}N\\N_1\end{pmatrix}\frac{1}{p(D)}\frac{1}{B(a,b)}[\theta^{a+N_1-1}(1-\theta)^{b+N_0-1}]&\text{(5.21)}\\
+&= \frac{1}{p(D)}[\frac{1}{B(a,b)}\theta^{a-1}(1-\theta)^{b-1}][\binom{N}{N-1}\theta^{N_1}(1-\theta)^{N_0}] &\text{(5.20)}\\
+&= \binom{N}{N-1}\frac{1}{p(D)}\frac{1}{B(a,b)}[\theta^{a+N_1-1}(1-\theta)^{b+N_0-1}]&\text{(5.21)}\\
 \end{aligned}
 $$
 
@@ -235,12 +235,12 @@ $$
 
 $$
 \begin{aligned}
-\frac{1}{B(a+N_1,b+N_0)}&= \begin{pmatrix}N\\N_1\end{pmatrix}\frac{1}{p(D)}\frac{1}{B(a,b)} &\text{(5.22)}\\
-p(D)&= \begin{pmatrix}N\\N_1\end{pmatrix}\frac{B(a+N_1,b+N_0)}{B(a,b)} &\text{(5.23)}\\
+\frac{1}{B(a+N_1,b+N_0)}&= \binom{N}{N-1}\frac{1}{p(D)}\frac{1}{B(a,b)} &\text{(5.22)}\\
+p(D)&= \binom{N}{N-1}\frac{B(a+N_1,b+N_0)}{B(a,b)} &\text{(5.23)}\\
 \end{aligned}
 $$
 
-$\beta$-伯努利分布模型(Beta-Bernoulli model)的边缘似然函数和上面的基本一样,唯一区别就是去掉了$\begin{pmatrix}N\\N_1\end{pmatrix}\$这一项.
+$\beta$-伯努利分布模型(Beta-Bernoulli model)的边缘似然函数和上面的基本一样,唯一区别就是去掉了$\binom{N}{N-1}$这一项.
 
 
 #### 5.3.2.2 狄利克雷-多重伯努利模型(Dirichlet-multinoulli model)
@@ -275,7 +275,7 @@ $$
 
 一般来说,直接计算等式5.13里面的积分还挺难的.一种简单又流行的近似方法是使用贝叶斯信息量(Bayesian information criterio,缩写为BIC),形式如下所示(Schwarz 1978):
 
-$BIC*=\log p(D|\hat \theta) -\frac{dof(\hat \theta)}{2}\log N\approx \log p(D) $(5.30)
+$BIC\overset{*}{=}\log p(D|\hat \theta) -\frac{dof(\hat \theta)}{2}\log N\approx \log p(D) $(5.30)
 
 上式中的$dof(\hat\theta)$是模型中的自由度个数(number of degrees of freedom),而$\hat\theta$是模型的最大似然估计(MLE).这有一种类似惩罚对数似然函数(penalized log likelihood)的形式,其中的惩罚项(penalty term)依赖于模型的复杂度.具体信息可以从本书8.4.2查看贝叶斯信息量评分的推导过程.
 
@@ -288,7 +288,7 @@ $\log p(D|\hat\theta)=-\frac{N}{2}\log(2\pi\hat\sigma^2)-\frac{N}{2}$(5.31)
 $BIC=-\frac{N}{2}\log (\hat\sigma^2)-\frac{D}{2}\log(N)$(5.32)
 
 其中的Ｄ是模型中的变两个数．在统计学中，通常对BIC有另外的一种定义,称之为贝叶斯信息量损失(BIC cost,因为目的是将其最小化):
-$BIC-cost*= -2\log p(D|\hat\theta)+dof(\hat\theta)\log(N)\approx -2\log p(D)$(5.33)
+$BIC-cost\overset{*}{=} -2\log p(D|\hat\theta)+dof(\hat\theta)\log(N)\approx -2\log p(D)$(5.33)
 
 在线性回归的情况下,这就变成了:
 $BIC-cost= N\log(\hat\sigma^2)+D \log (N)$(5.34)
@@ -296,7 +296,7 @@ $BIC-cost= N\log(\hat\sigma^2)+D \log (N)$(5.34)
 贝叶斯信息量(BIC)方法非常类似于最小描述长度原则(minimum description length,缩写为MDL),这个原则是根据模型拟合数据的程度以及定义复杂度来对模型进行评分.更多细节参考(Hansen and Yu 2001).
 
 还有一个和BIC/MDL非常相似的概念叫做赤池信息量(Akaike information criterion,缩写为AIC),定义如下所示:
-$AIC(m,D)*=\log p(D|\hat\theta_{MLE})-dof(m)$(5.35)
+$AIC(m,D)\overset{*}{=}\log p(D|\hat\theta_{MLE})-dof(m)$(5.35)
 
 这个概念是从频率论统计学的框架下推导出来的,不能被解释为对边缘似然函数的近似.虽然它的形式和BIC很相似.可以看出AIC当中的惩罚项(penalty)要比BIC里面小.这就导致了AIC会挑选比BIC更复杂的模型.不过这也会导致更好的预测精度.具体参考(Clarke et al. 2009, sec 10.2)来了解更多讨论以及这类信息量.
 
@@ -344,7 +344,7 @@ $\hat\alpha=\arg\max_{\alpha} p(D|\alpha,m)=\arg\max_{\alpha}\int p(D|w)p(w|\alp
 
 设模型先验是均匀分布的,即$p(m)\propto 1$.那么这时候模型选择就等价于选择具有最大边缘似然率的模型了.接下来假设有两个模型可选,分别是空假设(null hypothesis)$M_0$和替换假设(alternative hypothesis)$M_1$.然后就可以定义边缘似然函数之比就叫做贝叶斯因数(Bayes factor):
 
-$BF_{1,0}*=\frac{ p(D|M_1)}{p(D|M_0)}=\frac{p(M_1|D)}{p(M_0|D)}/\frac{p(M_1)}{p(M_0)}$(5.39)
+$BF_{1,0}\overset{*}{=}\frac{ p(D|M_1)}{p(D|M_0)}=\frac{p(M_1|D)}{p(M_0|D)}/\frac{p(M_1)}{p(M_0)}$(5.39)
 
 (这个跟似然率比值(likelihood ratio)很相似,区别就是整合进来了参数,这就可以对不同复杂度的模型进行对比了.)如果$BF_{1,0}>1$,我们就优先选择模型1,繁殖就选择模型0.
 
@@ -443,7 +443,7 @@ $p_\phi(\phi)\propto (I(\phi))^{\frac12}$(5.51)
 
 其中的$I(\phi)$是费舍信息矩阵(Fisher information matrix):
 
-$I(\phi) *= -E[(\frac{d\log p(X|\phi)}{d\phi} )^2]$(5.52)
+$I(\phi) \overset{*}{=} -E[(\frac{d\log p(X|\phi)}{d\phi} )^2]$(5.52)
 
 这是对预期的负对数似然函数的度量,也是对最大似然估计的稳定性的度量,参考本书6.2.2.于是就有:
 
@@ -473,7 +473,7 @@ $\log p(X|\theta) =X|log \theta(1-X)\log(1-\theta)$(5.57)
 
 得分函数(score function)正好就是对数似然函数的梯度:
 
-$s(\theta)*=\frac{d}{d\theta}\log p(X|\theta)=\frac{X}{\theta}-\frac{1-X}{(1-\theta)^2}$(5.58)
+$s(\theta)\overset{*}{=}\frac{d}{d\theta}\log p(X|\theta)=\frac{X}{\theta}-\frac{1-X}{(1-\theta)^2}$(5.58)
 
 观测信息(observed information)就是对数似然函数的二阶导数(second derivative):
 
@@ -655,7 +655,7 @@ $\hat\eta =\arg\max p(D|\eta)=\arg\max[\int p(D|\theta)p(\theta|\eta)d\theta]$(5
 $$
 \begin{aligned}
 p(D|a,b)&=\prod_i \int Bin(x_i|N_i,\theta_i)Beta(\theta_i|a,b)d\theta_i  & \text{(5.80)}\\
-	&=\prod_i \frac{B(a+x_i,b+N_i-x_i)}{B(a,b)}  & \text((5.81)}\\
+&=\prod_i \frac{B(a+x_i,b+N_i-x_i)}{B(a,b)}  & \text((5.81))\\
 \end{aligned}
 $$
 
@@ -673,7 +673,7 @@ $$
 这个联合分布的形式如下所示:
 $p(\theta,D|\eta,\sigma^2)=\prod^D_{j=1}N(\theta_j|\mu,\tau^2)\prod^{N_j}_{i=1}N(x_{ij}|\theta_j,\sigma^2)$(5.82)
 
-上式中为了简化,假设了$\sigma^2$是已知的.(这个假设在练习24.4中.)接下来将估计$\eta$.一旦估计了$\eta=(\mu,\tau)$,就可以计算$\theta_j$的后验了.要进行这个计算,只需要将联合分布改写成下面的形式,这个过程利用值$x_{ij}$和方差为$\sigma^2$的$N_j$次高斯观测等价于值为$\bar x_j *= \frac{1}{N_j}\sum^{N_j}_{i=1}x_{ij}$方差为$\sigma^2_j*=\sigma^2/N_j$的一次观测这个定理.这就得到了:
+上式中为了简化,假设了$\sigma^2$是已知的.(这个假设在练习24.4中.)接下来将估计$\eta$.一旦估计了$\eta=(\mu,\tau)$,就可以计算$\theta_j$的后验了.要进行这个计算,只需要将联合分布改写成下面的形式,这个过程利用值$x_{ij}$和方差为$\sigma^2$的$N_j$次高斯观测等价于值为$\bar x_j \overset{*}{=} \frac{1}{N_j}\sum^{N_j}_{i=1}x_{ij}$方差为$\sigma^2_j\overset{*}{=}\sigma^2/N_j$的一次观测这个定理.这就得到了:
 
 
 $p(\theta,D|\hat\eta,\sigma^2)=\prod^D_{j=1}N(\theta_j|\hat\mu,\hat\tau^2)N(\bar x_j|\theta_j,\sigma^2_j)$(5.83)
@@ -683,7 +683,7 @@ $p(\theta,D|\hat\eta,\sigma^2)=\prod^D_{j=1}N(\theta_j|\hat\mu,\hat\tau^2)N(\bar
 $$
 \begin{aligned}
 p(\theta_j|D,\hat\mu,\hat\tau^2)&= N(\theta_j|\hat B_j\hat\mu+(1-\hat B_j)\bar x_j,(1-\hat B_j)\sigma^2_j)  \text{(5.84)}\\
-\hat B_j &*=  \frac{\sigma^2_j}{\sigma^2_j+\hat\tau^2}\text{(5.85)}\\
+\hat B_j &\overset{*}{=}  \frac{\sigma^2_j}{\sigma^2_j+\hat\tau^2}\text{(5.85)}\\
 \end{aligned}
 $$
 
@@ -737,7 +737,7 @@ $\hat \mu =\frac{1}{D}\sum^D_{j=1}\bar x_j=\bar x$(5.92)
 
 对于方差,可以使用矩量匹配(moment matching,相当于高斯分布的最大似然估计):简单地把模型方差(model varianc)等同于经验方差(empirical variance):
 
-$\hat \tau^2+\sigma^2 =\frac{1}{D}\sum^D_{j]1}(\bar x_j-\bar x)^2*= s^2$(5.93)
+$\hat \tau^2+\sigma^2 =\frac{1}{D}\sum^D_{j]1}(\bar x_j-\bar x)^2\overset{*}{=} s^2$(5.93)
 
 所以有$\hat \tau^2=s^2-\sigma^2$.因为已知了$\tau^2$必然是正的,所以通常都使用下面这个修订过的估计:
 
@@ -772,7 +772,7 @@ $\delta(x)=\arg\max_{a\in A} E[U(y,a)]$(5.97)
 
 在贝叶斯决策理论的方法中,观察了x之后的最优行为定义是能后让后验期望损失(posterior expected loss)最小的行为.
 
-$\rho(a|x)*= E_{p(y|x)} [L(y,a)]=\sum_y L(y,a)p(y|x)$(5.98)
+$\rho(a|x)\overset{*}{=} E_{p(y|x)} [L(y,a)]=\sum_y L(y,a)p(y|x)$(5.98)
 
 (如果y是连续的,比如想要估计一个参数向量的时候,就应该把上面的求和替换成为积分.)这样就有了贝叶斯估计器(Bayes estimator),也叫做贝叶斯决策规则(Bayes decision rule):
 
@@ -855,7 +855,7 @@ $l_2$(二次)损失函数以二次形式惩罚与真实值的偏离,因此对异
 
 设想有一个预测函数$\delta: X\rightarrow Y$,然后设有某个损失函数$l(y,y')$,这个损失函数给出了预测出$y'$而真实值是$y$的时候的损失.这样就可以定义采取行为$\delta$(比如使用这个预测器)而未知自然状态为$\theta$(数据生成机制的参数)的时候的损失:
 
-$L(\theta,\delta)*= E_{(x,y) \sim p(x,y|\theta)}[l(y,\delta(x)]=\sum_x\sum_y L(y,\delta(x))p(x,y|\theta) $(5.109)
+$L(\theta,\delta)\overset{*}{=} E_{(x,y) \sim p(x,y|\theta)}[l(y,\delta(x)]=\sum_x\sum_y L(y,\delta(x))p(x,y|\theta) $(5.109)
 
 这就是泛化误差(generalization error).咱们的目标是最小化后验期望损失,即:
 
@@ -966,7 +966,7 @@ $P=\frac{\sum_i y_i\hat y_i}{\sum_i \hat y _i},  R= \frac{\sum_iy_i\hat y_i}{\su
 
 对于固定阈值,可以计算单个的精确率和识别率的值.然后可以用这些值来计算出一个单个的统计量,就是F分数(F score),也叫做$F_1$分数($F_1$ score),是精确率和识别率的调和均值(harmonic mean):
 
-$F_1 *= \frac{2}{1/P+1/R} =\frac{2PR}{R+P} $(5.116)
+$F_1 \overset{*}{=} \frac{2}{1/P+1/R} =\frac{2PR}{R+P} $(5.116)
 
 使用等式5.115,就可以把上面的式子写成下面的形式:
 
@@ -986,13 +986,13 @@ $F_1 =\frac{2\sum^N_{i=1}y_i \hat y_i}{\sum^N_{i=1}y_i+\sum^N_{i=1}\hat y_i}$(5.
 假设要用某种高通量(high throughput)测试设备去发现某种罕见现象,比如基因在微观上的表达,或者射电望远镜等等.就需要制造很多二进制决策.形式为$p(y_i =1|D)>\tau$,其中的$D=\{x_i\}^N_{i=1}$,N 可能特别大.这种情况也叫做多重假设检验(multiple hypothesis testing).要注意这和标准的二分类问题的不同之处在于是要基于全部数据而不仅仅是$x_i$来对$y_i$进行分类.所以这是一个同时分类问题(simultaneous classiﬁcation problem),这种问题下我们就希望能比一系列独立分类问题有更好的效果.
 
 该怎么设置阈值$\tau$呢?很自然的方法是尽量降低假阳性的期望个数.在贝叶斯方法中,可以用下面的方式计算:
-$FD(\tau,D)*= \sum_i (1-p_i)I(p_i>\tau)$(5.118)
+$FD(\tau,D)\overset{*}{=} \sum_i (1-p_i)I(p_i>\tau)$(5.118)
 $(1-p_i): pr. error$
 $I(p_i>\tau): discovery $
 
-其中的$p_i*=p(y_i=1|D)$是你对目标物体会表现出问题中情形的信心.用如下方式定义后验期望错误发现率(posterior expected false discovery rate):
+其中的$p_i\overset{*}{=}p(y_i=1|D)$是你对目标物体会表现出问题中情形的信心.用如下方式定义后验期望错误发现率(posterior expected false discovery rate):
 
-$FDR(\tau,D)*= FD(\tau ,D)/N(\tau,D)$(5.119)
+$FDR(\tau,D)\overset{*}{=} FD(\tau ,D)/N(\tau,D)$(5.119)
 
 上式中的$N(\tau,D)=\sum_i I(p_i>\tau)$,是发现项目数.给定一个理想的错误发现率(FDR)的容忍度(tolerance),比如$\alpha =0.05$,就可以调整$\tau$来实现这个要求l这也叫做控制错误发现率(FDR)的直接后验概率手段(direct posterior probability approach),参考(Newton et al. 2004; Muller et al. 2004).
 
@@ -1010,7 +1010,7 @@ $FDR(\tau,D)*= FD(\tau ,D)/N(\tau,D)$(5.119)
 
 给定了一个后验,我们必须决定对应采取的行动.常见的一种期发放时,也叫做置信上界(upper confidence bound,缩写为UCB)的思路是要采取能够将下面这个项目最大化的行为:
 
-$K^*=\arg\max^K_{k=1}\mu_k +\lambda\sigma_k$(5.120)
+$K^\overset{*}{=}\arg\max^K_{k=1}\mu_k +\lambda\sigma_k$(5.120)
 
 上式中$\mu_k=E[r_k|D],\sigma_k^2=var[r_k|D]$,而$\lambda$是一个调节参数,在探索(exploration)和利用(exploitation)之间进行权衡.指关节度就是应该选择我们觉得会有好结果的行为($\mu_k$大),以及/或者选择我们不太确定的行为($\sigma_k$大).
 

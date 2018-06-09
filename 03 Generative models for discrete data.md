@@ -37,7 +37,7 @@ $p(y=c|x,\theta)\propto p(x|y=c,\theta)p(y=c|\theta)$(3.1)
 
 ### 3.2.1 似然率(likelihood)
 
-在看到$D=\{16,8,2,64\}$之后,为什么选择假设$h_{two}*=$2的幂数,而不选择$h_{even}*=$偶数呢?这两个假设都符合啊.关键就在于我们本能想要去避免可疑的巧合(suspicious coincidences).如果概念真是偶数,我们看到的怎么就都碰巧是2的幂数呢?
+在看到$D=\{16,8,2,64\}$之后,为什么选择假设$h_{two}\overset{*}{=}$2的幂数,而不选择$h_{even}\overset{*}{=}$偶数呢?这两个假设都符合啊.关键就在于我们本能想要去避免可疑的巧合(suspicious coincidences).如果概念真是偶数,我们看到的怎么就都碰巧是2的幂数呢?
 
 要用正规语言来说的话,假设样本是从概念的扩展集(extension)中随机抽取出来的.(概念的扩展及就是所有属于该概念的元素组成的集合,比如$h_{even}$的扩展及就是{2,4,6,...,98,100},以9结尾的数字的扩展及就是{9,19,...,99}.)Tenenbaum 称此为强抽样假设(strong sampling assumption).有了这个假设之后,从h中可替换地独立抽取N个样本的概率就是:
 
@@ -87,7 +87,7 @@ $\hat  h^{MAP} = \arg \max_h p(D|h)p(h)=\arg \max_h [\log p(D|h)+\log p(h)]$(3.6
 
 由于似然率项依赖于N的指数函数,而先验保持不变,所以随着数据越来越多,最大后验估计(MAP estimate)就收敛到最大似然估计(maximum likelihood estimate,MLE):
 
-$\hat  h^{mle} *= \arg \max_h p(D|h) =\arg \max_h \log p(D|h)$(3.7)
+$\hat  h^{mle} \overset{*}{=} \arg \max_h p(D|h) =\arg \max_h \log p(D|h)$(3.7)
 
 也就是说,如果数据足够多了,就会发现数据特征盖过了先验.这种情况下最大后验估计(MAP)就朝着最大似然估计(MLE)收敛了.
 
@@ -150,9 +150,9 @@ $p(D|\theta) =\theta^{N_1}(1-\theta)^{N-0}$(3.11)
 
 接下来设想在固定的总实验次数$N = N_0 + N_1$的情况下,数据中包含了人头朝上的次数为$N_1$.这时候就有$N_1$服从二项分布,即$N_1 \sim  Bin(N, \theta)$,其中这个Bin的意思就是二项分布(binomial distribution),其概率质量函数(pmf)如下所示:
 
-$Bin(k|n,\theta))*=(\begin{aligned}n\\k\end{aligned})\theta^k(1-\theta)^{n-k}$(3.12)
+$Bin(k|n,\theta))\overset{*}{=}\binom{n}{k}\theta^k(1-\theta)^{n-k}$(3.12)
 
-因为$(\begin{aligned}n\\k\end{aligned})$是独立于$\theta$的一个常数,所以二项取样模型的似然率和伯努利模型的似然率是一样的,所以我们对$\theta$的推断都是一样的,无论是观察一系列计数$D(N_1,N)$或者是有序的一系列测试$D = \{x_1 , ... , x_N \}$.
+因为$\binom{n}{k}$是独立于$\theta$的一个常数,所以二项取样模型的似然率和伯努利模型的似然率是一样的,所以我们对$\theta$的推断都是一样的,无论是观察一系列计数$D(N_1,N)$或者是有序的一系列测试$D = \{x_1 , ... , x_N \}$.
 
 ### 3.3.2 先验(prior)
 
@@ -226,7 +226,7 @@ $E[]=\frac{\alpha_0 m_1+N_1}{N+\alpha_0} = \frac{\alpha_0}{N+\alpha_0}m_1+\frac{
 #### 3.3.3.2 后验(posterior)的方差(variance)
 
 
-均值和模都是点估计,还要知道可信程度.后验方差就是用来对此进行衡量的.$\Beta$后验的方差如下所示:
+均值和模都是点估计,还要知道可信程度.后验方差就是用来对此进行衡量的.$\beta$后验的方差如下所示:
 
 $var[\theta|D]=\frac{(a+N_1)(b+N_0)}{(a+N_1+b+N_0)^2(a+N_1+b+N_0+1)}$(3.25)
 
@@ -271,7 +271,7 @@ $p(\hat x =1|D)=\frac{N_1+1}{N_1+N_0+2}$(3.30)
 $$
 \begin{aligned}
 p(x|D,M)&= \int_0^1 Bin(x|\theta,M)Beta(\theta|a,b)d\theta&\text{(3.31)}\\
-&=({\begin{aligned}M\\x\end{aligned}})\frac{1}{B(a,b)}\int_0^1\theta^x(1-\theta)^{M-x}\theta^{a-1}(1-\theta)^{b-1}d\theta &\text{(3.32)}\\
+&=\binom{M}{x}\frac{1}{B(a,b)}\int_0^1\theta^x(1-\theta)^{M-x}\theta^{a-1}(1-\theta)^{b-1}d\theta &\text{(3.32)}\\
 \end{aligned}
 $$
 这个积分正好就是$Beta(a+x, M−x+b)$这个分布的归一化常数.因此:
@@ -325,14 +325,14 @@ p(\theta|D)& \propto p(D|\theta)p(\theta)&\text{(3.38)}\\
 可以通过积分来推导出这个后验的模,也就是最大后验估计(MAP estimate).不过还要必须强化约束条件$\sum_k\theta_k=1$.可以通过拉格朗日乘数(Lagrange multiplier)来实现.受约束的目标函数,也叫拉格朗日函数(Lagrangian),可以通过对似然率取对数加上对先验取对数然后加上约束条件:
 $l(\theta,\lambda) =\sum_kN_k\log\theta_k+\sum_k(\alpha_k-1)\log\theta_k+\lambda(1-\sum_k\theta_k)$(3.41)
 
-为了简化表达,定义一个$\hat N_k*= N_k + \alpha_k − 1$.取关于$\lambda$的导数就得到了初始约束(original constraint):
+为了简化表达,定义一个$\hat N_k\overset{*}{=} N_k + \alpha_k − 1$.取关于$\lambda$的导数就得到了初始约束(original constraint):
 $\frac{\partial l}{\partial \lambda}= (1-\sum_k\theta_k)=0$(3.42)
 
 利用总和为1这个约束条件就可以解出来$\lambda$:
 $\sum_k\hat N_k =\lambda\sum_k \theta_k$(3.45)
 
 $N+\alpha_0-K=\lambda $(3.46)
-上式中的$\alpha_0*= \sum^K_{k=1}\alpha_k$等于先验中的样本规模.这样最大后验估计(MAP estimate)为:
+上式中的$\alpha_0\overset{*}{=} \sum^K_{k=1}\alpha_k$等于先验中的样本规模.这样最大后验估计(MAP estimate)为:
 $\hat\theta_k = \frac{N_k+\alpha_k-1}{N+\alpha_0-K}$(3.47)
 
 这与等式2.77相一致.如果使用均匀分布作为先验,即$\alpha_k=1$,就能解出最大似然估计(MLE):
@@ -430,7 +430,7 @@ $\log p(D|\theta) =\sum^C_{c=1}N_c\log\pi_c+\sum^D_{j=1}\sum^C_{c=1}\sum_{i:y_i=
 从等式3.48得知,分类先验(class porior)的最大似然估计(MLE)为:
 $\hat\pi_c =\frac{N_c}{N}$(3.57)
 
-上式中的$N_c*=\sum_iI(y_i=c)$,是类c中的样本个数.
+上式中的$N_c\overset{*}{=}\sum_iI(y_i=c)$,是类c中的样本个数.
 
 对似然率的最大似然估计(MLE)依赖于我们对特征所选的分布类型.简单起见,假设所有特征都是二值化的,这样使用伯努利分布,即$x_j|y=c\sim  Ber(\theta_{jc} )$.这时候最大似然估计(MLE)则为:
 $\hat\theta_{jc}=\frac {N_{jc}}{N_c}$(3.58)
@@ -499,7 +499,7 @@ $p(y=c|x,D)\propto \hat\pi_c\prod^D_{j=1}(\hat\theta_{jc})^{I(x_j=1}(1-\hat\thet
 $$
 \begin{aligned}
 \log p(y=c|X)&= b_c-\log[\sumˆC_{c'=1}eˆ{b_{c'}}]&\text{(3.70)}\\
- b_c& *=\log p(x|y=c)+\log p(y=c) &\text{(3.71)}
+ b_c& \overset{*}{=}\log p(x|y=c)+\log p(y=c) &\text{(3.71)}
 \end{aligned}
 $$
 然而这需要我们计算下面这个表达式:

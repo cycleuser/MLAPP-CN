@@ -22,14 +22,14 @@ https://zhuanlan.zhihu.com/python-kivy
 ### 4.1.2 基础知识
 
 回想一下本书2.5.2中关于D维度下的多元正态分布(MVN)概率密度函数(pdf)的定义,如下所示:
-$N(x|\mu,\Sigma)*= \frac{1}{(2\pi)^{D/2}|\Sigma |^{1/2}}\exp[ -\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)]$(4.1 重要公式)
+$N(x|\mu,\Sigma)\overset{*}{=} \frac{1}{(2\pi)^{D/2}|\Sigma |^{1/2}}\exp[ -\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)]$(4.1 重要公式)
 
 
 此处参考原书图4.1
 
-指数函数内部的是一个数据向量**x**和均值向量**$\mu$** 之间的马氏距离(马哈拉诺比斯距离,Mahalanobis distance).对$\Sigma$进行特征分解(eigendecomposition)有助于更好理解这个量.$\Sigma = U\wedge U ^T$,其中的U是标准正交矩阵(orthonormal matrix),满足$U^T U = I$,而$\wedge $是特征值组成的对角矩阵.经过特征分解就得到了:
+指数函数内部的是一个数据向量**x**和均值向量**$\mu$** 之间的马氏距离(马哈拉诺比斯距离,Mahalanobis distance).对$\Sigma$进行特征分解(eigendecomposition)有助于更好理解这个量.$\Sigma = U\Lambda U ^T$,其中的U是标准正交矩阵(orthonormal matrix),满足$U^T U = I$,而$\Lambda $是特征值组成的对角矩阵.经过特征分解就得到了:
 
-$\Sigma^{-1}=U^{-T}\wedge^{-1}U^{-1}=U\wedge ^{-1}U^T=\sum^D_{i=1}\frac{1}{\lambda_i}u_iu_i^T$(4.2)
+$\Sigma^{-1}=U^{-T}\Lambda^{-1}U^{-1}=U\Lambda ^{-1}U^T=\sum^D_{i=1}\frac{1}{\lambda_i}u_iu_i^T$(4.2)
 
 上式中的$u_i$是U的第i列,包含了第i个特征向量(eigenvector).因此就可以把马氏距离写作:
 
@@ -39,7 +39,7 @@ $$\begin{aligned}
 &= \sum^D_{i=1}\frac{1}{\lambda_i}(x-\mu)^Tu_iu_i^T(x-\mu)=\sum^D_{i=1}\frac{y_i^2}{\lambda_i}&\text{(4.4)}\\
 \end{aligned}$$
 
-上式中的$y_i*= u_i^T(x-\mu)$.二维椭圆方程为:
+上式中的$y_i\overset{*}{=} u_i^T(x-\mu)$.二维椭圆方程为:
 $\frac{y_1^2}{\lambda_1}+\frac{y_2^2}{\lambda_2}=1$(4.5)
 
 因此可以发现高斯分布的概率密度的等值线沿着椭圆形,如图4.1所示.特征向量决定了椭圆的方向,特征值决定了椭圆的形态即宽窄比.
@@ -52,7 +52,7 @@ $\frac{y_1^2}{\lambda_1}+\frac{y_2^2}{\lambda_2}=1$(4.5)
 
 #### 定理4.1.1(MVN的MLE)
 如果有N个独立同分布样本符合正态分布,即$x_i \sim  N(\mu,\Sigma)$,则对参数的最大似然估计为:
-$\hat\mu_{mle}=\frac{1}{N}\sum^N_{i=1}x_i *= \bar x$(4.6)
+$\hat\mu_{mle}=\frac{1}{N}\sum^N_{i=1}x_i \overset{*}{=} \bar x$(4.6)
 $\hat\Sigma_{mle}=\frac{1}{N}\sum^N_{i=1}(x_i-\bar x)(x_i-\bar x)^T=\frac{1}{N}(\sum^N_{i=1}x_ix_i^T)-\bar x\bar x^T$(4.7)
 
 也就是MLE就是经验均值(empirical mean)和经验协方差(empirical covariance).在单变量情况下结果就很熟悉了:
@@ -68,7 +68,7 @@ $$
 \frac{\partial(b^Ta)}{\partial a}&=b\\
 \frac{\partial(a^TAa)}{\partial a}&=(A+A^T)a\\
 \frac{\partial}{\partial A} tr(BA)&=B^T\\
-\frac{\partial}{\partial A} \log|A|&=A^{-T}*= (A^{-1})^T\\
+\frac{\partial}{\partial A} \log|A|&=A^{-T}\overset{*}{=} (A^{-1})^T\\
 tr(ABC)=tr(CAB)&=tr(BCA)
 \end{aligned}
 $$(4.10 重要公式)
@@ -81,9 +81,9 @@ $x^TAx=tr(x^TAx)=tr(xx^TA)=tr(Axx^T)$(4.11)
 ##### 证明过程
 接下来要开始证明了,对数似然函数为:
 
-$l(\mu,\Sigma)=\log p(D|\mu,\Sigma)=\frac{N}{2}\log|\wedge| -\frac{1}{2}\sum^N_{i=1}(x_i-\mu)^T\wedge (x_i-\mu) $(4.12)
+$l(\mu,\Sigma)=\log p(D|\mu,\Sigma)=\frac{N}{2}\log|\Lambda| -\frac{1}{2}\sum^N_{i=1}(x_i-\mu)^T\Lambda (x_i-\mu) $(4.12)
 
-上式中$\wedge=\Sigma^{-1}$,是精度矩阵(precision matrix)
+上式中$\Lambda=\Sigma^{-1}$,是精度矩阵(precision matrix)
 
 然后进行一个替换(substitution)$y_i=x_i-\mu$,再利用微积分的链式法则:
 
@@ -104,23 +104,23 @@ $$
 $$
 所以$\mu$的最大似然估计(MLE)就是经验均值(empirical mean).
 
-然后利用求迹运算技巧(trace-trick)来重写对$\wedge$的对数似然函数:
+然后利用求迹运算技巧(trace-trick)来重写对$\Lambda$的对数似然函数:
 $$
 \begin{aligned}
-l(\wedge)&=  \frac{N}{2}\log|\wedge|-\frac{1}{2}\sum_i tr[(x_i-\mu)(x_i-\mu)^T\wedge] &\text{(4.17)}\\
-&= \frac{N}{2}\log|\wedge| -\frac{1}{2}tr[S_{\mu}\wedge]&\text{(4.18)}\\
+l(\Lambda)&=  \frac{N}{2}\log|\Lambda|-\frac{1}{2}\sum_i tr[(x_i-\mu)(x_i-\mu)^T\Lambda] &\text{(4.17)}\\
+&= \frac{N}{2}\log|\Lambda| -\frac{1}{2}tr[S_{\mu}\Lambda]&\text{(4.18)}\\
 & &\text{(4.19)}\\
 \end{aligned}
 $$
 
 上式中
-$S_{\mu}*= \sum^N_{i=1}(x_i-\mu)(x_i-\mu)^T$(4.20)
+$S_{\mu}\overset{*}{=} \sum^N_{i=1}(x_i-\mu)(x_i-\mu)^T$(4.20)
 
-是以$\mu$为中心的一个散布矩阵(scatter matrix).对上面的表达式关于$\wedge$进行求导就得到了:
+是以$\mu$为中心的一个散布矩阵(scatter matrix).对上面的表达式关于$\Lambda$进行求导就得到了:
 $$
 \begin{aligned}
-\frac{\partial l(\wedge)}{\partial\wedge} & = \frac{N}{2}\wedge^{-T} -\frac{1}{2}S_{\mu}^T=0 &\text{(4.21)}\\
-\wedge^{-T} & = \wedge^{-1}=\Sigma=\frac{1}{N}S_{\mu} &\text{(4.22)}\\
+\frac{\partial l(\Lambda)}{\partial\Lambda} & = \frac{N}{2}\Lambda^{-T} -\frac{1}{2}S_{\mu}^T=0 &\text{(4.21)}\\
+\Lambda^{-T} & = \Lambda^{-1}=\Sigma=\frac{1}{N}S_{\mu} &\text{(4.22)}\\
 \end{aligned}
 $$
 
@@ -137,7 +137,7 @@ $\hat\Sigma=\frac{1}{N}\sum^N_{i=1}(x_i-\mu)(x_i-\mu)^T$(4.23)
 为了简单起见,假设均值为0.那么概率密度函数(pdf)就是:
 $p(x)=\frac{1}{Z}\exp (-\frac{1}{2}x^T\Sigma^{-1}x)$(4.24)
 
-如果定义$f_{ij} (x) = x_i x_j , \lambda_{ij} = \frac{1}{2} (\Sigma^{−1})_{ij}\\i, j \in \{1, ... , D\}$,就会发现这个和等式9.74形式完全一样.这个分布（使用自然底数求对数）的（微分）熵为:
+如果定义$f_{ij} (x) = x_i x_j , \lambda_{ij} = \frac{1}{2} (\Sigma^{-1})_{ij}\\ i, j \in \{1, ... , D\}$,就会发现这个和等式9.74形式完全一样.这个分布（使用自然底数求对数）的（微分）熵为:
 $h(N(\mu,\Sigma))  =\frac{1}{2}\ln[(2\pi e)^D|\Sigma|]$(4.25)
 
 接下来要证明有确定的协方差$\Sigma$的情况下多元正态分布(MVN)在所有分布中有最大熵.
@@ -153,7 +153,7 @@ $$
 \begin{aligned}
 0 &\le KL(q||p) =\int q(x)\log \frac{q(x)}{p(x)}dx&\text{(4.26)}\\
 & = -h(q) -\int q(x)\log p(x)dx &\text{(4.27)}\\
-& =* -h(q) -\int ps(x)\log p(x)dx &\text{(4.28)}\\
+& \overset{*}{=} -h(q) -\int ps(x)\log p(x)dx &\text{(4.28)}\\
 & = -h(q)+h(p) &\text{(4.29)}\\
 \end{aligned}
 $$
@@ -287,7 +287,7 @@ $p(y=1|x,\theta) = sigm(w^T(x-x_0))$ (4.50)
 
 w的大小决定了对数函数的陡峭程度,取决于均值相对于方差的平均分离程度.在心理学和信号检测理论中,通常定义一个叫做敏感度指数(sensitivity index,也称作 d-prime)的量,表示信号和背景噪声的可区别程度:
 
-$d'*= \frac{\mu_1-\mu_0}{\sigma}$(4.51)
+$d'\overset{*}{=} \frac{\mu_1-\mu_0}{\sigma}$(4.51)
 
 上式中的$\mu_1$是信号均值,$\mu_0$是噪音均值,而$\sigma$是噪音的标准差.如果敏感度指数很大,那么就意味着信号更容易从噪音中提取出来.
 
@@ -405,9 +405,9 @@ $$\mu=\begin{pmatrix}
         \Sigma_{11}&\Sigma_{12}\\
         \Sigma_{21}&\Sigma_{22}
         \end{pmatrix},
-\wedge=\Sigma^{-1}=\begin{pmatrix}
-        \wedge_{11}&\wedge_{12}\\
-        \wedge_{21}&\wedge_{22}
+\Lambda=\Sigma^{-1}=\begin{pmatrix}
+        \Lambda_{11}&\Lambda_{12}\\
+        \Lambda_{21}&\Lambda_{22}
         \end{pmatrix}
 \text{  (4.67)}
 $$
@@ -425,9 +425,9 @@ $$
 \begin{aligned}
 p(x_1|x_2)&=N(x_1|\mu_{1|2},\Sigma_{1|2})\\
 \mu_{1|2}&=\mu_1+\Sigma_{12}\Sigma^{-1}_{1|2}(x_2-\mu_2)\\
-&=\mu_1-\wedge_{12}\wedge^{-1}_{1|2}(x_2-\mu_2)\\
-&= \Sigma_{1|2}(\wedge_{11}\mu_1-\wedge_{12}(x_2-\mu_2))\\
-\Sigma_{1|2}&=\Sigma_{11}-\Sigma_{12}\Sigma^{-1}_{22}\Sigma_{21}=\wedge^{-1}_{11}
+&=\mu_1-\Lambda_{12}\Lambda^{-1}_{1|2}(x_2-\mu_2)\\
+&= \Sigma_{1|2}(\Lambda_{11}\mu_1-\Lambda_{12}(x_2-\mu_2))\\
+\Sigma_{1|2}&=\Sigma_{11}-\Sigma_{12}\Sigma^{-1}_{22}\Sigma_{21}=\Lambda^{-1}_{11}
 \end{aligned} 
 $$(4.69)
 
@@ -496,9 +496,9 @@ $$(4.77)
 $p(x)=N(x|0,(\lambda^2L^TL)^{-1})\propto \exp(-\frac{\lambda^2}{2}||Lx||^2_2)$(4.78)
 
 
-以后就假设已经用$\lambda$对L进行过缩放了,所以就会忽略掉$\lambda$项,就只将精度矩阵(precision matrix)写成$\wedge=L^TL$.
+以后就假设已经用$\lambda$对L进行过缩放了,所以就会忽略掉$\lambda$项,就只将精度矩阵(precision matrix)写成$\Lambda=L^TL$.
 
-这里要注意,虽然x是D维的,但是精度矩阵$\wedge$实际上的秩只是D-2.所以这是一个不适用先验(improper prior),也称作内在高斯随机场(intrinsic Gaussian random ﬁeld)(更多相关信息参考本书19.4.4).
+这里要注意,虽然x是D维的,但是精度矩阵$\Lambda$实际上的秩只是D-2.所以这是一个不适用先验(improper prior),也称作内在高斯随机场(intrinsic Gaussian random ﬁeld)(更多相关信息参考本书19.4.4).
 不过只要观测超过2个数据点,即$N\ge2$,这个先验就适用了.
 
 
@@ -507,10 +507,10 @@ $p(x)=N(x|0,(\lambda^2L^TL)^{-1})\propto \exp(-\frac{\lambda^2}{2}||Lx||^2_2)$(4
 $L=[L_1,L_2],L_1\in R^{(D-2)\times(D-N)},L_2\in R^{(D-2)\times(N)}$(4.79)
 然后也可以对联合分布的精度矩阵进行分割:
 $$
-\wedge=L^TL=
+\Lambda=L^TL=
 \begin{pmatrix}
-\wedge_{11}&\wedge_{12}\\ 
-\wedge_{21}&\wedge_{22}
+\Lambda_{11}&\Lambda_{12}\\ 
+\Lambda_{21}&\Lambda_{22}
 \end{pmatrix}=
 \begin{pmatrix}
 L_1^TL_1&L_1^TL_2\\ 
@@ -522,8 +522,8 @@ $$(4.80)
 $$
 \begin{aligned}
 p(x_1|x_2)&=N(\mu_{1|2},\Sigma_{1|2}) &\text{(4.81)}\\
-\mu_{1|2}&= -\wedge^{-1}_{11}\wedge_{12}x_2=-L_1^TL_2x_2 &\text{(4.82)}\\
-\Sigma_{1|2} &= \wedge^{-1}_{11}&\text{(4.83)}\\
+\mu_{1|2}&= -\Lambda^{-1}_{11}\Lambda_{12}x_2=-L_1^TL_2x_2 &\text{(4.82)}\\
+\Sigma_{1|2} &= \Lambda^{-1}_{11}&\text{(4.83)}\\
 \end{aligned}
 $$
 
@@ -531,7 +531,7 @@ $$
 $L_1\mu_{1|2}=-L_2x_2$(4.84)
 
 $L_1$是三角形矩阵,所以这解起来很容易.图4.10所示为这些等式的图像.从图中可见后验均值$\mu_{1|2}$等于特定各点的观测数据,而中间位置也都进行了光滑插值.
-图中灰色的部分是95%的逐点边界置信区间(pointwise marginal credibility intervals),$\mu_j\pm 2\sqrt{\Sigma_{1|2,jj}}$.观察这部分会发现,远离数据点则方差增大,降低先验精度$\lambda$也会导致方差的增大.不过有趣的是$\lambda$并不会影响后验均值,因为在乘以$\wedge_{11}$和$\wedge_{12}$的时候消掉了.与之形成对比的是本书4.4.2.3的有噪音数据,那时候咱们就能发现先验精度会影响后验均值估计的光滑程度了.
+图中灰色的部分是95%的逐点边界置信区间(pointwise marginal credibility intervals),$\mu_j\pm 2\sqrt{\Sigma_{1|2,jj}}$.观察这部分会发现,远离数据点则方差增大,降低先验精度$\lambda$也会导致方差的增大.不过有趣的是$\lambda$并不会影响后验均值,因为在乘以$\Lambda_{11}$和$\Lambda_{12}$的时候消掉了.与之形成对比的是本书4.4.2.3的有噪音数据,那时候咱们就能发现先验精度会影响后验均值估计的光滑程度了.
 边界置信区间并没有捕获到邻近位置上的相关性.对此可以从后验中推出完整的函数,也就是向量x,然后绘制函数图像.如图4.10中的细线所示.这就不像后验均值本身那么光滑了.这是因为先验只是处理了一阶差分(prior only penalizes ﬁrst-order differences).更多相关细节参考本书4.4.2.3.
 
 #### 4.3.2.3 数据插补(Data imputation)
@@ -548,16 +548,16 @@ $L_1$是三角形矩阵,所以这解起来很容易.图4.10所示为这些等式
 
 
 设$x \sim  N(\mu,\Sigma)$.很明显$E[x]=\mu$就是均指向量,而$cov[x]=\Sigma$就是协方差矩阵(covariance matrix).这些都叫做分布的矩参数(moment parameters).不过有时候可能使用规范参数(canonical parameters)或者自然参数(natural parameters)更有用,具体定义如下所示:
-$\wedge *= \Sigma^{-1},\xi *=  \Sigma^{-1} \mu$(4.85)
+$\Lambda \overset{*}{=} \Sigma^{-1},\xi \overset{*}{=}  \Sigma^{-1} \mu$(4.85)
 还可以转换回矩参数:
-$ \mu=\wedge^{-1}\xi,\Sigma =\wedge^{-1}$(4.86)
+$ \mu=\Lambda^{-1}\xi,\Sigma =\Lambda^{-1}$(4.86)
 使用规范参数,可以将多元正态分布(MVN)写成信息形式(information form)(也就是写成指数组分布的形式(exponential family form),具体定义在本书9.2):
-$N_c(x|\xi,\wedge)=(2\pi)^{-D/2}|\wedge|^{\frac{1}{2}} \exp[-\frac{1}{2}(x^T\wedge x+\xi^T\wedge^{-1}\xi-2x^T\xi)]$(4.87)
+$N_c(x|\xi,\Lambda)=(2\pi)^{-D/2}|\Lambda|^{\frac{1}{2}} \exp[-\frac{1}{2}(x^T\Lambda x+\xi^T\Lambda^{-1}\xi-2x^T\xi)]$(4.87)
 
 上式中使用了$N_c()$是为了和矩参数表达形式$N()$相区分.
 边缘分布和条件分布公式也都可以推导出信息形式.为:
-$p(x_2)=N_c(x_2|\xi_2-\wedge_{21}\wedge_{11}^{-1}\xi_1,\wedge_{22}-\wedge_{21}\wedge_{11}^{-1}\wedge_{12})$(4.88)
-$p(x_1|x_2)=N_c(x_1|\xi_1-\wedge_{12}x_2,\wedge_{11})$(4.89)
+$p(x_2)=N_c(x_2|\xi_2-\Lambda_{21}\Lambda_{11}^{-1}\xi_1,\Lambda_{22}-\Lambda_{21}\Lambda_{11}^{-1}\Lambda_{12})$(4.88)
+$p(x_1|x_2)=N_c(x_1|\xi_1-\Lambda_{12}x_2,\Lambda_{11})$(4.89)
 
 通过上式可见比矩参数形式求边缘分布更容易,而信息形势下求条件分布更容易.
 这种信息形式记法的另外一个好处是将两个正态分布相乘更简单了.如下所示:
@@ -592,8 +592,8 @@ M^{-1}&= \begin{pmatrix}(M/H)^{-1}&-(M/H)^{-1}FH^{-1}\\
 \end{aligned}
 $$
 其中:
-$M/H*= E-FH^{-1}G$(4.95)
-$M/E*= H-GE^{-1}F$(4.96)
+$M/H\overset{*}{=} E-FH^{-1}G$(4.95)
+$M/E\overset{*}{=} H-GE^{-1}F$(4.96)
 
 我们就说$M/H$是$M wrt H$的Schur补(Schur complement).等式4.93就叫做分区求逆公式(partitioned inverse formula).
 
@@ -857,7 +857,7 @@ $$
 上面的三个等式中,第一个式子就是对先验和数据的凸组合(convex combination).第二个是将先验均值朝向数据进行调整.第三个是将数据朝向先验均值调整,这也叫做收缩过程(shrinkage).这三者都是等价的,都表达了在似然率和先验之间的权衡妥协.如果$\Sigma_0$相对于$\Sigma_Y$较小,对应的就是强先验(strong prior),收缩规模(amount of shrinkate)就很大,参考图4.12(a),而如果反过来$\Sigma_0$相对于$\Sigma_Y$更大,对应的就是弱先验(weak prior)收缩规模就小了,参考图4.12(b).
 
 另外一种对收缩规模定量的方法是用信噪比(signal-to-noise ratio,缩写为SNR),定义如下:
-$SNR*= \frac{E[X^2]}{E[\epsilon^2]}= \frac{\Sigma_0+\mu_0^2}{\Sigma_y}$(4.141)
+$SNR\overset{*}{=} \frac{E[X^2]}{E[\epsilon^2]}= \frac{\Sigma_0+\mu_0^2}{\Sigma_y}$(4.141)
 上式中的$x \sim  N(\mu_0,\Sigma_0)$是真是信号(true signal),而$y=x+\epsilon$是观测信号,而$\epsilon \sim  N(0,\Sigma_y)$就是噪音项.
 
 
@@ -934,14 +934,14 @@ $$
 
 
 联合分布的精度矩阵则定义为:
-$\Sigma^{-1}=\begin{pmatrix}  \Sigma_x^{-1}+A^T\Sigma_y^{-1}A& -A^T\Sigma_y^{-1}\\-\Sigma_y^{-1}A&\Sigma_y^{-1}\end{pmatrix}*= \wedge=\begin{pmatrix}   \wedge_{xx} & \wedge_{xy} \\\wedge_{yx} &\wedge_{yy}     \end{pmatrix}$(4.154)
+$\Sigma^{-1}=\begin{pmatrix}  \Sigma_x^{-1}+A^T\Sigma_y^{-1}A& -A^T\Sigma_y^{-1}\\-\Sigma_y^{-1}A&\Sigma_y^{-1}\end{pmatrix}\overset{*}{=} \Lambda=\begin{pmatrix}   \Lambda_{xx} & \Lambda_{xy} \\\Lambda_{yx} &\Lambda_{yy}     \end{pmatrix}$(4.154)
 
 
 $$
 \begin{aligned}
 p(x|y)&=  N(\mu_{x|y},\Sigma_{x|y})  &\text{(4.155)}\\
-\Sigma_{x|y}&= \wedge^{-1}_{xx}= (\Sigma_x^{-1}+A^T\Sigma_y^{-1}A)^{-1}    &\text{(4.156)}\\
-\mu_{x|y}&= \Sigma_{x|y}(\wedge_{xx}\mu_x-\wedge_{xy}(y-\mu_y))    &\text{(4.157)}\\
+\Sigma_{x|y}&= \Lambda^{-1}_{xx}= (\Sigma_x^{-1}+A^T\Sigma_y^{-1}A)^{-1}    &\text{(4.156)}\\
+\mu_{x|y}&= \Sigma_{x|y}(\Lambda_{xx}\mu_x-\Lambda_{xy}(y-\mu_y))    &\text{(4.157)}\\
 &=  \Sigma_{x|y}(\Sigma_x^{-1}\mu+A^T\Sigma_y^{-1}(y-b))   &\text{(4.158)}\\
 \end{aligned}
 $$
@@ -949,12 +949,12 @@ $$
 
 ## 4.5 题外话(Digression):威沙特分布(Wishart distribution)
 
-威沙特分布(Wishart distribution)是将$\gamma$分布(Gamma distrustion)对正定矩阵(positive deﬁnite matrices)的推广.(Press 2005, p107) 称:按照重要性和有用性的顺序来排列,在多元统计中,威沙特分布仅次于正态分布.通常用这个模型来对协方差矩阵$\Sigma$或者逆矩阵$\wedge=\Sigma^{-1}$的不确定性来进行建模.
+威沙特分布(Wishart distribution)是将$\gamma$分布(Gamma distrustion)对正定矩阵(positive deﬁnite matrices)的推广.(Press 2005, p107) 称:按照重要性和有用性的顺序来排列,在多元统计中,威沙特分布仅次于正态分布.通常用这个模型来对协方差矩阵$\Sigma$或者逆矩阵$\Lambda=\Sigma^{-1}$的不确定性来进行建模.
 
 
 
 Wishart 分布的概率密度函数定义如下:
-$Wi(\wedge|S,v)=\frac{1}{Z_{Wi}}|\wedge|^{(v-D-1)/2}\exp(-\frac{1}{2}tr(\wedge S^{-1}) $(4.159)
+$Wi(\Lambda|S,v)=\frac{1}{Z_{Wi}}|\Lambda|^{(v-D-1)/2}\exp(-\frac{1}{2}tr(\Lambda S^{-1}) $(4.159)
 上式中的v也叫做自由度(degrees of freedom),S就是缩放矩阵(scale matrix).稍后会对这些参数的含义给出更多讲解.
 这个分布的归一化常数(normalization constant)(需要在整个对称的概率密度矩阵上进行积分)为下面的表达式:
 $Z_{Wi}=2^{vD/2} \Gamma_D(v/2)|S|^{v/2}  $(4.160)
@@ -1049,7 +1049,7 @@ $p(D|\mu,\Sigma)\propto |\Sigma|^{-\frac{N}{2}}\exp(-\frac{1}{@}tr(S_{\mu}\Sigma
 
 $IW(\Sigma|S_0^{-1} ,v_0)\propto |\Sigma|^{-(v_0+D+1)/2} \exp(-\frac{1}{2}tr(S_0\Sigma^{-1}))$(4.176)
 
-上式中$v_0\D-1$就是自由度(degrees of freedom,缩写为dof),而$S_0$是对称的概率密度矩阵(symmetric pd matrix).$S_0^{-1}$就是先验散布矩阵(prior scatter matrix),而$N_0*=v_0+D+1$控制了先验强度,所以扮演的角色也就类似于取样规模N.
+上式中$v_0 > D-1$就是自由度(degrees of freedom,缩写为dof),而$S_0$是对称的概率密度矩阵(symmetric pd matrix).$S_0^{-1}$就是先验散布矩阵(prior scatter matrix),而$N_0\overset{*}{=}v_0+D+1$控制了先验强度,所以扮演的角色也就类似于取样规模N.
 
 此处查看原书图4.17
 
@@ -1079,7 +1079,7 @@ $\hat\Sigma_{map}=\frac{S_N}{v_N+D+1}=\frac{S_0+S_{\mu}}{N_0+N}$(4.182)
 
 如果用一个不适用均匀先验(improper uniform prior),对应的就是$N_0=0,S_0=0$,也就恢复到了最大似然估计(MLE).
 
-如果使用一个适当的含信息先验(proper informative prior),只要$D/N$比较大,比如超过0.1的时候,就很被咬了.设$\mu=\bar x$,则$S_{\mu}=S_{\bar x}$.然后就可以吧最大后验估计(MAP)写成一个先验模(prior mode)和最大似然估计(MLE)的凸组合(convex combination).设$\Sigma_0*= \frac{S_0}{N_0}$为先验模(prior mode).然后可以把后验模(posterior mode)写成如下形式:
+如果使用一个适当的含信息先验(proper informative prior),只要$D/N$比较大,比如超过0.1的时候,就很被咬了.设$\mu=\bar x$,则$S_{\mu}=S_{\bar x}$.然后就可以吧最大后验估计(MAP)写成一个先验模(prior mode)和最大似然估计(MLE)的凸组合(convex combination).设$\Sigma_0\overset{*}{=} \frac{S_0}{N_0}$为先验模(prior mode).然后可以把后验模(posterior mode)写成如下形式:
 
 $\hat\Sigma_{map}=\frac{S_0+S_{\bar x}}{N_0+N}=\frac{N_0}{N_0+N}\frac{S_0}{N_0}   + \frac{N_0}{N_0+N} \frac{S}{N}=\lambda\Sigma_0+(1-\lambda)\hat\Sigma_{mle}$(4.183)
 
@@ -1177,7 +1177,7 @@ $p(\mu,\Sigma)=p(\Sigma)p(\mu|\Sigma)$(4.199)
 参考一下等式4.197中的似然函数等式,就可以发现自然共轭先验(natural conjugate prior)的形式为正态逆威沙特分布(Normal-inverse-wishart,缩写为 NIW),定义形式如下所示:
 $$
 \begin{aligned}
-NIW(\mu,\Sigma|m_0,k_0,v_0,S_0)& *=& \text{(4.200)}\\
+NIW(\mu,\Sigma|m_0,k_0,v_0,S_0)& \overset{*}{=}& \text{(4.200)}\\
  & N(\mu|m_0,\frac{1}{k_0}\Sigma)\times IW(\Sigma|S_0,v_0 )   & \text{(4.201)}\\
 &=\frac{1}{Z_{NIW}}|\Sigma|^{\frac{1}{2}}\exp(-\frac{k_0}{2}\mu-m_0()^T\Sigma^{-1}(\mu-m_0))   & \text{(4.202)}\\
 &\times |\Sigma|^{-\frac{v_0+D+1}{2}}\exp(-\frac{1}{2}tr(\Sigma^{-1}S_0))   & \text{(4.203)}\\
@@ -1216,7 +1216,7 @@ S_N&= S_0+S_{\bar x}+\frac{k_)N}{k_0+N}(\bar x-m_0)(\bar x-m_0)^T  &\text{(4.213
 \end{aligned}
 $$
 
-上式中我们定义了$S*= \sum^N_{i=1}x_ix_i^T$,这是一个未中心化的平方和矩阵(uncentered sum-of-squares matrix),相比中心化矩阵这样的更容易进行渐进的增量更新.
+上式中我们定义了$S\overset{*}{=} \sum^N_{i=1}x_ix_i^T$,这是一个未中心化的平方和矩阵(uncentered sum-of-squares matrix),相比中心化矩阵这样的更容易进行渐进的增量更新.
 
 结果很直观:后验均值(posterior mean)就是对先验均值(prior mean)和最大似然估计(MLE)的凸组合(convex combination),附带上强度控制项$k_0+N$.而后验散布矩阵(posterior scatter matrix)$S_N$就是先验散布矩阵(prior scatter matrix)$S_0$加上经验散布矩阵(empirical scatter matrix)$S_\bar x$,再加上由均值不确定性带来的附加项(这也创造了自己的一个虚拟散布矩阵(virtual scatter matrix)).
 
@@ -1272,7 +1272,7 @@ $$
 
 $$
 \begin{aligned}
-NI\chi^2(\mu,\sigma^2|m_0,k_0,v_0,\sigma_0^2)& *=N(\mu|m_0,\sigma^2/k_0)\chi^{-2}(\sigma^2|v_0,\sigma_0^2)  &\text{(4.223)}
+NI\chi^2(\mu,\sigma^2|m_0,k_0,v_0,\sigma_0^2)& \overset{*}{=}N(\mu|m_0,\sigma^2/k_0)\chi^{-2}(\sigma^2|v_0,\sigma_0^2)  &\text{(4.223)}
 &\propto (\frac{1}{\sigma^2})^{(v_0+3)/2} \exp (-\frac{v_0\sigma_0^2+k_0(]mu-m_0)^2}{2\sigma^2}) &\text{(4.224)}
 \end{aligned}
 $$
@@ -1311,18 +1311,18 @@ $p(\mu,\sigma^2|D)= NI\chi^2(\mu,\sigma^2|\mu_N=\bar x,k_N=N,v_N=N-1,\sigma^2_N=
 
 上式中的:
 
-$s^2*= \frac{1}{N-1}\sum^N_{i=1}(x_i-\bar x)^2 =   \frac{N}{N-1}\sigma^2_{mle}$(4.234)
+$s^2\overset{*}{=} \frac{1}{N-1}\sum^N_{i=1}(x_i-\bar x)^2 =   \frac{N}{N-1}\sigma^2_{mle}$(4.234)
 
 就是标准取样偏差(sample standard deviation).在本书6.4.2中会说明这是一个对方差的无偏见估计(unbiased estimate).这样后验均值的边缘分布为:
 
 $p(\mu|D)=T(\mu|\bar x,\frac{s^2}{N},N-1)$(4.235)
 
 而$\mu$的后验方差为:
-$\var[\mu|D]=\frac{v_N}{v_N-2}\sigma^2_N$(4.236)
+$\mathrm{var}[\mu|D]=\frac{v_N}{v_N-2}\sigma^2_N$(4.236)
 
 上面这个后验方差的平方根就是均值的标准差(standard error of the mean):
 
-$\sqrt{ \var[\mu|D]}\approx \frac{s}{\sqrt{N}}$(4.237)
+$\sqrt{ \mathrm{var}[\mu|D]}\approx \frac{s}{\sqrt{N}}$(4.237)
 
 然后均值的估计95%后验置信区间(credible interval)为:
 
@@ -1335,7 +1335,7 @@ $I_{.95}(\mu|D)=\bar x \pm 2\frac{s}{\sqrt{N}}$(4.238)
 
 #### 4.6.3.8 贝叶斯T检验
 
-我们要检验一个假设:给定正态分布$x \sim N(\mu,\sigma^2)$,对某个未知值$\mu_0$(通常都是0),$\mu \ne \mu_0$,这叫做双面单样本t检验(two-sided, one-sample t-test).简单方法就是检查$\mu_0\in I_{0.95+(\mu|D)$是否成立.如果不成立,则有95%的信心认为$\mu\ne \mu_0$.更普遍的做法是检验两对样本是否有同样的均值.更确切来说,设$y_i \sim N(\mu_1,\sigma^2),z_i\sim N(\mu_2,\sigma^2)$.就可以使用$x_i=y_i-z_i$来验证是否有$\mu=\mu_1-\mu_2 >0$.可以用下面的形式来对这个量进行估计:
+我们要检验一个假设:给定正态分布$x \sim N(\mu,\sigma^2)$,对某个未知值$\mu_0$(通常都是0),$\mu \ne \mu_0$,这叫做双面单样本t检验(two-sided, one-sample t-test).简单方法就是检查$\mu_0\in I_{0.95+(\mu|D)}$是否成立.如果不成立,则有95%的信心认为$\mu\ne \mu_0$.更普遍的做法是检验两对样本是否有同样的均值.更确切来说,设$y_i \sim N(\mu_1,\sigma^2),z_i\sim N(\mu_2,\sigma^2)$.就可以使用$x_i=y_i-z_i$来验证是否有$\mu=\mu_1-\mu_2 >0$.可以用下面的形式来对这个量进行估计:
 $p(\mu>\mu_0|D)= \int^{\infty}_{\mu_0}p(\mu|D)d{\mu}  $(4.239)
 
 这也叫做单面成对T检验(one sided paired t-text).(对未配对测试(unpaired test)有类似的方法,对比在二项比例(binomial proportions)上有所不同,本书5.2.3会介绍.)
@@ -1346,7 +1346,7 @@ $p(\mu|D)= T(\mu|\bar x,\frac{s^2}{N},N-1)$(4.240)
 
 然后我们定义下面的T统计(t statistic):
 
-$t*= \frac{\bar x -\mu_0}{s/\sqrt{N}}$(4.241)
+$t\overset{*}{=} \frac{\bar x -\mu_0}{s/\sqrt{N}}$(4.241)
 
 期中的分母是均值标准差.然后有:
 
