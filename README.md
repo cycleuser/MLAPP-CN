@@ -2,7 +2,11 @@
 A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/python-kivy
 
 
-# 本项目不支持在线浏览器直接读取，自己clone到本地想办法解决阅读问题。
+# 本项目不支持在线浏览器直接读取
+原则上将不再提供Markdown文本之外的任何其他格式的文件，在校验之后可能会不定期更新pdf，但是就别指望了。
+还是自己clone到本地想办法解决阅读问题吧，不愿意动手探索就没办法了。
+在VS Code中使用[mdmath](https://github.com/goessner/mdmath)这个插件，就可以实时预览Markdown当中的latex了，也可以去[这个链接]( https://marketplace.visualstudio.com/items?itemName=goessner.mdmath)直接安装。
+如果事事都等着别人来帮做，还有什么意思呢？
 
 
 
