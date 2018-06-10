@@ -279,7 +279,7 @@ $BIC\overset{*}{=}\log p(D|\hat \theta) -\frac{dof(\hat \theta)}{2}\log N\approx
 
 上式中的$dof(\hat\theta)$是模型中的自由度个数(number of degrees of freedom),而$\hat\theta$是模型的最大似然估计(MLE).这有一种类似惩罚对数似然函数(penalized log likelihood)的形式,其中的惩罚项(penalty term)依赖于模型的复杂度.具体信息可以从本书8.4.2查看贝叶斯信息量评分的推导过程.
 
-以一个线性回归为例.如本书7.3所示,最大似然估计为$\hat w = (X^TX)^{-1}X^Ty, \hat\sigma^2= RSS/N,RSS=\sum^N_{i=1}(y_i-\hat^T_{mle}x_i)^2$.对应的对数似然函数为:
+以一个线性回归为例.如本书7.3所示,最大似然估计为$\hat w = (X^T X)^{-1}X^Ty$, $\hat\sigma^2= RSS/N$,$RSS=\sum^N_{i=1}(y_i -\hat w^T_{mle}x_i)^2$.对应的对数似然函数为:
 
 $\log p(D|\hat\theta)=-\frac{N}{2}\log(2\pi\hat\sigma^2)-\frac{N}{2}$(5.31)
 
