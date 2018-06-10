@@ -35,3 +35,120 @@ Bootstrap是一种简单的蒙特卡罗方法,来对抽样分布进行近似.在
 
 然而很悲伤,Bootstrap可能会比后验取样要慢很多.原因就是Bootstrap必须对模型拟合S次,而在后验抽样中,通常只要对模型拟合一次(来找到局部众数,local mode),然后就可以在众数周围进行局部探索(local exploration).这种局部探索(local exploration)通常要比从头拟合模型快得多.
 
+
+
+### 6.2.2 最大似然估计(MLE)的大样本理论(Large sample theory)
+
+有时候有的估计器(estimator)的抽样分布可以以解析形式计算出来.比如在特定条件下,随着抽样规模趋向于无穷大,最大似然估计(MLE)的抽样分布就成了高斯分布了.简单来说,要得到这个结果,需要模型中每个参数都能"观察"到无穷多个数据量,然后模型还得是可识别的(identifiable).很不幸,这种条件是很多机器学习中常用模型都无法满足的.不过咱们还是可以假设一个简单的环境,使定理成立.
+
+这个高斯分布的中心就是最大似然估计(MLE)$\theta$了.但方差是啥呢?直觉告诉我们这个估计器的方差可能和似然函数面(likelihood surface)的峰值处的曲率(curvature)有关(也可能是负相关).如果曲率很大,峰值那里就很陡峭尖锐,方差就小;这时候就认为这个估计确定性好(well determined).反之如果曲率很小,峰值就几乎是平的,那方差就大了去了.
+
+咱们将这种直观感受用正规数学语言表达一下.定义一个得分函数(score function),也就是对数自然函数在某一点$\theta$处的梯度(gradient):
+
+$s(\hat\theta)\overset{\triangle}{=} \nabla \log p(D|\theta)|_{\hat\theta} $(6.1)
+
+把负得分函数(negative score function)定义成观测信息矩阵(observed information matrix),等价于负对数似然函数(Negative Log Likelihood,缩写为NLL)的海森矩阵(Hessian):
+
+$J(\hat\theta(D))\overset{\triangle}{=} -\nabla s(\hat\theta)=-\nabla^2_\theta \log p(D|\theta)|_{\hat \theta}$(6.2)
+
+在1维情况下,就成了:
+
+$J(\hat\theta(D))=-\frac{d}{d\theta^2}\log p(D|\theta)|_{\hat\theta}$(6.3)
+
+这就是对对数似然函数在点$\hat\theta$位置曲率的一种度量了.
+
+由于我们要研究的是抽样分布,$D=(x_1,...,x_N)$是一系列随机变量的集合.那么费舍信息矩阵(Fisher information matrix)定义就是观测信息矩阵(observed information matrix)的期望值(expected value):
+
+$I_N(\hat\theta|\theta^*) \overset{\triangle}{=}  \mathrm{E}_{\theta^*}[J(\hat\theta|D)]$(6.4)
+
+其中的$ \mathrm{E}_{\theta^*}[f(D)] \overset{\triangle}{=} \frac{1}{N} \sum^N_{i=1}f(x_i)p(x_i|\theta^*)$ 是将函数f用于从$\theta^*$中取样的数据时的期望值.通常这个$\theta^*$表示的都是生成数据的"真实参数",假设为已知的,所以就可以缩写出$I_N(\hat\theta)\overset{\triangle}{=} I_N(\hat\theta|\theta^*)$.另外,还很容易就能看出$I_N(\hat\theta)=NI_1(\hat\theta)$,因为规模为N的样本对数似然函数自然要比规模为1的样本更加"陡峭(steeper)".所以可以去掉那个1的下标(subscript),然后就只写成$I_N(\hat\theta)=I_1(\hat\theta)$.这是常用的表示方法.
+
+然后设最大似然估计(MLE)为$\hat\theta \overset{\triangle}{=}\hat\theta_{mle}(D)$,其中的$D\sim\theta^*$.随着$N \rightarrow \infty$,则有(证明参考Rice 1995, p265)):
+
+$\hat\theta \rightarrow N((\theta^*,I_N(\theta^*)^{-1})$(6.5)
+
+我们就说这个最大似然估计(MLE)的抽样分布是渐进正态(asymptotically normal)的.
+
+那么最大似然估计(MLE)的方差呢?这个方差可以用来衡量对最大似然估计的信心量度.很不幸,由于$\theta^*$是位置的,所以咱们不能对抽样分布的方差进行估计.不过还是可以用$\hat\theta$替代$\theta^*$来估计抽样分布.这样得到的$\hat\theta_k$近似标准差(approximate standard errors)为:
+
+$\hat{se}_k \overset{\triangle}{=} I_N(\hat\theta)_{kk}^{-\frac{1}{2}} $(6.6)
+
+例如,从等式5.60就能知道一个二项分布模型(binomial sampling model)的费舍信(Fisher information)为:
+
+$I(\theta)=\frac{1}{\theta(1-\theta)}$(6.7)
+
+然后最大似然估计(MLE)的近似标准差(approximate standard error)为:
+
+$\hat{se} = \frac{1}{\sqrt{I_N(\hat\theta)}} = \frac{1}{\sqrt{NI(\hat\theta)}}=(\frac{\hat\theta (1-\hat\theta)}{N})^{\frac{1}{2}}$(6.8)
+
+其中$\hat\theta =\frac{1}{N}\sum_iX_i$.可以对比等式3.27,即均匀先验下的后验标准偏差(posterior standard deviation).
+
+
+## 6.3 频率论决策理论(Frequentist decision theory)
+
+在频率论或者所为经典决策理论中,有损失函数和似然函数,但没有先验,也没有后验,更没有后验期望损失(posterior expected loss)了.因此和贝叶斯方法不同,频率论方法中没有办法来自动推导出一个最优估计器.在频率论方法中,可以自由选择任意的估计器或者决策规则$\delta:X\rightarrow A$.
+选好了估计器,就可以定义对应的期望损失(expected loss)或者风险函数(risk),如下所示:
+$R(\theta^*,\delta)\overset{\triangle}{=} \mathrm{E} _{p(\tilde D|\theta^*)}[L(\theta^*,\delta(\tilde D))=\int L(\theta^*,\delta(\tilde D))p(\tilde D|\theta^*)d\tilde D]$(6.9)
+
+上式中的$\tilde D$是从"自然分布(nature’s distribution)"抽样的数据,用参数$\theta^*$来表示.也就是说,期望值是估计量大抽样分布相关的.可以和贝叶斯后验期望损失(Bayesian posterior expected loss:)相比:
+
+$\rho(a|D,\pi) \overset{\triangle}{=}  \mathrm{E}[L(\theta,a)]=\int_\Theta L(\theta,a)p(\theta|D,\pi)d\theta   $(6.10)
+
+很明显贝叶斯方法是在位置的$\theta$上进行平均,条件为已知的D,而频率论方法是在$\tilde D$上平均,(也就忽略了观测值),而条件是未知的$\theta^*$.
+
+
+这种频率论的定义不光看着很不自然,甚至根本就没办法计算,因为$\theta^*$都不知道.结果也就不能以频率论的风险函数(frequentist risk)来对比不同的估计器了.接下来就说一下对这个问题的解决方案.
+
+### 6.3.1 贝叶斯风险
+
+怎么挑选估计器呢?我们需要把$R(\theta^*,\delta)$转换成一个不需要依赖$\theta^*$的单独量$R(\delta)$.一种方法是对$\theta^*$设一个先验,然后定义一个估计器的贝叶斯风险(Bayes risk)或者积分风险(integrated risk),如下所示:
+
+$R_B(\delta) \overset{\triangle}{=}  \mathrm{E}_{p(\theta^*)}[R(\theta^*,\delta)]=\int R(\theta^*,\delta)p(\theta^*)d \theta^* $(6.11)
+
+贝叶斯估计器(Bayes estimator)或者贝叶斯决策规则(Bayes decision rule)就是将期望风险最小化:
+$\delta_B \overset{\triangle}{=} \arg\min_\delta R_B(\delta) $(6.12)
+
+要注意这里的积分风险函数(integrated risk)也叫做预制后验风险(preposterior risk),因为实在看到数据之前得到的.对此最小化有助于实验设计.
+
+接下来有一个重要定理,这个定理将贝叶斯方法和频率论方法一起结合到了决策理论中.
+
+#### 定理6.31
+
+贝叶斯估计器可以通过最小化每个x的后验期望损失(posterior expected loss)而得到.
+
+证明.切换积分顺序,就有:
+$$
+\begin{aligned}
+R_B(\delta)& = \int [\sum_x\sum_y L(y,\delta(x))p(x,y|\theta^*)]p(\theta^*)d\theta^* &\text{(6.13)}\\
+&\sum_x\sum_y \int_\Theta L(y,\delta(x))p(x,y,\theta^*)d\theta^* &\text{(6.14)}\\
+& =\sum_x[\sum_y L(y,\delta(x))p(y|x)dy]p(x) &\text{(6.15)}\\
+& =\sum_x \rho (\delta(x)|x)p(x) &\text{(6.16)}\\
+\end{aligned}
+$$
+
+此处参考原书图6.2
+
+要最小化全局期望(overall expectation),只要将每个x项最小化就可以了,所以我们的决策规则就是要挑选:
+
+$\delta_B (x)=\arg\min_{a\in A} \rho(a|x) $(6.17)
+证明完毕.
+
+
+#### 定理6.32 (Wald,1950)
+
+每个可接受的决策规则都是某种程度上的贝叶斯决策规则,对应着某些可能还不适当的先验分布.
+这就表明,对频率论风险函数最小化的最佳方法就是贝叶斯方法!更多信息参考(Bernardo and Smith 1994, p448).
+
+### 6.3.2 最小最大风险(Minimax risk)
+
+当然咯,很多频率论者不喜欢贝叶斯风险,因为这需要选择一个先验(虽然这只是对估计器的评估中要用到,并不影响估计器的构建).所以另外一种方法就如下所示.定义一个估计器的最大风险如下所示:
+
+$R_{max}(\delta) \overset{\triangle}{=} \max_{\theta^*} R(\theta^*,\delta)$(6.18)
+
+最小最大规则(minimax rule)就是将最大风险最小化:
+$\delta_{MM}\overset{\triangle}{=} \arg\min_\delta R_{max}(\delta)$(6.19)
+
+例如图6.2中,很明显在所有的$\theta^*$值上,$\delta_1$有比$\delta_2$更低的最差情况风险(lower worst-case risk),所以就是最小最大估计器(关于如何计算一个具体模型的风险函数的解释可以参考本书6.3.3.1).
+
+最小最大估计器有一定的吸引力.可惜,计算过程可难咯.而且这些函数还都很悲观(pessimistic).实际上,所有的最小最大估计器都是等价于在最不利先验下的贝叶斯估计器.在大多数统计情境中(不包括博弈论情境),假设自然充满敌意并不是一个很合理的假设.
+
