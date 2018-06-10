@@ -181,7 +181,7 @@ $p(w)=p(B)-p(A)$(2.18)
 > 此处查看原书中图2.3
 
 
-定义一个函数$F(q) *= p(X\le q)$，这就是 X 的累积密度函数（cumulative distribution function，缩写为 cdf）。很明显这个 cdf 是一个单调递增函数（monotonically increasing function）。如图2.3（a）所示。来利用这个记号则有：
+定义一个函数$F(q) \overset{*}{=} p(X\le q)$，这就是 X 的累积密度函数（cumulative distribution function，缩写为 cdf）。很明显这个 cdf 是一个单调递增函数（monotonically increasing function）。如图2.3（a）所示。来利用这个记号则有：
 
 $p(a<X\le b) =F(b)-F(a)$(2.19)
 
@@ -214,7 +214,7 @@ $(\phi^{-1}(0.025),\phi^{-1}(0.975))=(-1.96，1.96)$（2.23）
 
 ### 2.2.7 均值（Mean）和方差（variance）
 
-对正态分布来说，大家最常见常用的性质估计就是均值（mean），或者称之为期望值（expected value），记作$\mu$。对于离散 rv （译者注：这个 rv 很突兀，之前没出现，也没解释是啥, 推测是 random variables）的情况，可以定义成$E[X] *= \sum_{x\in X}x p(x)$；对于连续 rv 的情况，可以定义为$E[X] *= \int_{X}xp(x)dx$。如果这个积分是无穷的，则均值不能定义，更多例子后文会有。
+对正态分布来说，大家最常见常用的性质估计就是均值（mean），或者称之为期望值（expected value），记作$\mu$。对于离散 rv （译者注：这个 rv 很突兀，之前没出现，也没解释是啥, 推测是 random variables）的情况，可以定义成$\mathrm{E}[X] \overset{*}{=} \sum_{x\in X}x p(x)$；对于连续 rv 的情况，可以定义为$\mathrm{E}[X] \overset{*}{=} \int_{X}xp(x)dx$。如果这个积分是无穷的，则均值不能定义，更多例子后文会有。
 
 然后就是方差（variance）了，这个表征的是分布的“散开程度（spread）”，记作$\sigma^2$。定义如下：
 
@@ -228,7 +228,7 @@ $$
 从上面的式子就可以推导出：
 $E[X^2]= \mu^2+\sigma^2 $(2.26)
 然后就可以定义标准差（standard deviation）了：
-$std[X]*= \sqrt {var[X]}$(2.27)
+$std[X]\overset{*}{=} \sqrt {var[X]}$(2.27)
 标准差和 X 单位一样哈。
 
 
@@ -239,9 +239,9 @@ $std[X]*= \sqrt {var[X]}$(2.27)
 ### 2.3.1 二项分布和伯努利分布
 
 设咱们抛硬币 n 次，设$X\in \{0,...,n\}$ 是人头朝上的次数。如果头朝上的概率是$\theta$，这就可以说 X 是一个二项分布（binomial distribution），记作$X\sim Bin(n,\theta)$。则 pmf（概率质量函数）可以写作：
-$Bin(k|n,\theta)*= \binom{n}{k} \theta ^k  (1- \theta)^{n-k}$（2.28）
+$Bin(k|n,\theta)\overset{*}{=} \binom{n}{k} \theta ^k  (1- \theta)^{n-k}$（2.28）
 上式中的
-$ \binom{n}{k} *= \frac{n!}{(n-k)!k!}$(2.29)
+$ \binom{n}{k} \overset{*}{=} \frac{n!}{(n-k)!k!}$(2.29)
 是组合数，相当于国内早期教材里面的$C_n^k$，从 n 中取 k 个样的组合数，也是二项式系数（binomial coefficient）。如图2.4所示就是一些二项分布。
 
 > 此处查看原书中图2.4
@@ -271,7 +271,7 @@ $$ (2.32)
 $Mu(x|n,\theta)*- \binom {n}{x_1,..,x_K}\prod^K_{j=1}\theta^{x_j}_j$(2.33)
 
 其中的$\theta_j$是第 j 面出现的概率，另外那个组合数的计算如下所示：
-$\binom {n}{x_1,...,x_K} *= \frac{n!}{x_1!x_2!...x_K!}$(2.34)
+$\binom {n}{x_1,...,x_K} \overset{*}{=} \frac{n!}{x_1!x_2!...x_K!}$(2.34)
 
 这样得到的也就是多项式系数（multinomial coefficient），将一个规模为$n=\sum^K_{k=1}$的集合划分成规模从$x_1$到$x_K$个子集的方案数。 
 
@@ -281,7 +281,7 @@ $Mu(x|1,\theta)=\prod^K_{j=1 }\theta_j ^{\prod(x_j=1)}$(2.35)
 
 可以参考图2.1的（b-c）作为一个例子。这是类别分布（categorical distribution）或者离散分布（discrete distribution）的典型案例。Gustavo Lacerda 建议大家称之为多重伯努利分布（multinoulli distribution），这样与二项分布/伯努利分布的区别关系相仿。本书就采用了这个术语，使用下列记号表示这种情况：
 
-$Cat(x|\theta)*= Mu(x|1,\theta)$(2.36)
+$Cat(x|\theta)\overset{*}{=} Mu(x|1,\theta)$(2.36)
 
  换句话说，如果$x\sim Cat(\theta)$，则$p(x=j|theta)=\theta_j$。参考表2.1。
 
@@ -321,7 +321,7 @@ $Poi(x|\lambda )=e^{-\lambda}\frac{\lambda ^x}{x!}$(2.39)
 
 某个数据集，$D =\{x_1,...,x_N \}$，就可以定义一个经验分布，也可以叫做经验测度（empirical measure），形式如下所示：
 
-$p_{emp}(A)*=\frac 1 N \sum^N_{i=1}\delta _{x_i}(A)$(2.40)
+$p_{emp}(A)\overset{*}{=}\frac 1 N \sum^N_{i=1}\delta _{x_i}(A)$(2.40)
 
 其中的$\delta_x(A)$是狄拉克测度（Dirac measure），定义为：
 $$
@@ -342,7 +342,7 @@ $p(x)=\sum^N_{i=1}w_i\delta_{x_i}(x)$（2.42）
 ### 2.4.1 高斯（正态）分布
 
 不管是统计学还是机器学习里面，最广泛使用的都是高斯分布了，也叫做正态分布。其概率密度函数 pdf 为：
-$N(x|\mu,\sigma^2) *= \frac {1}{\sqrt{2\pi \sigma^2}} e^ {-\frac{1}{2 \sigma^2}(x-\mu)^2}$(2.43)
+$N(x|\mu,\sigma^2) \overset{*}{=} \frac {1}{\sqrt{2\pi \sigma^2}} e^ {-\frac{1}{2 \sigma^2}(x-\mu)^2}$(2.43)
 
 上式中的$\mu=E[X]$是均值（mean）也是众数（mode）,$\sigma^2=var[X]$ 是方差（variance）。$\sqrt{2\pi \sigma^2}$是归一化常数（normalization constant），用于确保整个密度函数的积分是1，具体可以参考练习2.11。
 
@@ -354,16 +354,16 @@ $N(x|\mu,\sigma^2) *= \frac {1}{\sqrt{2\pi \sigma^2}} e^ {-\frac{1}{2 \sigma^2}(
 
 高斯分布的累积分布函数(cdf)为:
 
-$\phi(x;\mu , \sigma^2)*= \int^x_{-\infty}N(z|\mu,\sigma^2)dz $(2.44)
+$\phi(x;\mu , \sigma^2)\overset{*}{=} \int^x_{-\infty}N(z|\mu,\sigma^2)dz $(2.44)
 
 
 图2.3(a) 所示为当$\mu=0,\sigma^2=1$时候的 cdf 函数曲线.这个函数的积分没有闭合形式表达式,不过在多数软件包里面都内置了.另外还能以误差函数(error function,缩写为 erf)的形式来计算:
 
 
-$\phi(x;\mu , \sigma^)*= \frac 1 2[1+erf(z/\sqrt2)] $(2.45)
+$\phi(x;\mu , \sigma^)\overset{*}{=} \frac 1 2[1+erf(z/\sqrt2)] $(2.45)
 
 其中的$z=(x-\mu)/\sigma$,误差函数为:
-$erf(x)*= \frac{2}{\sqrt\pi}\int^x_0e^{-t^2}dt$(2.46)
+$erf(x)\overset{*}{=} \frac{2}{\sqrt\pi}\int^x_0e^{-t^2}dt$(2.46)
 
 高斯分布是统计学里面用的最广的分布,有几个原因.首先是这两个参数很好解释,分别对应着分布中的两个基础特征,均值和方差.其次中心极限定理( central limit theorem, 参考本书2.6.3)也表明独立随机变量的和就近似为高斯分布,所以高斯分布很适合用来对残差或者噪音建模.然后高斯分布有最小假设数(least number of assumptions),最大熵(maximum entropy),适合用于有特定均值和方差情境下建立约束,如本书9.2.6所述,这就使得高斯分布是很多情况下很不错的默认选择.另外,高斯分布的数学形式也很简单,容易实现,效率也很高.高斯分布更广泛应用参考 Jaynes 2003 第七章.
 
@@ -415,7 +415,7 @@ T 分布的稳定性如图2.8所示,左侧用的是没有异常值的高斯分�
 
 另外一个常用的重尾分布就是拉普拉斯分布,也被称为双面指数分布(double sided exponential distribution),概率密度函数如下所示:
 
-$Lap(x|\mu,b)*=\frac1{2b}\exp(-\frac{|x-\mu|}{b})$(2.53)
+$Lap(x|\mu,b)\overset{*}{=}\frac1{2b}\exp(-\frac{|x-\mu|}{b})$(2.53)
 
 上式中的$\mu$是位置参数(location parameter), b>0 是缩放参数(scale parameter),如图2.7所示就是其曲线.这个分布的各个属性如下所示:
 
@@ -428,7 +428,7 @@ $mean=\mu, mode=\mu,var=2b^2$(2.54)
 
 这个分布很灵活,适合正实数值的rv, x>0. 用两个参数定义,分别是形状参数(shape) a>0  和频率参数(rate) b>0:
 
-$Ga(T|shape=a, rate=b)*=  \frac{b^a}{\Gamma(a) }T^{a-1}e^{-Tb}$(2.55)
+$Ga(T|shape=a, rate=b)\overset{*}{=}  \frac{b^a}{\Gamma(a) }T^{a-1}e^{-Tb}$(2.55)
 
 上式中的$\Gamma(a)$是一个$\gamma$函数:
 $\Gamma(x) \int_0^{\infty} u^{x-1}e^{-u}du$(2.56)
@@ -441,14 +441,14 @@ $mean=\frac{a}{b}, mode=\frac{a-1}{b},var=\frac{a}{b^2}$(2.54)
 有一些分布实际上就是$\gamma$分布的特例, 比如下面这几个:
 
 
-* 指数分布(Exponential distribution)定义是$Expon(x|\lambda)*= Ga(x|1,\lambda)$,其中的$\lambda$是频率参数(rate).这个分布描述的是泊松过程(Poisson process) 中事件之间的时间间隔.例如,一个过程可能有很多一系列事件按照某个固定的平均频率$\lambda$连续独立发生.
+* 指数分布(Exponential distribution)定义是$Expon(x|\lambda)\overset{*}{=} Ga(x|1,\lambda)$,其中的$\lambda$是频率参数(rate).这个分布描述的是泊松过程(Poisson process) 中事件之间的时间间隔.例如,一个过程可能有很多一系列事件按照某个固定的平均频率$\lambda$连续独立发生.
 * 厄兰分布(Erlang Distribution)就是一个形状参数 a 是整数的$\gamma$分布,一般会设置 a=2,产生的是一个单参数厄兰分布,$Erlang(x|\lambda) = Ga(x|2, \lambda),$,$\lambda$也是频率参数.
-* 卡方分布(Chi-squared distribution)定义为$\chi ^2 (x|ν) *=Ga(x|\fracν2,\frac12 )$.这个分布是高斯分布随机变量的平方和的分布.更确切地说,如果有一个高斯分布$Z_i \sim  N(0, 1),$,那么其平方和$S=\sum_{i=1}^vZ_i^2$则服从卡方分布$S \sim  \chi_v^2$.
+* 卡方分布(Chi-squared distribution)定义为$\chi ^2 (x|ν) \overset{*}{=}Ga(x|\fracν2,\frac12 )$.这个分布是高斯分布随机变量的平方和的分布.更确切地说,如果有一个高斯分布$Z_i \sim  N(0, 1),$,那么其平方和$S=\sum_{i=1}^vZ_i^2$则服从卡方分布$S \sim  \chi_v^2$.
 
 另一个有用的结果是:如果一个随机变量服从$\gamma$分布:$X \sim  Ga(a,b)$ 那么这个随机变量的导数就服从一个逆$\gamma$分布(inverse gamma),即$\frac 1X \sim  IG(a,b)$,这个在练习2.10里面有详细描述.逆$\gamma$分布(inverse gamma)定义如下:
 
 
-$IG(x|shape =a,scale =b)*= \frac{b^a}{\Gamma  (a)}x^{-(a+1)} e^{-\frac b x}$(2.58)
+$IG(x|shape =a,scale =b)\overset{*}{=} \frac{b^a}{\Gamma  (a)}x^{-(a+1)} e^{-\frac b x}$(2.58)
 
 这个逆$\gamma$分布的三个属性 如下所示:
 
@@ -469,7 +469,7 @@ $Beta(x|a,b)=\frac{1}{B(a,b)}x^{a-1 }(1-x)^{b-1}$(2.60)
 
 上式中的$B(a,b)$是一个$\beta$函数,定义如下:
 
-$B(a,b)*=\frac{\Gamma (a)\Gamma (b)}{\Gamma (a+b)}$(2.61)
+$B(a,b)\overset{*}{=}\frac{\Gamma (a)\Gamma (b)}{\Gamma (a+b)}$(2.61)
 
 这个分布的函数图像可以参考图2.10.需要 a 和 b 都大于零来确保整个分布可以积分,这是为了保证$B(a,b)$存在.如果 a=b=1, 得到的就是均匀分布(uniform distirbution),如图2.10中红色虚线所示.如果 a 和 b 都小于1,那么得到的就是一个双峰分布(bimodal distribution),两个峰值在0和1位置上,如图2.10中的蓝色实线所示.如果 a 和 b 都大于1了,得到的就是单峰分布(unimodal distribution) 了,如图2.10中的另外两条虚线所示.这部分内容在练习2.16里会用到.这个分布的属性如下:
 
@@ -503,7 +503,7 @@ $mean=\frac{km}k-1{} \text{   if }k>1,mode=m, var =\frac{m^2k}{(k-1)^2(k-2)} \te
 
 协方差(covariance)是用来衡量两组变量之间(线性)相关的程度的,定义如下:
 
-$cov[X,Y]*= E[(X-E[X])(Y-E[Y])] =E[XY]-E[X]E[Y] $(2.65)
+$cov[X,Y]\overset{*}{=} E[(X-E[X])(Y-E[Y])] =E[XY]-E[X]E[Y] $(2.65)
 
 此处查看原书图2.12
 
@@ -524,7 +524,7 @@ $$
 
 两个变量X 和 Y 之间的(皮尔逊)相关系数(correlation coefficient)定义如下:
 
-$corr[X,Y]*= \frac{cov[X,Y]}{\sqrt{var[X]var[Y]}}$(2.68)
+$corr[X,Y]\overset{*}{=} \frac{cov[X,Y]}{\sqrt{var[X]var[Y]}}$(2.68)
 
 而相关矩阵(correlation matrix)则为:
 $$
@@ -551,7 +551,7 @@ $$(2.69)
 多元高斯分布(multivariate Gaussian)或者所谓多元正态分布(multivariate normal,缩写为MVN),是针对连续随机变量的联合概率分布里面用的最广的.在第四章会对其进行详细说明,这里只说一些简单定义并且给个函数图像瞅瞅.
 
 在 D 维度上的多元正态分布(MVN)的定义如下所示:
-$N(x|\mu,\Sigma)*= \frac{1}{(2\pi )^{\frac D2} |\Sigma|^{\frac12}}\exp [-\frac12 (x-\mu)^T\Sigma^{-1}(x-\mu) ]$(2.70)
+$N(x|\mu,\Sigma)\overset{*}{=} \frac{1}{(2\pi )^{\frac D2} |\Sigma|^{\frac12}}\exp [-\frac12 (x-\mu)^T\Sigma^{-1}(x-\mu) ]$(2.70)
 
 上式中$\mu = E [x] \in R^D$是均值向量,而$\Sigma= cov [x]$ 一个$ D\times D$的协方差矩阵.有时候我们会用到一个名词叫做精度矩阵(precision/concentration matrix),这个就是协方差矩阵的逆矩阵而已,也就是$\Lambda =\Sigma^{-1 }$.前面那一团做分母的$(2\pi )^{\frac D2}|\Sigma|^{\frac12}$也还是归一化常数,为了保证这个概率密度函数的积分等于1,更多参考练习4.5
 
@@ -581,7 +581,7 @@ $S_K={x:0 \le x_k \le 1, \sum ^K_{k=1}x_k=1}$(2.74)
 
 其概率密度函数 pdf 如下所示:
 
-$Dir(x|\alpha)*= \frac{1}{B(\alpha)} \prod^K_{k=1} x_k^{\alpha_k -1}\prod(x\in S_K)$(2.75)
+$Dir(x|\alpha)\overset{*}{=} \frac{1}{B(\alpha)} \prod^K_{k=1} x_k^{\alpha_k -1}\prod(x\in S_K)$(2.75)
 
 
 
@@ -592,10 +592,10 @@ $Dir(x|\alpha)*= \frac{1}{B(\alpha)} \prod^K_{k=1} x_k^{\alpha_k -1}\prod(x\in S
 
 上式中的$B(\alpha_1,...,\alpha_K)$是将$\beta$函数在 K 个变量上的自然推广(natural generalization),定义如下:
 
-$B(\alpha)*= \frac{\prod^K_{k=1}\Gamma (\alpha_k)}{\Gamma (\alpha_0)}$(2.76)
-其中的$\alpha_0*= \sum^K_{k=1}\alpha_k$.
+$B(\alpha)\overset{*}{=} \frac{\prod^K_{k=1}\Gamma (\alpha_k)}{\Gamma (\alpha_0)}$(2.76)
+其中的$\alpha_0\overset{*}{=} \sum^K_{k=1}\alpha_k$.
 
-图2.14展示的是当 K=3的时候的一些狄利克雷函数图像,图2.15是一些概率向量样本.很明显其中$\alpha_0*= \sum^K_{k=1}\alpha_k$控制了分布强度,也就是峰值位置.例如Dir(1, 1, 1)是一个均匀分布,Dir(2, 2, 2) 是以为(1/3, 1/3, 1/3)中心的宽分布(broad distribution),而Dir(20, 20, 20) 是以为(1/3, 1/3, 1/3)中心的窄分布(narrow distribution).如果对于所有的 k  都有$\alpha_k <1$,那么峰值在单纯形的角落.
+图2.14展示的是当 K=3的时候的一些狄利克雷函数图像,图2.15是一些概率向量样本.很明显其中$\alpha_0\overset{*}{=} \sum^K_{k=1}\alpha_k$控制了分布强度,也就是峰值位置.例如Dir(1, 1, 1)是一个均匀分布,Dir(2, 2, 2) 是以为(1/3, 1/3, 1/3)中心的宽分布(broad distribution),而Dir(20, 20, 20) 是以为(1/3, 1/3, 1/3)中心的窄分布(narrow distribution).如果对于所有的 k  都有$\alpha_k <1$,那么峰值在单纯形的角落.
 
 这个分布的属性如下:
 $ E[x_k]=\frac{\alpha_k}{\alpha_0},mode[x_k]=\frac{\alpha_k-1}{\alpha_0-K},var[x_k]=\frac{\alpha_k(\alpha_0-\alpha_k)}{\alpha_0^2(\alpha_0+1)}$(2.77)
@@ -639,15 +639,15 @@ $p_y(y)=\sum_{x:f(x)=y}p_x(x)$(2.83)
 例如,若X是偶数则$f(X)=1$,奇数则$f(X)=0$,$p_x(X)$是在集合$\{1, . . . , 10\}$上的均匀分布(uniform),这样$p_y (1) = x\in \{2,4,6,8,10\},  p_x (x) = 0.5,  p_y (0) = 0.5$.注意这个例子中的函数 f 是多对一的函数.
 如果 X 是连续的随机变量,就可以利用公式2.83,因为$p_x (x)$是一个密度,而不是概率质量函数了,也就不能把密度累加起来了. 这种情况下用的就是累积密度函数 cdf 了,协作下面的形式:
 
-$P_y(y)*=P(Y\le y)=P(f(X)\le y)=P(X\in\{x|f(x)\le y\})$(2.84)
+$P_y(y)\overset{*}{=}P(Y\le y)=P(f(X)\le y)=P(X\in\{x|f(x)\le y\})$(2.84)
 
 对累积密度函数 cdf 进行微分,就能得到概率密度函数 pdf 了:
 
-$P_y(y)*=P(Y\le y)=P(X\le f^{-1}(y))=P_x(f^{-1}(y))$(2.85)
+$P_y(y)\overset{*}{=}P(Y\le y)=P(X\le f^{-1}(y))=P_x(f^{-1}(y))$(2.85)
 
 求导就得到了:
 
-$p_y(y)*= \frac{d}{dy}P_y(y)=\frac{d}{dy}P_x(f^{-1}(y)=\frac{dx}{dy}\frac{d}{dx}P-X(x)=\frac{dx}{dy}px(x)$(2.86)
+$p_y(y)\overset{*}{=} \frac{d}{dy}P_y(y)=\frac{d}{dy}P_x(f^{-1}(y)=\frac{dx}{dy}\frac{d}{dx}P-X(x)=\frac{dx}{dy}px(x)$(2.86)
 
 显然 $x=f^{-1}(y)$ ,可以把 $dx$看作是对 x 空间的一种体测量;类似的把$dy$当作对 y 空间体积的测量.这样$\frac{dx}{dy}$就测量了体积变化.由于符号无关紧要,所以可以取绝对值来得到通用表达式:
 
@@ -662,7 +662,7 @@ $p_y(y)=p_x(x)|\frac{dx}{dy}|$(2.87)
 
 
 $$
-J_{x\rightarrow y } * = \frac{\partial(y_1,...,y_n)}{\partial(x_1,...,x_n)}*=
+J_{x\rightarrow y } * = \frac{\partial(y_1,...,y_n)}{\partial(x_1,...,x_n)}\overset{*}{=}
 \begin{pmatrix}
         \frac{\partial y_1}{\partial x_1} & ...& \frac{\partial y_1}{\partial x_n}  \\
         ...&...&...\\
@@ -726,7 +726,7 @@ $p(S_N=s)=\frac{1}{\sqrt{2\pi N\sigma^2}}\exp(-\frac{(s-N\mu)^2}{2N\sigma^2})$(2
 
 所以这个量的分布就是:
 
-$ Z_N *= \frac{S_N-N_{\mu}}{\sigma\sqrt N} = \frac{\bar X-\mu}{\sigma/\sqrt N} $(2.97)
+$ Z_N \overset{*}{=} \frac{S_N-N_{\mu}}{\sigma\sqrt N} = \frac{\bar X-\mu}{\sigma/\sqrt N} $(2.97)
 
 这个分布就会收敛到标准正态分布了,其中样本均值为:$\bar X=\frac 1 N \sum^N_{i=1}x_i$.这就叫做中心极限定理,更多内容参考(Jaynes 2003, p222) 或者 (Rice 1995, p169).
 
@@ -814,7 +814,7 @@ $P\{\mu-1.96\frac{\hat \sigma}{\sqrt S}\le \hat\mu \le \mu +1.96\frac{\hat \sigm
 
 随机变量 X 服从分布 p, 这个随机变量的熵(entropy)则表示为$H(X)$或者$H(p)$,这是对随机变量不确定性的一个衡量.对于一个有 K 个状态的离散随机变量来说,其信息熵定义如下:
 
-$H(X)*=-\sum^K_{k=1}p(X=k)\log_2p(X=k)$(2.107)
+$H(X)\overset{*}{=}-\sum^K_{k=1}p(X=k)\log_2p(X=k)$(2.107)
 
 通常都用2作为对数底数,这样单位就是 bit (这个是 binary digits 的缩写).如果用自然底数 e, 单位就叫做 nats 了.
 举个例子,$X\in \{1,...,5\}$,柱状分布(histogram distribution), 概率$p=[0.25,0.25,0.2,0.15,0.15]$,利用上面的公式计算得到$H =2.2855$.
@@ -839,7 +839,7 @@ $$
 
 KL 散度(Kullback-Leibler divergence),也称相对熵(relative entropy),可以用来衡量p和q两个概率分布的差异性(dissimilarity).定义如下:
 
-$KL(p||q)*=\sum^K_{k=1}p_k\log\frac{p_k}{q_k}$(2.110)
+$KL(p||q)\overset{*}{=}\sum^K_{k=1}p_k\log\frac{p_k}{q_k}$(2.110)
 
 上式中的求和也可以用概率密度函数的积分来替代.就可以写成:
 
@@ -847,7 +847,7 @@ $KL(p||q)=\sum_kp_k\log p_k - \sum_kp_k\log q_k =-H(p)+H(p,q)$(2.111)
 
 上式中的$H(p,q)$就叫做交叉熵(cross entropy):
 
-$H(p,q)*=-\sum_kp_k\log q_k $(2.112)
+$H(p,q)\overset{*}{=}-\sum_kp_k\log q_k $(2.112)
 
 参考 (Cover and Thomas 2006) 可以证明,当使用模型 q 来定义编码本(codebook)的时候,来自分布 p 的待编码数据的平均比特数(average number of bits)就是交叉熵.正规熵(regular entropy)$H(p)=H(p,p)$,参考本书2.8.1的定义,也就是使用真实模型时候的比特数期望值,因此 KL 散度也就是不同概率分布之间的不同的量度.换个说法, KL 散度就是要对数据编码所需要的额外比特(extra bits)的平均数,因为这时候用分布 q 来对数据进行编码,而不是使用分布 p.
 
@@ -896,7 +896,7 @@ $$
 ### 2.8.3 信息量(Mutual information)
 
 设有两个随机变量 X 和 Y. 如果我们想知道一个变量告诉我们关于另一个变量的多少信息。就可以计算相关系数(correlation coefficient)了,可是相关系数只适用于实数值的随机变量.另外相关系数对不相关程度的衡量作用也很有限,如图2.12所示.所以更常用的方法是对比联合分布(joint distribution)$p(X, Y)$和因式分布(factored distribution)$p(X)p(Y)$的相关性.这就叫互信息量(mutual information) 或者简写做 MI, 定义如下:
-$I(X;Y)*=KL(p(X,Y)||p(X)p(Y))=\sum_x\sum_yp(x,y)\log\frac{p(x,y)}{p(x)p(y)}$(2.119)
+$I(X;Y)\overset{*}{=}KL(p(X,Y)||p(X)p(Y))=\sum_x\sum_yp(x,y)\log\frac{p(x,y)}{p(x)p(y)}$(2.119)
 
 $I(X;Y)\ge0$的等号当且仅当$p(X,Y)=p(X)p(Y)$的时候成立.也就是如果两个变量相互独立,则互信息量 MI 为0. 为了深入理解 MI 这个量的含义,咱们用联合和条件熵的方式来重新表述一下.参考练习2.12可以得到上面的表达式等价于下列形式:
 
@@ -906,7 +906,7 @@ $I(X;Y)=H(X)-H(X|Y)=H(Y)-H(Y|X)$(2.120)
 
 另外一个和互信息量 MI 有很密切联系的量是点互信息量(pointwise mutual information,缩写为 PMI), 对于两个事件(而不是随机变量) x 和 y,其点互信息量 PMI 定义如下:
 
-$PMI(x,y)*= \log\frac{p(x,y)}{p(x)p(y)}= \log\frac{p(x|y)}{p(x)}= \log\frac{p(y|x)}{p(y)}$(2.121)
+$PMI(x,y)\overset{*}{=} \log\frac{p(x,y)}{p(x)p(y)}= \log\frac{p(x|y)}{p(x)}= \log\frac{p(y|x)}{p(y)}$(2.121)
 
 这个量衡量的是与偶发事件相比,这些事件之间的差异.很明显 X 和 Y 的互信息量 MI 就是点互信息量 PMI 的期望值.所以就可以把点互信息量 PMI 的表达式写为:
 
@@ -929,7 +929,7 @@ $m(x,y)=\frac{\max_{G\in G(x,y)}I(X(G);Y(G))}{\log\min (x,y)}$(2.123)
 
 上式中的$G(x, y)$是一个规模为$ x\times y$ 的二维网状集合,而$X(G),Y(G)$表示的是将变量在这个网格上进行离散化得到的结果.在区间位置(bin locations)上最大化的过程可以通过使用动态编程(dynamic programming)来有效进行(Reshed et al. 2011).这样定义了连续变量互信息量 MIC如下:
 
-$MIC*= \max_{x,y:xy<B}m(x,y)$(2.124)
+$MIC\overset{*}{=} \max_{x,y:xy<B}m(x,y)$(2.124)
 
 上式中的 B 是一个与取样规模相关的约束条件,用于约束能使用且能可靠估计分布的区间个数. ((Reshed et al. 2011) 建议的是$B = N^{0.6}$.显然 MIC 处于区间[0, 1]中,其中-表示两个变量没关系,而1表示二者有无噪音的相关性(noise-free relationship),这种相关性可以是任意形式的,不仅仅是线性相关.
 
