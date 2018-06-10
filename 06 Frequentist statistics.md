@@ -69,11 +69,11 @@ $\hat\theta \rightarrow N((\theta^*,I_N(\theta^*)^{-1})$(6.5)
 
 我们就说这个最大似然估计(MLE)的抽样分布是渐进正态(asymptotically normal)的.
 
-那么最大似然估计(MLE)的方差呢?这个方差可以用来衡量对最大似然估计的信心量度.很不幸,由于$\theta^*$是位置的,所以咱们不能对抽样分布的方差进行估计.不过还是可以用$\hat\theta$替代$\theta^*$来估计抽样分布.这样得到的$\hat\theta_k$近似标准差(approximate standard errors)为:
+那么最大似然估计(MLE)的方差呢?这个方差可以用来衡量对最大似然估计的信心量度.很不幸,由于$\theta^*$是未知的,所以咱们不能对抽样分布的方差进行估计.不过还是可以用$\hat\theta$替代$\theta^*$来估计抽样分布.这样得到的$\hat\theta_k$近似标准差(approximate standard errors)为:
 
 $\hat{se}_k \overset{\triangle}{=} I_N(\hat\theta)_{kk}^{-\frac{1}{2}} $(6.6)
 
-例如,从等式5.60就能知道一个二项分布模型(binomial sampling model)的费舍信(Fisher information)为:
+例如,从等式5.60就能知道一个二项分布模型(binomial sampling model)的费舍信息(Fisher information)为:
 
 $I(\theta)=\frac{1}{\theta(1-\theta)}$(6.7)
 
@@ -86,7 +86,7 @@ $\hat{se} = \frac{1}{\sqrt{I_N(\hat\theta)}} = \frac{1}{\sqrt{NI(\hat\theta)}}=(
 
 ## 6.3 频率论决策理论(Frequentist decision theory)
 
-在频率论或者所为经典决策理论中,有损失函数和似然函数,但没有先验,也没有后验,更没有后验期望损失(posterior expected loss)了.因此和贝叶斯方法不同,频率论方法中没有办法来自动推导出一个最优估计器.在频率论方法中,可以自由选择任意的估计器或者决策规则$\delta:X\rightarrow A$.
+在频率论或者经典决策理论中,有损失函数和似然函数,但没有先验,也没有后验,更没有后验期望损失(posterior expected loss)了.因此和贝叶斯方法不同,频率论方法中没有办法来自动推导出一个最优估计器.在频率论方法中,可以自由选择任意的估计器或者决策规则$\delta:X\rightarrow A$.
 选好了估计器,就可以定义对应的期望损失(expected loss)或者风险函数(risk),如下所示:
 $R(\theta^*,\delta)\overset{\triangle}{=} \mathrm{E} _{p(\tilde D|\theta^*)}[L(\theta^*,\delta(\tilde D))=\int L(\theta^*,\delta(\tilde D))p(\tilde D|\theta^*)d\tilde D]$(6.9)
 
@@ -108,7 +108,7 @@ $R_B(\delta) \overset{\triangle}{=}  \mathrm{E}_{p(\theta^*)}[R(\theta^*,\delta)
 贝叶斯估计器(Bayes estimator)或者贝叶斯决策规则(Bayes decision rule)就是将期望风险最小化:
 $\delta_B \overset{\triangle}{=} \arg\min_\delta R_B(\delta) $(6.12)
 
-要注意这里的积分风险函数(integrated risk)也叫做预制后验风险(preposterior risk),因为实在看到数据之前得到的.对此最小化有助于实验设计.
+要注意这里的积分风险函数(integrated risk)也叫做预制后验风险(preposterior risk),因为是在看到数据之前得到的.对此最小化有助于实验设计.
 
 接下来有一个重要定理,这个定理将贝叶斯方法和频率论方法一起结合到了决策理论中.
 
