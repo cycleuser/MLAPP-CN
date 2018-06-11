@@ -78,6 +78,11 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 
 #### 170页第五章 5.4.4.2 第二段第三行的 $Z _1 = 1$ 明显是错的,应该是 $Z _t= 1$ .
 
+
+2018年06月11日09:11:45
+
+#### 200页定理6.3.3证明证毕钱的最后一句话,$\delta_2$is admissible似乎明显是错误的,应该写$\delta_1$is admissible.这段本来证明的也是$\delta_1$is admissible.
+
 ## 翻译进度追踪
 
 - [x] 01 Introduction 1~26
@@ -85,7 +90,7 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 - [x] 03 Generative models for discrete data 65~96(练习略)
 - [x] 04 Gaussian models 97~148(练习略)
 - [x] 05 Bayesian statistics 149~190(练习略)
-- [ ] 06 Frequentist statistics 191~216(当前页面197)
+- [ ] 06 Frequentist statistics 191~216(当前页面200)
 - [ ] 07 Linear regression 217~244
 - [ ] 08 Logistic regression 245~280
 - [ ] 09 Generalized linear models and the exponential family 281~306
