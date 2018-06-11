@@ -81,7 +81,7 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 
 2018年06月11日09:11:45
 
-#### 200页定理6.3.3证明证毕钱的最后一句话,$\delta_2$is admissible似乎明显是错误的,应该写$\delta_1$is admissible.这段本来证明的也是$\delta_1$is admissible.
+#### 200页定理6.3.3证明证毕前的最后一句话,$\delta_2$is admissible似乎明显是错误的,应该写$\delta_1$is admissible.这段本来证明的也是$\delta_1$is admissible.
 
 ## 翻译进度追踪
 
