@@ -152,3 +152,95 @@ $\delta_{MM}\overset{\triangle}{=} \arg\min_\delta R_{max}(\delta)$(6.19)
 
 最小最大估计器有一定的吸引力.可惜,计算过程可难咯.而且这些函数还都很悲观(pessimistic).实际上,所有的最小最大估计器都是等价于在最不利先验下的贝叶斯估计器.在大多数统计情境中(不包括博弈论情境),假设自然充满敌意并不是一个很合理的假设.
 
+
+
+
+### 6.3.3 可容许的估计器(Admissible estimators)
+
+频率论决策理论的基本问题就是要知道真实分布$p(*|\theta^*)$才能去评估风险.可是有的估计器可能不管$\theta^*$是什么值,都会比其他的一些估计器更差.比如说,如果对于所有的$\theta\in\Theta$,都有$R(\theta,\delta_1)<R(\theta,\delta_2)$,那么就说$\delta_1$支配了$\delta_2$.如果不等关系对于某个$\theta$来说严格成立,就说这种支配关系是严格的.如果一个估计器不被另外的估计器所支配,就说这个估计器是可容许的(Admissible).
+
+#### 6.3.3.1 样例
+
+这个例子基于(Bernardo and smith 1994).这个问题是去估计一个正态分布的均值.假设数据样本抽样自一个正态分布$x_i \sim N(\theta^*,\sigma^2=1)$,然后使用平方损失函数(quadratic loss)$L(\theta,\hat\theta)=(\theta-\hat \theta)^2$.这时候对应的风险函数就是均方误差(MSE).估计器$\hat\theta(x)=\delta(x)$也就是一些可能的决策规则,如下所示:
+
+* $\delta_1(x)=\bar x$,这个是样本均值
+* $\delta_2(x)=\tilde x$,这个是样本中位数
+* $\delta_3(x)=\theta_0$,这个是某个固定值
+* $\delta_k(x)$,这个是在先验$N(\theta|\theta_0,\sigma^2/k)$下的后验均值:
+$\delta_k(x)=\frac{N}{N+k}\bar x  + \frac{k}{N+k}\theta_0 =w\bar x +(1-w)\theta_0$(6.20)
+
+对$\delta_k$可以设置一个弱先验$k=1$,以及一个更强的先验$k=5$.先验均值是某个固定值$\theta_0$.然后假设$\sigma^2$已知.(这样$\delta_3(x)$就和$\delta_k(x)一样了,后者有一个无穷强先验$k=\infty$.)
+
+接下来就以解析形式来推导风险函数了.(在这个杨丽中可以这么做,是因为已经知道了真实参数$\theta^*$.)在本书6.4.4,会看到均方误差(MES)可以拆解成平方偏差(squared bias)加上方差(variance)的形式:
+$MSE(\hat\theta(*)|ptheta^*$ = var[\hat\theta]+bias^2(\hat\theta)(6.21)
+
+样本均值是没有偏差的(unbiased),所以其风险函数为:
+$MSE(\delta_1|\theta^*) =var[\bar x]=\frac{\sigma^2}{N} $(6.22)
+
+此处参考原书图6.3
+
+
+样本中位数也是无偏差的.很明显其方差大约就是$\pi/(2N)$,所以有:
+
+$MSE(\delta_2|\theta^*)=\frac{\pi}{2N} $(6.23)
+
+
+对于固定值的$\delta_3(x)=\theta_0$,方差是0,所以有:
+
+$MSE(\delta_3|\theta^*)= (\theta^*-\theta_0)^2  $(6.24)
+
+最后是后验均值,如下所示:
+
+$$
+\begin{aligned}
+MSE(\delta_k|\theta^*)&= \mathrm{E}[ (w\bar x+(1-w)\theta_0-\theta^*)^2      ]   &\text{(6.25)}\\
+&=\mathrm{E}[(w(\barx-\theta^*)+(1-w)(\theta_0-\theta^*)        )^2]    &\text{(6.26)}\\
+&=  w^2\frac{\sigma^2}{N}+(1-w)^2(\theta_0-\theta^*)^2  &\text{(6.27)}\\
+&=  \frac{1}{(N+k)^2}(N\sigma^2+k^2(\theta_0-\theta^*)^2)  &\text{(6.28)}\\
+\end{aligned}
+$$
+
+图6.3中所示是在$N\in \{5,20\}$范围内的上面几个函数的图像.可以看出总体上最佳的估计器都是依赖$\theta^*$值的那几个,可是$\theta^*$还是未知的.如果$\theta^*$很接近$\theta_0$,那么$\delta_3$(实际上就是预测的$\theta_0$)就是最好的了.如果$\theta^*$在$\theta_0$范围内有一定波动,那么后验均值,结合了对$\theta_0$的猜测和数据所反映的信息,就是最好的.如果$\theta^*$远离$\theta_0$,那么最大似然估计(MLE)就是最好的.这也一点都不让人意外:假设先验均值明暗,小规模的收缩(shrinkage)是通常期望的(使用一个若先验的后验均值).
+
+令人意外的是对于任意的$\theta_0$值,决策规则$\delta_2$(样本中位数)的风险函数宗师比$\delta_1$(样本均值)的风险函数更大.也就是说,样本中位数对于这个问题来说是一个不可容许估计器(inadmissible estimator)(这个问题是假设数据抽样自一个正态分布).
+
+可是在实践中,样本中位数其实往往比样本均值更好,因为对于异常值不敏感,更健壮.参考(Minka 2000d)可知,如果假设数据来自于比高斯分布(正态分布)更重尾(heavier tails)的拉普拉斯分布(Laplace distribution),那么样本中位数就是贝叶斯估计器(Bayes estimator)(使用平方损失函数(squared loss)).更一般地,可以对数据使用各种灵活的模型来构建健壮的估计器,比如混合模型,或者不呢书14.7.2会讲到的非参数化密度估计器(non-parametric density estimators),然后再去计算后验均值或者中位数.
+
+#### 6.3.3.2 斯坦因悖论(Stein’s paradox)*
+
+
+加入有N个独立同分布(iid)随机变量服从正态分布,即$X_i\sim N(\theta_i,1)$,然后想要估计$\theta_i$.很明显估计器应该用最大似然估计(MLE)这时候就是设$\hat\theta_i=x_i$.结果表明:$N\ge 4$的时候,这是一个不可容许估计器(inadmissible estimator).
+
+怎么证明?构建一个更好的估计器就可以了.比如吉姆斯-斯坦因估计器(James-Stein estimator)就可以,定义如下所示:
+
+$\hat\theta_i =\hat B \bar x +(1-\hat B)(x_i-\bar x)$(6.29)
+
+上式中的$\bar x=\frac{1}{N}\sum^N_{i=1}x_i$,而$0<B<1$是某个调节常数.这个估计其会将$\theta_i$朝向全局均值进行收缩(shrink).(在本书5.6.2使用经验贝叶斯方法推导过这个估计器.)
+
+很明显,当$N\ge 4$的时候,这个收缩估计器比最大似然估计(MLE,也就是样本均值)有更低的频率风险(均方误差MSE).这就叫做斯坦因悖论(Stein's paradox).为啥说这是个悖论呢?这就解释一下.加入$\theta_i$是蘑菇而学生i的真实智商值(IQ),而$X_i$是其测试分数.为啥用全局均值来估计特定的$\theta_i$,用其他学生的分数去估计另一个学生的分数?利用不同范畴的东西还可以制造更加荒诞的自相矛盾的例子,比如加入$\theta_1$是我的智商,而$\theta_2$是温哥华平均降雨量,这有毛线关系?
+
+这个悖论的解决方案如下所述.如果你的目标只是估计$\theta_i$,那么用$x_i$来估计就已经是最好的选择了,可是如果你对目的是估计整个向量$\theta$,而且你还要用平方误差(squared error)作为你的损失函数,那么那个收缩估计器就更好.为了更好理解,假设我们要从一个蛋一样笨$x\sim N(\theta,I)$来估计$||\theta||^2_2$.最简单的估计就是$||x||^2_2$,不过会遇到上面的问题,因为:
+
+
+$\mathrm{E}[||x||^2_2]=\mathrm{E}[\sum_i x^2_i] =\sum^N_{i=1}(1+\theta_i^2)=N+||\theta||^2_2     $(6.30)
+
+结果就需要增加更多信息来降低风险,而这些增加的信息可能甚至来自于一些不相关的信息源,然后估计就会收缩到全局均值上面了.在本书5.6.2对此给出过贝叶斯理论的解释,更多细节也可以参考(Efron and Morris 1975).
+
+
+#### 6.3.3.3 可容许性远远不够(Admissibility is not enough)
+
+从前文来看,似乎很明显我们应该在可容许估计器范围内来搜索好的估计器.但实际上远不止构建可容许估计器这么简单,比如接下来这个例子就能看出.
+
+#### 定理 6.3.3
+
+设有正态分布$X\sim N(\theta,1)$,在平方误差下对$\theta$进行估计.设$\delta_1(x)=\theta_0$是一个独立与数据的常量.这是一个可容许估计器(admissible estimator).
+
+证明:用反证法,假设结论不成立,存在另外一个估计器$\delta_2$有更小风险,所以有$R(\theta^*,\delta_2)\le R(\theta^*,\delta_1)$,对于某些$\theta^*$不等关系严格成立.设真实参数为$\theta^*=\theta_0$.则$R(\theta^*,\delta_1)=0$,并且有:
+
+$R(\theta^*,\delta_2)=\int (\delta_2(x)-\theta_0)^2p(x|\theta_0)dx$(6.31)
+
+由于对于所有的$\theta^*$都有$0\le R(\theta^*,\delta_2)\le R(\theta^*,\delta_1)$,而$R(\theat_0,\delta_1)=0$,所以则有$R(\theta_0,\delta_2)=0,\delta_2(x)=\theta_0=\delta_1(x)$.这就表明了$\delta_2$只有和$\delta_1$相等的情况下才能避免在某一点$\theta_0$处有更高风险.也就是说不能有其他的估计器$\delta_2$能严格提供更低的风险.所以$\delta_1$是可容许的.证明完毕
+
+
+
+
