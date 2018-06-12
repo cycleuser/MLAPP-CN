@@ -7,25 +7,25 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 还是自己clone到本地想办法解决阅读问题吧，不愿意动手探索就没办法了。
 在VS Code中使用[mdmath](https://github.com/goessner/mdmath)这个插件，就可以实时预览Markdown当中的latex了，也可以去[这个链接]( https://marketplace.visualstudio.com/items?itemName=goessner.mdmath)直接安装
 
-# 各章节链接
+# 各章节HTML链接
 
-现在支持在线阅读了！
 
-各章节链接如下：
 
-[00 PreFace](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/blob/master/00%20PreFace.html)
 
-[01 Introduction](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/blob/master/01%20Introduction.html)
+[00 PreFace](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/00%20PreFace.html)
 
-[02 Probability](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/blob/master/02%20Probability.html)
+[01 Introduction](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/01%20Introduction.html)
+	
 
-[03 Generative models for discrete data](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/blob/master/03%20Generative%20models%20for%20discrete%20data.html)
+[02 Probability](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/02%20Probability.html)
 
-[04 Gaussian models](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/blob/master/04%20Gaussian%20models.html)
+[03 Generative models for discrete data](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/03%20Generative%20models%20for%20discrete%20data.html)
 
-[05 Bayesian statistics](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/blob/master/05%20Bayesian%20statistics.html)
+[04 Gaussian models](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/04%20Gaussian%20models.html)
 
-[06 Frequentist statistics](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/blob/master/06%20Frequentist%20statistics.html)
+[05 Bayesian statistics](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/05%20Bayesian%20statistics.html)
+
+[06 Frequentist statistics](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/06%20Frequentist%20statistics.html)
 
 
 
