@@ -4855,6 +4855,172 @@ $$
 
 
 
+## 6.5 经验风险最小化(Empirical risk minimization)
+
+频率论决策方法难以避免的一个基本问题就是不能计算出风险函数,因为要知道真实数据分布才行.(作为对比,贝叶斯后验期望损失就总能计算出来,因为条件是在数据上的,而不是真实参数$\theta^*$.)不过也有个办法能避免这个问题,也就是要预测已观测量,而不是估计隐藏变量或者隐藏参数.也就是不以$L(\theta,\delta(D))$的形式来找损失函数(其中的$\theta$是未知的真实参数,而$\delta(D)$是估计器),而是以$L(y,\delta(x))$形式来找损失函数,其中的y是未知的真实响应变量(response),而$\delta(x)$是对给定的输入特征x做出的预测.这样一来,频率论的风险函数就是: 
+
+$R(p_*,\delta \overset{\triangle}{=} \mathrm{E}_{(x,y)\sim p_*}[L(y,\delta(x)]=\sum_x\sum_yL(y,\delta(x))p_*(x,y)$(6.47)
+
+上式中的$p_*$表示的是真实的自然分布.当然这个分布是未知的,不过可以使用一个经验分布来近似,这个经验分布是通过训练及数据来得到:
+
+$p_*(x,y)\approx p_{emp}(x,y) \overset{\triangle}{=}\frac{1}{N}\sum^N_{i]1}\delta_{x_i}(x)\delta_{y_i}(y)   $(6.48)
+
+然后可以定义经验风险(empirical risk):
+
+$R_{emp}(D,D) \overset{\triangle}{=} R(P_{emp},\delta=\frac{1}{N}\sum^N_{i=1}L(y_i,\delta(x_i))$(6.49)
+
+在0-1损失函数的情况下,上面的$L(y,\delta(x))= I(y\ne \delta(x))$,上面这个经验风险就成了误分类率(misclassification rate)了.在平方误差损失函数的情况下,上式中的$L(y,\delta(x))= (y-\delta(x))^2$,这就成了均方误差(mean squared error).然后定义经验风险最小化(empirical risk minimization, 缩写为ERM),就是找到一个能使经验风险最小化的决策过程(通常都是分类规则):
+
+$\delta_{ERM}(D)=\arg\min_{\delta}R_{emp}(D,\delta)$(6.50)
+
+在无监督学习的情况下,可以去掉所有带y的项目,然后将$L(y,\delta(x))$替换成$L(x,\delta(x))$,比如,设$L(x,\delta(x))=||x-\delta(x)||^2_2$,衡量的是重建误差(reconstruction error).然后使用$\delta(x)=decode(encode(x))$定义决策规则,就类似向量量化(vector quantization,参考本书11.4.2.6)和主成分分析(principal component analysis,缩写为PCA,本书12.2).最后就得到了经验风险函数的定义形式如下:
+
+$R_{emp}(D,\delta) =\frac{1}{N}\sum^N_{i=1} L(x_i,\delta(x_i))$(6.51)
+
+当然了,总还可以设置$\delta(x)=x$来最小化风险,所以对于解码编码来说,某些瓶颈都很关键.
+
+
+
+### 6.5.1 规范化风险最小化(Regularized risk minimization)
+
+要注意,如果对"自然分布"的先验严格等于经验分布,那么贝叶斯风险就和经验风险相等了(Minka 2001b):
+
+$\mathrm{E}[R(p_*,\delta)|p_*=p_{emp}]=R_{emp}(D,\delta)$(6.52)
+
+因此最小化经验风险,就可能导致过拟合.所以通常都得为目标函数增加一个复杂度惩罚函数(complexity penalty):
+
+$R" (D,\delta)=  R_{emp}(D,\delta)+\lambda C(\delta)   $(6.53)
+
+上式中的$C(\delta)$衡量的是预测函数$\delta(x)$的复杂度,而$\lambda$控制的是复杂度惩罚的程度.这个方法就叫做规范风险最小化(regularized risk minimization,缩写为RRM).要注意如果损失函数是对数似然函数的负数,那么规范化项(regularizer)就是负的对数先验,这也就等价于最大后验估计(MAP).
+
+规范化风险最小化(RRM)有两个关键问题:如何衡量复杂度,以及如何挑选$\lambda$.对于线性模型来说,可以用其自由度定义成复杂度,具体细节参考本书7.5.3.更多的通用模型,可以使用VC维度(VC dimension),参考本书6.5.4.要挑选$\lambda$,可以使用在6.5.2中要讲到的方法.
+
+
+### 6.5.2 结构风险最小化
+
+规范化风险最小化原则标明,对于给定的复杂度惩罚函数(complexity penalty),可以使用下面的来拟合模型:
+
+
+$ \hat\delta_{\lambda}=\arg\min_{\delta}[R_{emp}(D,\delta)+\lambda C(\delta)]    $(6.54)
+
+可是要怎么选择$\lambda$?不能使用训练集,因为这会低估真实风险,也就是所谓的训练误差优化(optimism of the training erro)问题.或者也可以使用干虾米的规则,也就是结构风险最小化(structural risk minimization)原则(Vapnik 1998):
+
+$\hat\lambda =\arg\min_{\lambda} \hat R(\hat \delta _{\lambda}) $(6.55)
+
+上式中的$\hat R(\delta)$是对风险的估计.有两种广泛应用的估计:交叉验证,以及风险理论上界约束.接下来两种都讲一下.
+
+### 6.5.3 使用交叉验证估计风险函数
+
+可以利用一个验证集来估计某个估计器的风险.如果没有单独的验证集,可以使用交叉验证(cross validation,缩写为CV),在本书1.4.8中已经简单讲过了.更确切来说,交叉验证定义如下.设训练集中有$N=|D|$个数据.将第k份数据表达为$D_k$,而其他的所有数据就表示为$D_{-k}$.(在分层交叉验证(stratified CV)中,如果类标签是离散的,就选择让每份数据规模都基本相等.)然后设Ｆ是一个学习算法或者拟合函数，使用数据集D,并且模型索引为m(这个可以使离散索引,比如多项式指数,也可以是连续的,比如规范化强度等等),然后返回的就是参数向量:
+
+
+$\hat\theta_m =F(D,m)$(6.56)
+
+最后,设P是一个预测函数,接受一个输入特征和一个参数向量,然后返回一个预测:
+
+
+$\hat y=P(x,\hat \theta)=f(x,\hat \theta)$(6.57)
+
+这样就形成了一个拟合-预测循环(fit-predict cycle):
+
+$f_m(x,D)=P(x,F(D,m))$(6.58)
+
+
+对$f_m$的风险函数的K折交叉验证估计的定义为:
+
+$R(m,D,K)\overset{\triangle}{=} \frac{1}{N}\sum^N_{k=1}\sum_{i\inD_k}L(y_i, P(x_i,F(D_{-k},m))) $(6.59)
+
+然后就可以对每一份数据都调用运行一次拟合算法.设$f^k_m(x)=P(x,F(D_{-k},m))$是我们要对出去验证集k之外所有几何训练得到的函数.然后就可以把交叉验证估计改写成下面的形式:
+
+$R(m,D,K)=\frac{1}{N}\sum^N_{k=1}\sum_{i\inD_k}L(y_i,f^{-i}_m(x_i))=\frac{1}{N}\sum^N_{i=1}L(y_i,f^{-i}_m(x_i)) $(6.60)
+
+上式中的$k(i)是所用的验证集所在折数(份数),而i是用作验证的数据.也就是说,我们使用一个不包含$x_i$的数据训练出的模型来预测$y_i$.
+
+如果K=N,这个方法就成了留一交叉验证(leave one out cross validation,缩写为 LOOCV).这时候估计的风险就成了:
+
+$R(m,D,N)=\frac{1}{N}\sum^N_{i=1}L(y_i,f^{-i}_m(x_i))$(6.61)
+
+上式中的$f^{-i}_m(x_i)=P(x,F(D_{-i},m))$ .这需要对模型进行N次拟合,其中$f^{-i}_m$时候用到的是第i个训练样例.很幸运的是,有的模型分类和损失函数(比如线性模型和平方损失函数)可以只拟合一次,然后以解析方式每次去除掉第i个训练样本的效果.这样就叫做通用交叉验证(generalized cross validation,缩写为GCV).
+
+
+
+#### 6.5.3.1 样例:使用交叉验证来为岭回归选择参数$\lambda$
+
+
+举个例子,比如要为一个惩罚线性回归挑选$l_2$规范项强度.可以用下面的规则:
+
+$ \hat\lambda =\arg \min _{\lambda \in\{\lambda_{min},\lambda_{max}\}} R(\lambda,D_{train},K)$(6.62)
+
+其中的$[\lambda_{min},\lambda_{max}]$是一个有限区间,我们在这个范围内搜索$\lambda$的值,而$ R(\lambda,D_{train},K)$是使用$\lambda$之后对风险函数的K折交叉验证估计,如下所示:
+
+$R(\lambda,D_{train},K)= \frac{1}{D_{train}}\sum^K_{k=1}\sum_{i\in D_k}L(y_i,f^k_\lambda(x_i)) $(6.63)
+
+上式中的$f^k_{\lambda}(x)=x^T\hat w_{\lambda} (D_{-k})$是对除K折外数据所训练得到的预测函数,而$\hat w_{\lambda}(D)=\arg\min_wNLL(w,D)+\lambda||w||^2_2$是最大后验估计(MAP).图6.6(b)所示为交叉验证估计的风险函数与$\log(\lamba)$关系图像,其中的损失函数使用的是平方误差.
+
+当进行分类的时候,通常用0-1损失函数.这时候可以在对$w_\lambda m$估计的经验风险上优化一个凸上界约束(convex upper bound),但我们优化了风险函数本身(对其使用交叉验证估计)来估计$\lambda$.估计$\lambda$的时候可以使用不光滑的0-1损失函数,因为这是在整个(一维)空间上使用满立法进行搜索.
+
+当调节参数不仅一两个的时候,这个方法就不灵了.这时候可以使用经验贝叶斯,经验贝叶斯方法允许使用基于梯度的优化方法来替代蛮力查找,就可以优化大量的超参数了.这部分参考本书5.6.
+
+此处查看原书图6.6
+
+
+#### 6.5.3.2 单标准差规则(The one standard error rule)
+
+
+上面的过程都是估计风险函数,但并没有给出对不确定度的衡量.在频率论中,对一个估计的不确定度的标准衡量是均值标准差,定义如下:
+
+$  se=\frac{\hat\sigma}{\sqrt {N}} =\sqrt{\frac{\hat\sigma^2}{N}}   $(6.64)
+
+上式中的$\hat \sigma^2$是对损失函数方差的估计:
+
+$   \hat\sigma^2=\frac{1}{N}\sum^N_{i=1}(L_i-\bar L)^2 , L_i =L(y_i,f^{k(i)}_m(x_i)) , \bar L=\frac{1}{N}\sum^N_{i=1}L_i   $(6.65)
+
+要注意这里的$\sigma$衡量的是样本空间$L_i$的内在变异性,而标准差(se)衡量的是对均值$\bar L$的不确定度.
+
+对一个模型集合使用交叉验证来计算这些模型估计风险的均值和标准差.从这些有凹印估计中选择模型的一个常用的启发手段是选一个对应最简单模型的值,这个模型的风险不能超过最佳模型风险的单个标准差,这就叫单标准差规则(one standard error rule)(Hastie et al. 2001, p216).例如图6.6中,就能看到这个启发式方法并没有选择曲线上的最低点,而是选择偏右一点的点,因为那个点对应了更强规范化模型(more heavily regularized model),而经验性能本质上是一样的.
+
+
+
+
+#### 6.5.3.3 非概率无监督学习中模型选择的交叉验证(CV for model selection in non-probabilistic unsupervised learning)
+
+
+### 6.5.4 使用统计学习理论的风险上界(Upper bounding the risk using statistical learning theory)*
+
+
+$  P(\max_{h\in H} |R_{emp}(D,h) -R(p_*,h)|>\epsilon )\le 2dim(H)e^{-2N\epsilon^2}   $(6.66)
+
+
+
+$ P(|\bar x-\theta|>\epsilon)\le 2e^{-2N\epsilon^2}     $(6.67)
+
+
+
+
+$$
+\begin{aligned}
+P(\max_{h\in H}|\hat R_N (h) -R(h)|>\epsilon )&= P(U_{h\in H}|\hat R_N(h)-R(h)|>\epsilon ) &\text{(6.68)}\\
+&\le  \sum_{h\in H} P(|\hat R_N(h)-R(h)|>\epsilon)   &\text{(6.69)}\\
+&\le  \sum_{h\in H}2e^{-2N\epsilon^2}=2 dim (H)e^{-2N\epsilon^2}   &\text{(6.70)}\\
+\end{aligned}
+$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
