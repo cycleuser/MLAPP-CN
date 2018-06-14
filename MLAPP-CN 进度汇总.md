@@ -3408,7 +3408,7 @@ $$
 使用固定点迭代(fixed point iteration)就可以解出来了.首先初始化估计$\lambda_x=1/s_x^2,\lambda_y=1/s_y^2$,其中的$s_x^2=\frac{1}{N_x}\sum^{N_x}_{i=1}(x_i-\bar x)^2=0.16,s_y^2=\frac{1}{N_y}\sum^{N_y}_{i=1}(y_i-\bar y)^2=0.36$.
 然后就解出来了$\hat \mu =2.1154$,所以有$p(\mu|D,\hat \lambda_x,\hat \lambda_y)=N\mu|2.1154,0.0554)$.如果现在进行迭代,最终会收敛到:$\hat \lambda_x=1/0.1662,\hat \lambda_y=1/4.0509,p(\mu|D,\hat \lambda_x,\hat \lambda_y)= N(\mu|,1.5788,0.0798)$.
 
-对这个后验的插值估计如图4.20(a)所示.每个传感器的权重是根据其估计误差赋予的.由于估计误差标明传感器y远不如传感器x可靠,所以就有$\mathrm{E}[\mu|D\hat \lambda_x,\hat \lambda_y]\approx \bar x$,实际上就是忽略了传感器y.
+对这个后验的插值估计如图4.20(a)所示.每个传感器的权重是根据其估计误差赋予的.由于估计误差表明传感器y远不如传感器x可靠,所以就有$\mathrm{E}[\mu|D\hat \lambda_x,\hat \lambda_y]\approx \bar x$,实际上就是忽略了传感器y.
 
 接下来我们用贝叶斯方法来来积分求未知精度,而不对其进行估计.也就是要计算:
 
@@ -4898,12 +4898,12 @@ $R" (D,\delta)=  R_{emp}(D,\delta)+\lambda C(\delta)   $(6.53)
 
 ### 6.5.2 结构风险最小化
 
-规范化风险最小化原则标明,对于给定的复杂度惩罚函数(complexity penalty),可以使用下面的来拟合模型:
+规范化风险最小化原则表明,对于给定的复杂度惩罚函数(complexity penalty),可以使用下面的公式来拟合模型:
 
 
 $ \hat\delta_{\lambda}=\arg\min_{\delta}[R_{emp}(D,\delta)+\lambda C(\delta)]    $(6.54)
 
-可是要怎么选择$\lambda$?不能使用训练集,因为这会低估真实风险,也就是所谓的训练误差优化(optimism of the training erro)问题.或者也可以使用干虾米的规则,也就是结构风险最小化(structural risk minimization)原则(Vapnik 1998):
+可是要怎么选择$\lambda$?不能使用训练集,因为这会低估真实风险,也就是所谓的训练误差优化(optimism of the training erro)问题.或者也可以使用干下面的规则,也就是结构风险最小化(structural risk minimization)原则(Vapnik 1998):
 
 $\hat\lambda =\arg\min_{\lambda} \hat R(\hat \delta _{\lambda}) $(6.55)
 
@@ -4977,7 +4977,7 @@ $   \hat\sigma^2=\frac{1}{N}\sum^N_{i=1}(L_i-\bar L)^2 , L_i =L(y_i,f^{k(i)}_m(x
 
 要注意这里的$\sigma$衡量的是样本空间$L_i$的内在变异性,而标准差(se)衡量的是对均值$\bar L$的不确定度.
 
-对一个模型集合使用交叉验证来计算这些模型估计风险的均值和标准差.从这些有凹印估计中选择模型的一个常用的启发手段是选一个对应最简单模型的值,这个模型的风险不能超过最佳模型风险的单个标准差,这就叫单标准差规则(one standard error rule)(Hastie et al. 2001, p216).例如图6.6中,就能看到这个启发式方法并没有选择曲线上的最低点,而是选择偏右一点的点,因为那个点对应了更强规范化模型(more heavily regularized model),而经验性能本质上是一样的.
+对一个模型集合使用交叉验证来计算这些模型估计风险的均值和标准差.从这些有噪音估计中选择模型的一个常用的启发手段是选一个对应最简单模型的值,这个模型的风险不能超过最佳模型风险的单个标准差,这就叫单标准差规则(one standard error rule)(Hastie et al. 2001, p216).例如图6.6中,就能看到这个启发式方法并没有选择曲线上的最低点,而是选择偏右一点的点,因为那个点对应了更强规范化模型(more heavily regularized model),而经验性能本质上是一样的.
 
 
 
@@ -5020,7 +5020,7 @@ P(\max_{h\in H}|\hat R_N (h) -R(h)|>\epsilon )&= P(U_{h\in H}|\hat R_N(h)-R(h)|>
 \end{aligned}
 $$
 
-这个上界的约束条件标明训练误差的优化会随着$dim(H)$提高而提高,但又随着$N=|D|$而降低,正如我们所料.
+这个上界的约束条件表明训练误差的优化会随着$dim(H)$提高而提高,但又随着$N=|D|$而降低,正如我们所料.
 
 如果假设空间H是无穷的,比如说是实数值参数了,那就不能使用$dim(H)=|H|$了.这时候要使用VC维度(Vapnik-Chervonenkis ,缩写为VC).具体细节参考(Vapnik 1998).
 
