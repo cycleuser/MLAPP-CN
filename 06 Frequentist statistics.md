@@ -239,7 +239,7 @@ $\mathrm{E}[||x||^2_2]=\mathrm{E}[\sum_i x^2_i] =\sum^N_{i=1}(1+\theta_i^2)=N+||
 
 $R(\theta^*,\delta_2)=\int (\delta_2(x)-\theta_0)^2p(x|\theta_0)dx$(6.31)
 
-由于对于所有的$\theta^*$都有$0\le R(\theta^*,\delta_2)\le R(\theta^*,\delta_1)$,而$R(\theat_0,\delta_1)=0$,所以则有$R(\theta_0,\delta_2)=0,\delta_2(x)=\theta_0=\delta_1(x)$.这就表明了$\delta_2$只有和$\delta_1$相等的情况下才能避免在某一点$\theta_0$处有更高风险.也就是说不能有其他的估计器$\delta_2$能严格提供更低的风险.所以$\delta_1$是可容许的.证明完毕
+由于对于所有的$\theta^*$都有$0\le R(\theta^*,\delta_2)\le R(\theta^*,\delta_1)$,而$R(\theta_0,\delta_1)=0$,所以则有$R(\theta_0,\delta_2)=0,\delta_2(x)=\theta_0=\delta_1(x)$.这就表明了$\delta_2$只有和$\delta_1$相等的情况下才能避免在某一点$\theta_0$处有更高风险.也就是说不能有其他的估计器$\delta_2$能严格提供更低的风险.所以$\delta_1$是可容许的.证明完毕
 
 
 
@@ -250,7 +250,7 @@ $R(\theta^*,\delta_2)=\int (\delta_2(x)-\theta_0)^2p(x|\theta_0)dx$(6.31)
 ### 6.4.1 连续估计器(Consistent estimators)
 
 
-连续估计器,就是随着取样规模趋近于无穷大,最终能够恢复出生成数据的真实参数的估计器,也就是随着$|D|\rightarrow \infity$,$\hat\hteta(D)\rightarrow \theta^*$(这里的箭头指的是概率收敛的意思).当然了,这个概念要有意义,就需要保证数据确实是来自某个具有参数$\theta^*$的特定模型,而现实中这种情况很少见的.不过从理论上来说这还是个很有用的性质.
+连续估计器,就是随着取样规模趋近于无穷大,最终能够恢复出生成数据的真实参数的估计器,也就是随着$|D|\rightarrow \infity$,$\hat\theta(D)\rightarrow \theta^*$(这里的箭头指的是概率收敛的意思).当然了,这个概念要有意义,就需要保证数据确实是来自某个具有参数$\theta^*$的特定模型,而现实中这种情况很少见的.不过从理论上来说这还是个很有用的性质.
 
 最大似然估计(MLE)就是一个连续估计器.直观理解就是因为将似然函数最大化其实就等价于将散度$KL(p(*|\theta^*)||p(*|\hat\theta))$最小化,其中的$p(*|\theta^*)$是真实分布,而$p(*|\hat\theta)$是估计的.很明显当且仅当$\hat\theta=\theta^*$的时候才有0散度(KL divergence).
 
@@ -635,7 +635,7 @@ P值的另外一个问题是其计算依赖于停止收集数据的决策,即便
 
 $Bin(s|n,\theta)  = {\begin{pmatrix}n\\s\end{pmatrix}} \theta^s(1-\theta)^{n-s}   $(6.82)
 
-设零假设就是硬币没有作弊,即$\theta=0.5$,这个$\theat$是人头朝上的概率.这样使用检验统计$t(s)=s$得到的单边p值(one-sided p-value)就是:
+设零假设就是硬币没有作弊,即$\theta=0.5$,这个$\theta$是人头朝上的概率.这样使用检验统计$t(s)=s$得到的单边p值(one-sided p-value)就是:
 
 $p_1=P(S\ge 9|H_0)= \sum^{12}_{s=9} Bin(s|12,0.5)=\sum^{12}_{s=9} {\begin{pmatrix}12\\s\end{pmatrix}}0.5^{12}=0.073 $(6.83)
 
@@ -650,7 +650,7 @@ $p_2= \sum^{12}_{s=9} Bin(s|12,0.5)+ \sum^{3}_{s=0} Bin(s|12,0.5)=0.073+0.073=0.
 $NegBinom(s|f,\theta)={\begin{pmatrix}s+f-1\\f-1\end{pmatrix}}\theta^s(1-\theta)^f$(6.85)
 上式中的f=n-s.
 
-要注意这个分布中依赖于$\theta$的项目和等式6.82与6.85中的是一样的,所以在$\theat$上的后验在两种情况下也都是一样的.不过对同样数据的两种解释给出了不同的P值.具体来说就是在负二项分布情况下的p值是:
+要注意这个分布中依赖于$\theta$的项目和等式6.82与6.85中的是一样的,所以在$\theta$上的后验在两种情况下也都是一样的.不过对同样数据的两种解释给出了不同的P值.具体来说就是在负二项分布情况下的p值是:
 
 $p_3=P(S\ge9|H_0)=\sum^\infty _{s=9}{\begin{pmatrix}s+3-1\\3-1\end{pmatrix}}(1/2)^s(1/2)^3=0.0327$(6.86)
 
