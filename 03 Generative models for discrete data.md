@@ -157,10 +157,10 @@ $Bin(k|n,\theta))\overset\triangle{=}\binom{n}{k}\theta^k(1-\theta)^{n-k}$(3.12)
 ### 3.3.2 先验(prior)
 
 需要一个定义在区间[0,1]上的先验.为了数学运算简便,可以让先验和似然率形式相同,也就是说对于参数为$\gamma _1,\gamma_2$的某个先验来说:
-$p(\theta)\propto \theta^{\gamma_1}(1-\theta)^{\gamma_2}$(3.13)$
+$p(\theta)\propto \theta^{\gamma_1}(1-\theta)^{\gamma_2}$(3.13)
 这样的话,后验就很好估算了,只要合并指数就可以了:
 
-$p(\theta) \propto p(D|\theta)p(\theta) = \theta^{ N_1} (1 − \theta) ^{N_0 }\theta ^{\gamma_1 }(1 − \theta) ^{\gamma_2 }= \theta ^{N_1 +\gamma_1} (1 − \theta) ^{N_0 +\gamma_2}$(3.14)$
+$p(\theta) \propto p(D|\theta)p(\theta) = \theta^{ N_1} (1 − \theta) ^{N_0 }\theta ^{\gamma_1 }(1 − \theta) ^{\gamma_2 }= \theta ^{N_1 +\gamma_1} (1 − \theta) ^{N_0 +\gamma_2}$(3.14)
 
 
 这样先验和后验形式都一样了,就说这个先验是所对应似然率的共轭先验(conjugate prior).共轭先验用处很广泛,因为计算起来简单,也好理解.
@@ -181,7 +181,7 @@ $Beta(\theta|a,b)\propto \theta^{a-1}(1-\theta)^{b-1} $(3.15)
 
 把二项分布的似然率和$\beta$分布的先验乘到一起,就得到下面的后验了(参考公式3.14):
 
-$p(\theta|D ) \propto Bin(N_1|\theta ,N_0+ N_1)Beta(\theta|a,b)Beta(\theta|N_1+a,N_0+b)$(3.16)
+$p(\theta|D ) \propto Bin(N_1|\theta ,N_0+ N_1)Beta(\theta|a,b) = Beta(\theta|N_1+a,N_0+b)$(3.16)
 
 具体来说,这个后验是通过在经验计数(empirical counts)基础上加上了先验超参数(prior hyper-parameters)而得到的.因此将这些超参数称之为伪计数(pseudo counts).先验的强度,也是先验的有效取样规模(effective sample size)就是伪计数的和$a+b$;这个量起到的作用类似于数据集规模$N_1 + N_0 = N$.
 
