@@ -85,3 +85,94 @@ $RSS(w)=||\epsilon||^2_2=\sum^N_{i=1}\epsilon_i^2$     (7.10)
 首先以更好区分的形式重写目标函数(负对数似然函数):
 
 $NLL(w)=\frac{1}{2}(y-Xw)^T(y-Xw)=\frac{1}{2}w^T(X^TX)w-w^T(X^Ty)$   (7.11)
+
+上式中
+$X^TX=\sum^N_{i=1}x_ix_u^T=\sum^N_{i=1}\begin{pmatrix} x_{i,1}^2&... x_{i,1}x_{i,D}\\&& ...&\\  x_{i,D}x_{i,1} &... & x_{i,D}^2 \end{pmatrix}$   (7.12)
+
+是矩阵平方和（sum of squares matrix），另外的一项为：
+
+$X^Ty=\sum^N_{i=1}x_iy_i$   (7.13)
+
+使用灯饰4.10中的结论，就得到了梯度函数（gradient），如下所示：
+
+$g(w)=[X^TXw-X^Ty]=\sum^N_{i=1} x_i(w^Tx_i-y_i)$   (7.14)
+
+使梯度为零，则得到了：
+
+$X^TXw=X^Ty$   (7.15)
+
+
+这就是正规方程（normal equation）。这个线性方程组对应的解$\hat w$就叫做常规最小二乘解（ordinary least squares solution，缩写为 OLS solution）：
+
+$\hat w_{OLS}=(X^TX)^{-1}X^Ty$   (7.16)重要公式
+
+
+
+### 7.3.2 几何解释
+
+
+这个方程有很优雅的几何解释。假设N>D,也就意味样本比特征数目多。X列向量（columns）定义的是在N维度内的一个D维度的子空间。设第j列为$\tilde x_j$,是在$R^N$上的一个向量.(应该不难理解,$x_i\in R^D$表示的就是数据情况中的第i个.)类似的y也是一个$R^N$中的向量.例如,如果社N=3个样本,二D=2的子空间:
+
+$X=\begin{pmatrix}1&2 \\ 1 &-2\\1 &2 \end{pmatrix},y=\begin{pmatrix}8.8957\\0.6130\\1.7761\end{pmatrix}$   (7.17)
+
+这两个向量如图7.3所示.
+
+然后我们就要在这个线性子空间中找一个尽可能靠近y的向量$\hat y\in R^N$,也就是要找到:
+
+$\arg\min_{\hat\in span(\{ \tilde x_1,...,\tilde x_D \})} ||y-\hat y||_2$   (7.18)
+
+由于$\hat y \in span(X)$,所以就会存在某个权重向量(weight vector)w使得:
+
+$\hat y= w_1\tilde x_1+...+w_D\tilde x_D=Xw$   (7.19)
+
+
+此处参考原书图7.3
+
+
+要最小化残差的范数(norm of the residual)$y-\hat y$,就需要让残差向量(residual vector)和X的每一列相正交(orthogonal),也就是对于$j=1:D$有$\tilde x ^T_j (y-\hat y) =0$.因此有:
+
+
+
+$\tilde x_j^T(y-\hat y)=0  \implies X^T(y-Xw)=0\implies w=(X^TX)^{-1}X^Ty$ (7.20)
+
+这样y的投影值就是:
+
+$\hat y=X\hat w= X(X^TX)^{-1}X^Ty$(7.21)
+
+这对应着在X的列空间(column space)中的y的正交投影(orthogonal projection).投影矩阵$P\overset{\triangle}{=} X(X^TX)^{-1}X^T$就叫做帽子矩阵(hat matrix),因为在y上面盖了个帽子成了$\hat y$.
+
+
+### 7.3.3 凸性质
+
+在讲到最小二乘法的时候,我们注意到负对数似然函数(NLL)形状像是一个碗,有单一的最小值.这样的函数用专业术语来说是凸(convex)的函数.凸函数在机器学习里面非常重要.
+
+然后咱们对这个概念进行一下更确切定义.设一个集合S,如果对于任意的$\theta,\theta'\in S$,如果有下面的性质,则S是凸的集合:
+
+$\lambda\theta+(1-\lambda)\theta'\in S, \forall  \lambda\in[0,1]$(7.22)
+
+此处参考原书图7.4
+此处参考原书图7.5
+
+也就是说在$\theta$和$\theta'$之间连一条线,线上所有的点都处在这个集合之内.如图7.4(a)所示就是一个凸集合,而图7.4(b)当中的就是一个非凸集合.
+
+一个函数的上图(epigraph,也就是一个函数上方的全部点的集合)定义了一个凸集合,则称这个函数$f(\theta)$就是凸函数.反过来说,如果定义在一个凸集合上的函数$f(\theta)$满足对任意的$\theta,\theta'\in S$,以及任意的$0\le\lambda\le1$,都有下面的性质,也说明这个函数是凸函数:
+
+$f(\lambda \theta +(1-\lambda)\theta')\le \lambda f(\theta) +(1-\lambda)f(\theta ')$ (7.23)
+
+图7.5(b)是一个一维样本.如果不等式严格成立,就说这个函数是严格凸函数(strictly convex).如果其反函数$-f(\theta)$是凸函数,则这个函数$f(\theta$是凹函数(concave).标量凸函数(scalar convex function)包括$\theta^2,e^\theta,\theta\log\theta (\theta>0)$.标量凹函数(scalar concave function)包括$\log(\theta),\sqrt\theta$.
+
+直观来看,(严格)凸函数就像是个碗的形状,所以对应在碗底位置有全局的唯一最小值$\theta^*$.因此其二阶导数必须是全局为正,即$\frac{d}{d\theta}f(\theta)>0$.当且仅当一个二阶连续可微(twice-continuously differentiable)多元函数f的海森矩阵(Hessian)对于所有的$\theta$都是正定的(positive definite),这个函数才是凸函数.在机器学习语境中,这个函数f通常对应的都是负对数似然函数(NLL).
+
+此处参考原书图7.6
+
+
+负对数似然函数(NLL)是凸函数的模型是比较理想的.因为这就意味着能够找到全局最优的最大似然估计(MLE).本书后面还会看到很多这类例子.不过很多模型还并不一定就能有凹的似然函数.这时候就要推一些方法来求局部最优参数估计了.
+
+
+
+
+
+
+
+
+
