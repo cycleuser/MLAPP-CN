@@ -1,6 +1,6 @@
 # MLAPP 读书笔记 - 07 线性回归(Linear regression)
 
-> A Chinese Notes of MLAPP，MLAPP 中文笔记项目 
+> A Chinese Notes of MLAPP,MLAPP 中文笔记项目 
 https://zhuanlan.zhihu.com/python-kivy
 
 记笔记的人：[cycleuser](https://www.zhihu.com/people/cycleuser/activities)
@@ -89,20 +89,20 @@ $NLL(w)=\frac{1}{2}(y-Xw)^T(y-Xw)=\frac{1}{2}w^T(X^TX)w-w^T(X^Ty)$   (7.11)
 上式中
 $X^TX=\sum^N_{i=1}x_ix_u^T=\sum^N_{i=1}\begin{pmatrix} x_{i,1}^2&... x_{i,1}x_{i,D}\\&& ...&\\  x_{i,D}x_{i,1} &... & x_{i,D}^2 \end{pmatrix}$   (7.12)
 
-是矩阵平方和（sum of squares matrix），另外的一项为：
+是矩阵平方和（sum of squares matrix）,另外的一项为：
 
 $X^Ty=\sum^N_{i=1}x_iy_i$   (7.13)
 
-使用等式4.10中的结论，就得到了梯度函数（gradient），如下所示：
+使用等式4.10中的结论,就得到了梯度函数（gradient）,如下所示：
 
 $g(w)=[X^TXw-X^Ty]=\sum^N_{i=1} x_i(w^Tx_i-y_i)$   (7.14)
 
-使梯度为零，则得到了：
+使梯度为零,则得到了：
 
 $X^TXw=X^Ty$   (7.15)
 
 
-这就是正规方程（normal equation）。这个线性方程组对应的解$\hat w$就叫做常规最小二乘解（ordinary least squares solution，缩写为 OLS solution）：
+这就是正规方程（normal equation）.这个线性方程组对应的解$\hat w$就叫做常规最小二乘解（ordinary least squares solution,缩写为 OLS solution）：
 
 $\hat w_{OLS}=(X^TX)^{-1}X^Ty$   (7.16)重要公式
 
@@ -111,7 +111,7 @@ $\hat w_{OLS}=(X^TX)^{-1}X^Ty$   (7.16)重要公式
 ### 7.3.2 几何解释
 
 
-这个方程有很优雅的几何解释。假设N>D,也就意味样本比特征数目多。X列向量（columns）定义的是在N维度内的一个D维度的子空间。设第j列为$\tilde x_j$,是在$R^N$上的一个向量.(应该不难理解,$x_i\in R^D$表示的就是数据情况中的第i个.)类似的y也是一个$R^N$中的向量.例如,如果社N=3个样本,二D=2的子空间:
+这个方程有很优雅的几何解释.假设N>D,也就意味样本比特征数目多.X列向量（columns）定义的是在N维度内的一个D维度的子空间.设第j列为$\tilde x_j$,是在$R^N$上的一个向量.(应该不难理解,$x_i\in R^D$表示的就是数据情况中的第i个.)类似的y也是一个$R^N$中的向量.例如,如果社N=3个样本,二D=2的子空间:
 
 $X=\begin{pmatrix}1&2 \\ 1 &-2\\1 &2 \end{pmatrix},y=\begin{pmatrix}8.8957\\0.6130\\1.7761\end{pmatrix}$   (7.17)
 
