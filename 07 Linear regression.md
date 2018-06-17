@@ -93,7 +93,7 @@ $X^TX=\sum^N_{i=1}x_ix_u^T=\sum^N_{i=1}\begin{pmatrix} x_{i,1}^2&... x_{i,1}x_{i
 
 $X^Ty=\sum^N_{i=1}x_iy_i$   (7.13)
 
-使用灯饰4.10中的结论，就得到了梯度函数（gradient），如下所示：
+使用等式4.10中的结论，就得到了梯度函数（gradient），如下所示：
 
 $g(w)=[X^TXw-X^Ty]=\sum^N_{i=1} x_i(w^Tx_i-y_i)$   (7.14)
 
