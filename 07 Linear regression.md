@@ -273,19 +273,154 @@ $\hat w_{ridge}=(\lambda I_D+X^TX)^{-}X^Ty$(7.33)重要公式
 本书中会考虑到使用不同先验的效果.每一种都对应着不同形式的规范化(regularization).这个方法广泛用于防止过拟合.
 
 
+### 7.5.2 数值稳定计算*
+
+有意思的是,岭回归不仅在统计学上效果更好,也更容易进行数值拟合,因为$(\lambda I_D+X^TX)$比$X^TX$有更好条件(更容易可逆),至少对于适当的大的$\lambda$.
+
+尽管如此,出于数值计算稳定性考虑,矩阵求逆还是尽量要避免的.(比如如果你在MATLAB里面写了$w=inv(X;*X)*X'y$,都会遇到警告.)接下来咱们讲一个拟合岭回归模型的游泳技巧(另外通过扩展也可以用于计算Vanilla普通最小二乘估计(Ordinary least squares,OLS)),使数值计算健壮性提高.假设先验形式为$p(w)=N(0,\Lambda ^2)$,其中的$\Lambda$是精度矩阵(precision matrix).在岭回归的情况下,$\Lambda=(1/\tau^2)I$.为了避免惩罚$w_0$项,应该先将数据中心化,如练习7.5所讲.
+
+首先从先验中哪来一些虚拟数据来对原始数据进行扩充:
+
+$\tilde X= \begin{pmatrix} X/\sigma\\ \sqrt\Lambda \end{pmatrix}, \tilde y =\begin{pmatrix} y/\sigma \\ 0_{D\times 1} \end{pmatrix}$(7.34)
+
+$$
+\begin{aligned}
+f(w)&=  (\tilde y- \tilde X w)^T(\tilde y-\tilde X m)                &\text{(7.35)}\\
+&=  (\begin{pmatrix} y/\sigma \\ 0 \end{pmatrix} -\begin{pmatrix} X/\sigma\\ \sqrt\Lambda \end{pmatrix} w)^T  (\begin{pmatrix} y/\sigma \\ 0 \end{pmatrix} -\begin{pmatrix} X/\sigma\\ \sqrt\Lambda \end{pmatrix} w)              &\text{(7.36)}\\
+&=  (\begin{pmatrix} \frac{1}{\sigma}(y-XW)\\ \sqrt\Lambda w \end{pmatrix})^T   (\begin{pmatrix} \frac{1}{\sigma}(y-XW)\\ \sqrt\Lambda w \end{pmatrix})              &\text{(7.37)}\\
+&=  \frac{1}{\sigma^2}(y-Xw)^T(y-Xw)+(\sqrt\Lambda)^T(\sqrt\Lambda)              &\text{(7.38)}\\
+&= \frac{1}{\sigma^2}(y-Xw)^T(y-Xw)+ w^T\Lambda w                   &\text{(7.39)}\\
+\end{aligned}
+$$
+
+因此最大后验估计就是:
+
+$\hat w_{ridge}= (\tilde X^T \tilde X )^{-1} \tilde X^T \tilde y$(7.40)
+
+然后设:
+$\tilde X=QR$(7.41)
+是X的QR分解(QR decomposition),其中的Q是正交的(即$Q^TQ=QQ^T=I$),而R是上三角矩阵(upper triangular).因此有:
+
+$(\tilde X^T\tilde X)^{-1}=(R^TQ^TQR)^{-1}=(R^TR)^{-1}=R^{-1}R^{-T}$(7.42)
+
+因此有:
+
+$\hat w_{ridge}= R^{-1}R^{-T}R^TQ^T\tilde y=R^{-1}Q \tilde y$(7.43)
+
+由于R是上三角矩阵,所以求逆很容易.这就可以避免去对$\Lambda+X^TX$求逆就可以计算岭估计了.
+
+这样,只要简单地计算未扩展矩阵X的QR分解,再利用原始的y,就可以计算最大似然估计(MLE)了.对于解最小二乘问题来说,这是首选方法.(实际上这个特别常用,在MATLAB里面只要一行代码就可以了,使用的是反斜杠运算符(backslash operator): w=X\y.)计算一个$N\times D$规模矩阵的QR分解只需要$O(ND^2)$的时间复杂度,所以在数值计算上很稳定.
+
+如果D远大于N,即$D\gg N$,就要先进行SVD分解.具体来说就是设$X=USV^T$为X的SVD分解,其中的$V^TV=I_N,UU^T=U^TU=I_N$,S是一个$N\times N$的对角矩阵.然后设$Z=UD$是一个$N\times N$矩阵.然后可以将岭估计写成下面的形式:
+
+
+$\hat w_{ridge} =V(Z^TZ+\lambda I_N)^{-1}Z^Ty$(7.44)
 
 
 
+也就是说可以把D维度向量$x_i$替换成N维的向量$z_i$,然后跟之前一样进行惩罚拟合.接下来通过乘以一个V再把得到的N维的解转换成D维的解.几何角度来说,就旋转到一个新的坐标系统中,其中除了前面的N个参数之外其他参数都是0.这不会影响解的有效性,因为球面高斯先验(spherical Gaussian prior)具有旋转不变性(rotationally invariant).这个方法总体需要$O(DN^2)$的运算时间.
 
 
+### 7.5.3 和主成分分析(PCA)的联系*
+
+在本节要说岭回归和主成分分析(PCA,本书12.2)之间的联系,这一联系也会让我们明白为啥岭回归性能如此好.这部分的讨论基于(Hastie et al. 2009, p66).
+
+设$X=USV^T$是X的SVD分解.通过灯饰7.44,可以得到:
+$\hat w_{ridge} = V(S^2+\lambda I)^{-1}SU^Ty$(7.45)
+
+这样就得到岭回归对训练集的预测:
+$$
+\begin{aligned}
+\hat y &=   X\hat w_{ridge}=USV^TV(S^2+\lambda I)^{-1}SU^Ty             &\text{(7.46)}\\
+&=  U\tilde SU^Ty=\sum^D_{j=1}u_j\tilde S_{jj}u_j^Ty   &\text{(7.47)}\\
+\end{aligned}
+$$
+
+此处参考原书图7.9
+
+其中的
+$\tilde S_{jj} \overset{\triangle}{=} [S(S^2+\lambda I)^{-1}S]_{jj}=\frac{\sigma_j^2}{\sigma^2_j+\lambda }$(7.48)
+
+$\sigma_j$是X的奇异值(singular values).因此有:
+
+$\hat y= X\hat w_{ridge}=\sum^D_{j=1}u_j\frac{\sigma^2_j}{\sigma^2_j+\lambda}u_j^Ty$(7.49)
+
+与之对比的最小二乘法预测为:
+
+$\hat y = X\hat w_{ls}=(USV^T))VS^{-1}U^Ty)=UU^Ty=\sum^D_{j=1}u_ju_j^Ty$(7.50)
 
 
+如果和$\lambda$相比$\sigma^2_j$很小,那么方向(direction)$u_j$就不会对预测有太大影响.从这个角度来看,可以定义一个模型自由度(degrees of freedom)的有效数字,如下所示:
 
 
+$dof(\lambda)= \sum^D_{j=1}\frac{\sigma^2_j}{\sigma^2_j+\lambda}$(7.51)
+当$\lambda =0,dof(\lambda)=D$,而随着$\lambda \rightarrow \infty,dof(\lambda)\rightarrow 0$.
+
+接下来说说为啥这个性质很理想.在7.6中,我们会看到如果对w使用一个均匀先验,就有$cov[w|D]=\sigma^2(X^TX)^{-1}$.因此那些我们不确定w的的方向(direction)是由由最小特征值的矩阵的特征向量决定的,如图4.1所示.更进一步,在本书12.2.3中,我们会发现平方奇异值(squared singular values)$\sigma_j^2$等于$X^TX$的特征值.因此小的奇异值$\sigma_j$对应的就是高后验方差(high posterior variance)的方向.这些方向也是岭回归收缩最大的方向.
+
+这个过程如图7.9所示.横向的$w_1$参数没能由数据确定(有高后验方差),而数值坊线上的$w_2$参数相当确定.因此$w_2^{map}$很接近$\hat w_2 ^{mle}$,但$w_1^{map}$严重朝向先验均值(这个例子中是0)偏移.(可以和图4.14(c)比对来看,图4.14(c)所示的是不同可靠性传感器的传感器融合.)
+
+还有一个与之相关但不太一样的方法,叫做主成分回归(principal components regression).这个方法的思路是:首先使用主成分分析(PCA)来降低数据维度到K维度,然后利用低维度特征作为输入特征进行回归.不过,这个方法的预测精确性上并不如岭回归这样好(Hastie et al. 2001, p70).原因是在主成分回归中,只有前K个(推导出来的)维度还保留着,而剩下的D-K个维度的信息都全被忽略了.而相比之下,岭回归是对所有维度进行了软加权(soft weighting).
+
+### 7.5.4 大规模数据的规范化效应
 
 
+规范化(regularization)是避免过拟合的最常用方法.不过还有另外一种有效的方法,就是使用大规模数据,当然了,这个不一定总能实现.直观来看就是训练用的数据规模更多,进行学习的效果就能越好.所以我们期望随着数据规模N增大,测试误差就逐渐降低到某个定值.
+
+这个如图7.10所示,图中为不同次数多项式回归和样本规模N下的均方误差(mean squared error)(误差和训练集样本规模的曲线也叫作学习曲线(learning curve)).测试集上误差的形态有两方面决定:生成过程中的内在变异性导致的对于所有模型都会出现的无法降低的部分(也叫作噪音本底);另一个依赖于生成过程(真实情况)和模型之间差异导致的部分(也叫作结构误差,structural error).
+
+图7.10中所示,真实情况应该是一个二次多项式,而我们分别用1次/2次/25次多项式对这个数据进行拟合.得到的三种模型对应就称之为$M_1,M_2,M_{25}$.从图中可以发现,$M_2,M_{25}$的结构误差都是0,因为都能够捕获真实生成过程.不过$M_1$的结构误差就特别大,这就证明了其远高于误差本底.
+
+对于任何足以捕获真实情况的模型(也就是说有最小结构误差),测试误差都会随着样本规模增大即$N\rightarrow \infty$而趋向噪音本底.不过对于简单模型来说通常会更快趋向于0,因为要估计的参数更少.具体来说就是对于有限规模的训练集来说,我们估计得参数和给定模型类别能进行估计的最佳参数之间总是会有一些差异.这就叫做近似误差(approxmation error),会随着训练集样本规模增大,即$N\rightarrow \infty$而趋向于0,但对于简单模型来说趋向于0的速度更快.这个如图7.10所示,另外也可以参考练习7.1.
+
+在大数据领域,简单模型效果出乎意料地好(Halevy et al. 2009).不过还是有必要学习一些更复杂的学习方法的,因为总会有一些问题中咱们没办法获得特别多的数据.甚至即便在一些数据丰富的情境下,比如网络搜索中,只要我们想要根据用户进行个性化结果生成,对任意用户的可用数据规模也都会变小(相比问题复杂程度而言).
+
+此处参考原书图7.10
+
+在这样的情况下,就可能需要同时学习多种相关模型,也就是所谓的多任务学习(multi-task learning).这个过程可以从有大量数据的任务中"借用统计强度"给数据规模小的任务.相关方法在本书后文中还会讲到.
+
+## 7.6 贝叶斯线性回归
+
+虽然岭回归是计算点估计的有效方法,有时候还可能要对w和$\sigma^2$的全后验进行计算.为了简单起见,就假设噪音方差$\sigma^2$已知,就只要关注与计算$p(w|D,\sigma^2)$.然后在本书7.6.3考虑更通用的情况,计算$p(w,\sigma^2|D)$.假设使用整个高斯释然模型(throughout a Gaussian likelihood model).使用一个健壮似然函数进行贝叶斯推断也是可行的,不过需要更复杂技巧(参考练习24.5).
+
+### 7.6.1 计算后验
+
+在线性回归中,似然函数为:
+
+$$
+\begin{aligned}
+p(y|X,w,\mu,\sigma^2)& =N(y|\mu+Xw,\sigma^2I_N)             &\text{(7.52)}\\
+& \propto \exp(-\frac{1}{2\sigma^2}(y-\mu1_N-Xw)^T(y-\mu1_N-Xw))           &\text{(7.53)}\\
+\end{aligned}
+$$
+
+其中的$\mu$是偏移项.如果输入值是中心华东,则对于每个j都有$\sum_ix_{ij}=0$,输出均值正负概率相等.所以假设一个不适当先验(improper prior)给$\mu$,形式为$p(\mu)\propto 1$,然后整合起来就得到了:
 
 
+$p(y|X,w,\sigma^2)\propto \exp( -\frac{1}{2\sigma^2}||  y-\bar y1_N-Xw  ||^2_2 )$(7.54)
+
+其中的$\bar y =\frac{1}{N} \sum^N_{i=1} y_i$ 是输出的经验均值.为了表达简洁,假设输出已经中心化了,然后将$y-\bar y1_N$写作为y.
+
+上面这个高斯似然函数的共轭先验也还是高斯分布,可以表示做$p(w)\N(w|w_0,V_0)$.利用高斯分布的贝叶斯规则(灯饰4.125),就得到了下面的后验:
+
+
+$$
+\begin{aligned}
+p(w|X,y,\sigma^2)& \propto N(w|w)0,V_0)N(y|Xw,\sigma^2I_N)=N(w|w_N,V_N) &\text{(7.55)}\\
+W_N& = V_NV_0^{-1}w_0+\frac{1}{\sigma^2}V_NX^Ty &\text{(7.56)}\\
+V_N^{-1}& = V_0^{-1}+\frac{1}{\sigma^2}X^TX  &\text{(7.57)}\\
+V_N& = \sigma^2(\sigma^2V_0^{-1}+X^TX)^{-1} &\text{(7.58)}\\
+\end{aligned}
+$$
+
+如果$w_0=0,V_0=\tai^2I$,且定义$\lambda=\frac{\sigma^2}{\tau^2}$那么后验均值就降低到了岭估计.这是因为高斯分布的均值和众数相等.
+
+要对后验分布获得更深入了解(而不是只知道众数),可以考虑一个1维例子:
+
+$y(x,w)=w_0+w_1x+\epsilon$(7.59)
+其中的真实参数为$w_0=-0.3,w_1=0.5$.如图7.11所示是先验/似然函数/后验以及一些后验预测样本.具体来说最右边一列是函数$y(x,w^{(s)})$,其中的x取值范围在区间[-1,1],而$w^{(s)}\sim N(w|w_N,V_N)$是从参数后严重取样的一个样本.开始的时候从先验中取样(第一行),预测就是遍布整个空间,因为先验视均匀地.随着看到了数据点之后(第二行),后验就开始收到对应的似然函数的约束了,预测也更接近观测数据了.不过我们会发现后验还是有岭状形态,反映了多解性的存在,有不同的斜率/截距.这很好理解,因为我们不能从一次观测中推出两个参数来.在看到两个点之后(第三行),后验就更窄了,预测也有更相似的斜率截距了.在观测了20个数据点之后(最后一行)后验就成了一个以真实值为中心的$\delta$函数的形状了,真实值用百色市子表示.(这个估计会收敛到真实值是因为数据是从这个模型生成的,还因为贝叶斯估计其是连续估计其,更多细节参考本书6.4.1的讲解.)
+
+此处参考原书图7.11
 
 
 
