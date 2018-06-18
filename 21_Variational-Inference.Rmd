@@ -1,0 +1,71 @@
+---
+bibliography: Templates/citation.bib
+csl: Templates/elsevier-vancouver.csl
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+documentclass: ctexart
+output:
+#  bookdown::pdf_document2:
+  rticles::ctex:
+    includes:
+      in_header: preamble.tex
+    keep_tex: yes
+    number_sections: no
+    toc: yes
+    toc_depth: 4
+  html_document: default
+---
+
+
+`r if(!exists('TITLE')){TITLE = 'test'}`
+
+---
+title: `r TITLE`
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = F
+ # ,results = 'hide' ##### Will hide tables
+ ,cache = F
+ ,eval = T
+ ,eval.after = c('fig.cap','code')
+ )
+
+options(stringsAsFactors = F)  #### Always disable this!
+# options(warn=  -1)
+
+
+```
+
+```{r shared_util, include= F}
+read_wrap <-function(fname,wid = 100){
+  s= readLines(fname)
+  s = gsub('\t','  ',s)
+  
+  # sout = 
+  idx = nchar(s) > wid
+  
+  slst <- as.list(s)
+  # browser()
+  slst[idx]<-lapply(slst[idx],function(x)strwrap(x,wid))
+  unlist(slst)
+  
+}
+```
+
+
+`r fname='ipynb/21_Variational-Inference_01-02.md'`
+```{r, child=fname}
+#`r fname='21_Variational-Inference.md'`
+```
+
+`r fname='ipynb/21_Variational-Inference_05.md'`
+```{r, child=fname}
+#`r fname='21_Variational-Inference.md'`
+```
+
+`r fname='ipynb/21_Variational-Inference_06.md'`
+```{r, child=fname}
+#`r fname='21_Variational-Inference.md'`
+```
