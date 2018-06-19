@@ -58,3 +58,22 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 2018年06月11日09:11:45
 
 #### 200页定理6.3.3证明证毕前的最后一句话,$\delta_2$is admissible似乎明显是错误的,应该写$\delta_1$is admissible.这段本来证明的也是$\delta_1$is admissible.
+
+
+
+
+#### 746页第二十一章的(21.91)
+
+应为
+
+$$
+\mathbb{E}[ x^2 | x \sim \mathcal{N} (\mu , \sigma^2) ] = \mu^2 + \sigma^2
+$$
+
+#### 750页第二十一章的(21.127)
+
+应为
+
+$$
+\log q(z) = \sum_k \sum_i z_{ik} \log \rho_{ik} + \text{const}
+$$
