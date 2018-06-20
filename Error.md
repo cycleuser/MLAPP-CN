@@ -60,7 +60,9 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 #### 200页定理6.3.3证明证毕前的最后一句话,$\delta_2$is admissible似乎明显是错误的,应该写$\delta_1$is admissible.这段本来证明的也是$\delta_1$is admissible.
 
 
+2018年6月20日15:27:06
 
+#### 246页公式8.4前面的说明中,"We have 有$p(y=1)=\frac{1}{ 1+\exp (-w^Tx)}$ and $p(y=1)=\frac{1}{ 1+\exp (+w^Tx)}$",两处都是p(y=1),应该第一个是p(y=-1),第二个是p(y=1).
 
 #### 746页第二十一章的(21.91)
 

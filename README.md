@@ -28,6 +28,9 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 [06 Frequentist statistics](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/06%20Frequentist%20statistics.html)
 
 
+[07 Linear regression](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/07%20Linear%20regression.html)
+
+
 
 # 笔记项目概述
 本系列是一个新坑, 还希望大家批评指正！
@@ -49,7 +52,7 @@ https://github.com/Kivy-CN/MLAPP-CN/blob/master/Error.md
 - [x] 05 Bayesian statistics 149~190(练习略)
 - [x] 06 Frequentist statistics 191~216(练习略)
 - [x] 07 Linear regression 217~244(练习略)
-- [ ] 08 Logistic regression 245~280
+- [ ] 08 Logistic regression 245~280(当前页面 247)
 - [ ] 09 Generalized linear models and the exponential family 281~306
 - [ ] 10 Directed graphical models (Bayes nets) 307~336
 - [ ] 11 Mixture models and the EM algorithm 337~380
