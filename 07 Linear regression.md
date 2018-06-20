@@ -248,7 +248,7 @@ $p(w)=\prod_j N(w_j|0,\tau^2$(7.30)
 其中的$1/\tau^2$控制了先验强度.对应的最大后验估计(MAP)问题就是:
 
 
-$\arg\max_w\sum^N_{i=1}\logN(y_i|w_0+w^Tx_i,\sigma^2)+\sum^D_{j=1}\log(w_j|0,\tau^2)$(7.31)
+$\arg\max_w\sum^N_{i=1}\log N(y_i|w_0+w^Tx_i,\sigma^2)+\sum^D_{j=1}\log(w_j|0,\tau^2)$(7.31)
 
 
 此处参考原书图7.8
