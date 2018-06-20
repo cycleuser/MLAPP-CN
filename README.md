@@ -48,7 +48,7 @@ https://github.com/Kivy-CN/MLAPP-CN/blob/master/Error.md
 - [x] 04 Gaussian models 97~148(练习略)
 - [x] 05 Bayesian statistics 149~190(练习略)
 - [x] 06 Frequentist statistics 191~216(练习略)
-- [ ] 07 Linear regression 217~244(当前页面进度233)
+- [x] 07 Linear regression 217~244(练习略)
 - [ ] 08 Logistic regression 245~280
 - [ ] 09 Generalized linear models and the exponential family 281~306
 - [ ] 10 Directed graphical models (Bayes nets) 307~336
