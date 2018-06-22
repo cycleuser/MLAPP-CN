@@ -176,9 +176,18 @@ $z_{ki}=w_k^Tx_i+\frac{y_i-\mu_{ki}}{\mu_{ki}(1-\mu_{ki})}$(8.25)
 10.  直到收敛
 
 
+### 8.3.5 拟牛顿法
 
+二阶优化算法的源头都是牛顿法,在本书8.3.3中讲到过.不过很不幸的是计算出来海森矩阵H的运算开销成本太高了.拟牛顿法(Quasi-Newton methods)就应运而生了,以迭代方式使用从每一步的梯度向量中学到的信息来构建对海森矩阵的估计.最常用的方法就是BFGS方法(这四个字母是发明这个算法的四个人的名字的首字母Broyden, Fletcher, Goldfarb, Shanno),这个方法是使用下面所示定义的$B_k\approx H_k$来对海森矩阵进行估计:
+$$
+\begin{aligned}
+B_{k+1}& =B_k+\frac{y_ky_k^T}{y_k^Ts_k}-\frac{(B_ks_k)(B_ks_k)^T}{s_k^TB_ks_k} &\text{(8.26)}\\
+s_k& = \theta_k-\theta_{k-1}  &\text{(8.27)}\\
+y_k& = g_k-g_{k-1}  &\text{(8.28)}\\
+\end{aligned}
+$$
 
-
+这是对矩阵的二阶更新(rank-two update),这确保了矩阵保持正定(在每个步长的特定限制下).通常使用一个对角线估计来启动算法,即设$B_0=I$.所以BFGS方法可以看做是对海森矩阵使用对角线加上低阶估计的方法.
 
 
 
