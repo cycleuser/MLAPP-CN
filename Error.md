@@ -64,6 +64,11 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 
 #### 246页公式8.4前面的说明中,"We have 有$p(y=1)=\frac{1}{ 1+\exp (-w^Tx)}$ and $p(y=1)=\frac{1}{ 1+\exp (+w^Tx)}$",两处都是p(y=1),应该第一个是p(y=-1),第二个是p(y=1).
 
+
+2018年6月23日06:29:16
+#### 253页公式8.37前面的一段中,分明是说克罗内克积的定义,公式前面那句话却写成了$A\times B$,很明显应该是$A\otimes B$.
+
+
 #### 746页第二十一章的(21.91)
 
 应为
