@@ -130,6 +130,54 @@ $\theta=-\frac{1}{2}A^{-1}b=\theta_k-H_k^{-1}g_k$(8.17)
 
 在最简单的形式下,牛顿法需要海森矩阵$H_k$为正定矩阵,这保证了函数是严格凸函数.否则,目标函数非凸函数,那么海森矩阵$H_k$就可能不正定了,所以$d_k=-H_k^{-1}g_k$就可能不是一个下降方向了(如图8.4(b)所示).这种情况下,简单的办法就是逆转最陡下降方向,$d_k=-g_k$.列文伯格-马夸特算法(Levenberg Marquardt algorithm)是一种在牛顿步长和最陡下降步长之间这种的自适应方法.这种方法广泛用于解非线性最小二乘问题.一种替代方法就是:不去直接计算$d_k=-H_k^{-1}g_k$,可以使用共轭梯度来解关于$d_k$的线性方程组$H_kd_k=-g_k$.如果$H_k$不是正定矩阵,只要探测到了负曲率,就可以简单地截断共轭梯度迭代,这样就叫做截断牛顿法(truncated Newton).
 
+### 8.3.4 迭代重加权最小二乘法(Iteratively reweighted least squares,缩写为IRLS)
+
+
+接下来试试将牛顿法用到二值化逻辑回归中求最大似然估计(MLE)上面.在这个模型中第$k+1$次迭代中牛顿法更新如下所示(设$\eta_k=1$,因此海森矩阵(Hessian)是确定的):
+
+$$
+\begin{aligned}
+w_{k+1}&=  w_k-H^{-1}g_k &\text{(8.18)}\\
+&= w_k+(X^TS_kX)^{-1}X^T(y-\mu_k)   &\text{(8.19)}\\
+&= (X^TS_kX)^{-1}[(X^TS_kX)w_k+X^T(y-\mu_k)]  &\text{(8.20)}\\
+&= (X^TS_kX)^{-1}X^T[S_kXw_k+y-\mu_k]  &\text{(8.21)}\\
+&= (X^TS_kX)^{-1}X^TS_kz_k  &\text{(8.22)}\\
+\end{aligned}
+$$
+
+然后就可以定义工作响应函数(working response)如下所示:
+$z_k\overset{\triangle}{=} Xw_k+S_k^{-1}(y-\mu_k)$(8.23)
+
+等式8.22就是一个加权最小二乘问题(weighted least squares problem),是要对下面的项最小化:
+
+
+$\sum^N_{i=1}S_{ki}(z_{ki}-w^Tx_i)^2$(8.24)
+
+由于$S_k$是一个对角矩阵,所以可以把目标函数写成成分的形式(对每个$i=1:N$):
+
+
+$z_{ki}=w_k^Tx_i+\frac{y_i-\mu_{ki}}{\mu_{ki}(1-\mu_{ki})}$(8.25)
+
+这个算法就叫做迭代重加权最小二乘法(Iteratively reweighted least squares,缩写为IRLS),因为每次迭代都解一次加权最小二乘法,其中的权重矩阵$S_k$在每次迭代都变化.伪代码参考本书配套算法10.
+
+
+
+#### 算法8.2 迭代重加权最小二乘法(IRLS)
+
+1. $w=0_D$;
+2. $w_0=\log(\bar y/ (1-\bar y))$
+3. 重复下面步骤:
+4.      $\eta_i=w_0+w^Tx_i$
+5.      $\mu_i=sigm(\eta_i)$
+6.      $s_i=\mu_i(1-\mu_i)$
+7.      $z_i=\eta_i+\frac{y_i-\mu_i}{s_i}$
+8.      $S=diag(s_{1:N})$
+9.      $w=(X^TSX)^{-1}X^TSz$
+10.  直到收敛
+
+
+
+
 
 
 
