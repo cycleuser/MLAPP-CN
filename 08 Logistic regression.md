@@ -391,3 +391,104 @@ a&\overset{\triangle}{=} w^Tx  &\text{(8.63)}\\
 &= \int p(w|D)[(w^Tx)^2-(m_N^Tx)^2]dw =x^TV_Nx &\text{(8.66)}\\
 \end{aligned}
 $$
+
+
+然后就能发现需要去评估一个对应高斯分布的S形函数(sigmoid function)的期望.可以利用S形函数类似概率函数(probit function)的性质来进行近似,通过标准正态分布的累计密度函数(cdf):
+$\Phi(a)\overset{\triangle}{=}\int^a_{-\infty} N(x|0,1)dx$(8.67)
+
+图8.7(b)所示的就是s形函数和概率函数.图中的坐标轴做了缩放,使得$sigm(a)$在原点位置附近有和$\Phi(\lambda a)$有类似的范围,其中$\lambda^2 =\pi /8$.
+
+利用概率函数(probit function)的优势就是可以用一个高斯分布以解析形式卷积(convolve)出来:
+$\int \Phi (\lambda a)N(a|\mu,\sigma^2)da =\Phi (\frac{a}{(\lambda^{-2}+\sigma^2)^{\frac{1}{2}}})$(8.68)
+
+然后再等号两边都使用 $sigm(a)\approx \Phi (\lambda a)$ 来插值近似,就得到了:
+
+$$
+\begin{aligned}
+\int sigm(a)N(a|\mu,\sigma^2)da& \approx sigm(k(\sigma^2)\mu)            &\text{(8.69)}\\
+k(\sigma^2)& \overset{\triangle}{=} (1+\pi\sigma^2/8)^{-\frac{1}{2}}           &\text{(8.70)}\\
+\end{aligned}
+$$
+
+将上面的近似用到逻辑回归模型中,就得到了下面的表达式(最初引用自(Spiegelhalter and Lauritzen 1990)):
+$p(y=1|x,D)\approx sigm(k(\sigma^2_a)\mu_a)$(8.71)
+
+图8.6(d)所示表面这个近似能得到和蒙特卡洛近似相似的结果.
+
+使用等式8.71这种近似,也叫作调节输出(moderated output),因为这比起插值估计不那么极端.要理解这一点,要注意到$0\le k(\sigma^2)\le 1$,因此就有:
+$sigm(k(\sigma^2)\mu)\le sigma(\mu)=p(y=1|x,\hat w)$(8.72)
+
+上式中的不等号当$\mu\ne 0$的时候严格成立.如果$\mu >0$,就有$p(y=1|x,\hat w)>0.5$,但调节的预测(moderated prediction)总是在0.5附近,所以不太可信(less confident).不过,决策边界存在于$p(y=1|x,D)=sigm(k(\sigma^2)\mu)=0.5$的位置,也就意味着$\mu =\hat w^Tx=0$.因此调节预测的决策边界和差至今思是一样的.所以两种方法的误分类率是一样的,但对数似然函数是不一样的.(要注意在多类情况下,后验协方差给出的结果和差之方法是不一样的,参考本书练习3.10.3以及(Rasmussen
+and Williams 2006)).
+
+### 8.4.5 残差分析(异常值检测)*
+
+检验数据中的异常值(outlier)有时候很有用.这个过程就叫残差分析(residual analysis)或者案例分析(case analysis).在回归情况下,这个可以通过计算残差来得到:$r_i=y_i-\hat y_i$,其中的$\hat y_i =\hat w^T x_i$.如果模型假设正确无误,这些值应该遵循一个正态分布$N(0,\sigma^2)$.可以投图(qq-plot)评定,其中两个坐标轴的值分别是高斯分布的N个理论值(theoretical quantiles)和$r_i$的经验值(empirical quantiles).偏离这条直线的点就是潜在的异常值.
+
+基于残差的简单方法不适用于二进制数据,因为依靠测试统计的渐进正态(asymptotic normality).不过用贝叶斯方法,就能定义异常值了,可以定义为$p(y_i |\hat y_i)$小的点,一般使用$\hat y_i =sigm (\hat w^T x)$.要注意这里的$\hat w$是从全部数据估计出来的.在预测$y_i$时更好的方法是从对w的估计排除掉$(x_i,y_i)$.也就是定义异常值为在交叉验证后验预测分布下有低概率的点,定义形式为:
+
+$p(y_i|x_i,x_{-i},y_{-i})=\int p(y_i|x_i,w)\prod _{i'\ne i} p(y_{i'}|x_{i'},w)p(w)dw$(8.73)
+
+这就可以通过抽样方法来有效近似(Gelfand 1996).更多关于逻辑回归模型中残差分析的相关内容可以参考(Johnson and Albert 1999, Sec 3.4).
+
+## 8.5 在线学习(Online learning)和随机优化(stochastic optimization)
+
+
+传统机器学习都是线下的,也就意味着是有一批量的数据,然后优化一个下面形式的等式:
+
+$f(\theta)=\frac{1}{N}\sum^N_{i=1}f(\theta,z_i)$(8.74)
+
+其中如果有$z_i=(x_i,y_i)$是监督学习情况(supervised case),或者只有$x_i$就对应着无监督学习的情况,而$f(\theta,z_i)$这个函数是某种损失函数.比如可以使用下面这样的损失函数:
+
+$f(\theta,z_i)=L(y_i,h(x_i,\theta))$(8.75)
+
+其中的$h(x_i,\theta)$是预测函数,而$L(y,\hat y)$是某种其他的损失函数,比如可以使平方误差或者胡博损失函数(Huber loss).在频率论统计学方法中,平均损失函数也叫作风险(参考本书6.3),所以对应地就将这个方法整体叫做经验风险最小化(empirical risk minimization,缩写为ERM),参考本书6.5.
+
+可是如果有一系列的流数据(streaming data)不停出现,就需要进行在线学习(online learning),也就是要随着每次有新数据来到而更新估计,而不是等到尽头,因为可能永无止境.另外有时候虽然数据是成批的一整个数据,也可能会因为太大没办法全部放进内存等原因也需要使用在线学习.接下来就要讲这类校本化的学习方法.
+
+### 8.5.1 在线学习和遗憾最小化(regret minimization)
+
+假如在每一步中,客观世界都提供了一个样本$z_k$,而学习者必须使用一个参数估计$\theta_k$对此进行响应.在理论机器学习社区中,在线学习关注的目标是遗憾值(regret),定义为相对于使用单个固定参数值时候能得到的最好结果所得到的平均损失:
+
+$regret_k\overset{\triangle}{=} \frac{1}{k} \sum^k_{t=1} f(\theta_t,z_t)-\min_{\theta^*\in \Theta}\frac{1}{k} \sum^k_{t=1}f(\theta_*,z_t)$(8.77)
+
+比如我们要调查股票市场.设$\theta_j$是我们在股票j上面投资的规模,而$z_j$表示这个股票带来的回报.这样损失函数就是$f(\theta,z)=-\theta^Tz$.遗憾值(regret)就是我们通过每次交易而得到的效果,而不只是依据什么神秘预言来选择买那个股票然后购买和持有的策略.
+
+在线学习的简单算法是在线梯度下降法(online gradient descent (Zinkevich 2003)),步骤如下:在每次第k步,使用下列表达式更新参数:
+$\theta_{k+1}=\roj_{\Theta}(\theta_k-\eta_kg_k)$(8.78)
+
+其中的$proj_v(v)=\arg\min_{w\in V}||w-v||_2$是向量v在空间V上的投影,$g_k=\nabla f(\theta_k ,z_k)$是梯度项,而$\eta_k$是补偿规模.(只有当参数必须要约束在某个$R^D$的子集内的时候才需要使用投影这个步骤.更多细节参考本书13.4.3.)接下来要看看这个让遗憾最小化的方法和更传统的关注对象之间的关系,比如最大似然估计(MLE).
+
+当然遗憾最小化也由很多其他方法,这就超出这本书的覆盖范围了,更多细节可以参考Cesa-Bianchi and Lugosi (2006).
+
+### 8.5.2 随机优化和风险最小化
+
+接下来我们要尝试的不是让过去步骤的遗憾最小化,而是希望未来损失最小化,这在很多(频率论)统计学习理论中更长久.也就是要最小化:
+
+$f(\theta=\mathrm{E}[f(\theta,z)]$(8.79)
+
+其中这个期望是对未来数据上取的.优化这种某些变量是随机变量的函数的过程就叫做随机优化(Stochastic optimization).
+假如要从一个分不中得到一系列有限的抽样样本.一个方法就是优化8.79里面的期望值,在每一步应用等式8.78进行更新.这就叫做随机梯度下降法(stochastic gradient descent,缩写为SGD,出自Nemirovski and Yudin 1978).通常我们都想要一个简单的参数估计,可以用下面的进行平均:
+
+$\bar\theta_k=\frac{1}{k}\sum^k_{t=1}\theta_t$(8.80)
+
+这就叫Polyak-Ruppert 平均,可以递归使用,如下所示:
+
+$\bar\theta_k=\bar\theta_{k-1}-\frac{1}{k}(\nbar\theta_{k-1}-\theta_k)$(8.81)
+更多细节参考(Spall 2003; Kushner and Yin 2003).
+
+#### 8.5.2.1 设定步长规模
+
+接下来要讨论的是要保证随机梯度下降(SGD)收敛所需要的学习速率(learning rate)的充分条件(sufficient conditions).这也叫做Robbins-Monro条件:
+
+$\sum^\infty_{k=1}\eta_k=\infty,\sum^\infty_{k=1}\eta^2_k=\infty$(8.82)
+
+$\eta_k$在时间上的取值集合也叫作学习速率列表(learning rate schedule).可以用很多公式,比如$\eta_k=1/k$,或者可以用下面这个(Bottou 1998; Bach and Moulines 2011):
+$\eta_k=(\tau_0+k)^{-k}$(8.83)
+
+
+
+
+
+
+
