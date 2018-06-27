@@ -673,10 +673,140 @@ $\sum_{x_1}p(x_1,x_{2:D}|y=c,\theta)=[\sum_{x_1}p(x_1|\theta_{1c})]\prod^D_{j=2}
 
 $p(x_{2:D}|y=c,\theta)=N(x_{2:D}|\mu_{c,2:D},\Sigma_{c,2:d,2:D})$(8.97)
 
+#### 8.6.2.2 训练时候的数据丢失
+
+训练时候数据丢失就不那么好处理了.尤其是这时候计算最大似然估计(MLE)或者最大后验分布(MAP)就都不再是简单的优化问题了,具体原因在本书11.3.2中会讲到.不过也不要紧,因为很快就会学到很多更复杂的算法(比如本书11.4要讲的期望最大化算法(EM))来对这种情况下的最大似然估计(MLE)和最大后验分布(MAP)进行近似.
+
+
+### 8.6.3 费舍尔线性判别分析(FLDA)*
+
+判别分析(Discriminant analysis)是用来分类的一种生成方法(generative approach),需要对特征拟合一个多元正态分布(MVN).这在高维度的情况下可能就很困难.所以有一种办法就是降低特征$x\in R^D$的维度,然后对得到的低维度特征$z\in R^L$来拟合多元正态分布(MVN).最简单的方法就是使用线性投影矩阵$z=Wx$,这里的W就是一个$L\times D$的矩阵.可以使用主成分分析(PCA)来找到矩阵W(参考本书12.2);得到的结果和正则化线性判别分析(RDA,参考本书4.2.6)类似,因为奇异值分解(SVD)和主成分分析(PCA)是本质上等价的.不过主成分分析(PCA)是无监督技术,不需要考虑类标签.所以得到的低维度特征就并不见得一定是对于分类来说的最优选择,如图8.11所示.度还有一种方法,就是找使用高斯类条件密度模型来尽可能降低维度数据分类最优的矩阵W.这里使用高斯分布是合理的,因为我们计算的是一系列特征的线性组合,虽然这些特征可能不见的是高斯分布的.这种方法就叫做费舍尔线性判别分析(Fisher’s linear discriminant analysis,缩写为FLDA).
+
+此处参考原书图8.11
+
+费舍尔线性判别分析(FLDA)是对判别方法和生成方法的一种混合.这个方法的缺点就是限制在使用的$L\le C-1$小于类标签数目减一的维度,而不论D的维度是多少,具体原因后面会解释.这样在二分类情况下,就意味着要找一个单独向量w来对数据进行投影.下面就推到一些二分类情况优化w的过程.然后再泛化到多分类的情况下,最终对这个方法给一个概率论的解释.
+
+#### 8.6.3.1 一维最优投影的推导
+
+接下来要对二分类情况下的最优方向w进行推导,这部分参考了(Bishop 2006b, Sec 4.1.4).定义类条件均值(class-conditional means)为:
+
+$\mu_1=\frac{1}{N_1}\sum_{i:y_i =1} x_i,\mu_2=\frac{1}{N_2}\sum_{i:y_i =2} x_i $(8.98)
+
+设$m_k=w^T\mu_k$为每个均值在线w上的投影.另外设$z_i=w^Tx_i$为数据在线上的投影.这样投影点的方差就正比于(proportional to):
+$s_k^2 = \sum_{i:y_i =k} (z_i-m_k)^2$(8.99)
+
+咱们的目标就是找出能让均值距离$m_2-m_1$最大的w,同时也要保证投影的簇(cluster)是紧密的(tight):
+
+$J(w)=\frac{(m_2-M_1)^2}{}$(8.100)
+
+将等好友吧改写成关于w的形式如下所示:
+
+$J(w)=\frac{w^TS_Bw}{w^TS_Ww}$(8.101)
+
+其中的$S_B$为类间散布矩阵(between-class scatter matrix):
+
+$S_B=(\mu_2-\mu_1)(\mu_2-\mu_1)^T$(8.102)
+
+$S_W$为类内散布矩阵(within-class scatter matrix):
+$S_W = \sum_{i:y_i=1} w^T(x_i-\mu_1)(x_i-\mu_1)^T +  \sum_{i:y_i=2} w^T(x_i-\mu_2)(x_i-\mu_2)^T  $(8.103)
+
+然后两边分别乘以$w^T$和$w$:
+
+$w^TS_Bw=w^T(\mu_2-\mu_1)(\mu_2-\mu_1)^T w=(m_2-m_1)(m_2-m_1)^T$(8.104)
+
+$$
+\begin{aligned}
+w^TS_Ww &=\sum_{i:y_i=1} w^T(x_i-\mu_1)(x_i-\mu_1)^T w+  \sum_{i:y_i=2} w^T(x_i-\mu_2)(x_i-\mu_2)^T w &\text{(8.105)}\\
+&= \sum_{i:y_i=1}(z_i-m_1)^2+\sum_{i:y_i=2}(z_i-m_2)^2   &\text{(8.106)}\\
+\end{aligned}
+$$
+
+等式8.101就是两个标量的比;可以关于我求导数然后就等于零了.很明显(参考练习12.6)$J(w)$最大化的时候为:
+
+$S_Bw=\lambdaS_Ww$(8.107)
+
+其中的:
+$\lambda =\frac{w^TS_Bw}{w^TS_Ww}$(8.108)
+
+等式107也叫广义特征值问题(generalized eigenvalue problem).如果$S_W$可逆,就可以转换成一个规范特征值问题:
+$S_W^{-1}S_Bw =\lambda w$(8.109)
+
+不过在二分类情况下,就有一个更简单的解了.由于
+
+$S_Bw = (\mu_2-\mu_1)(\mu_2-\mu_1)^T w =(\mu_2-\mu_1)(m_2-m_1)$(8.110)
+
+所以通过等式8.109就有
+$$
+\begin{aligned}
+\lambda w& = S_W^{-1}(\mu_2-\mu_1)(m_2-m_1)  &\text{(8.111)}\\
+w & \propto  S_W^{-1}(\mu_2-\mu_1) &\text{(8.112)}\\
+\end{aligned}
+$$
+
+由于我们只关心方向,缩放因数就无所谓了,所以可以直接写成:
+
+$w = S_W^{-1}(\mu_2-\mu_1) $(8.113)
+
+这就是二分类情况下的最优解了.如果$$S_W\propto I$,就意味着汇总协方差矩阵(pooled covariance matrix)是各向同性的(isotropic),这样w就正比于联合类均值(joins class means)的向量.如图8.11所示,这是一个直觉上很合理的投影方向.
+
+#### 8.6.3.2 扩展到高维度和多分类情况
+
+
+把上面的思路扩展到多分类情况,以及高维度子控件,只需要找到一个投影矩阵W,从D到L进行映射,最大化
+$J(W)=\frac{W\Sigma_BW^T}{W\Sigma_WW^T}$(8.114)
+
+其中
+$$
+\begin{aligned}
+\Sigma_B & \overset{\triangle}{=} \sum_c \frac{N_c}{N}(\mu_c-\mu)(\mu_c-\mu)^T  &\text{(8.115)}\\
+\Sigma_W & \overset{\triangle}{=} \sum_c \frac{N_c}{N}\Sigma_c  &\text{(8.116)}\\
+\Sigma_c & \overset{\triangle}{=} \frac{1}{N_c}\sum_{i:y_i=c} (x_i-\mu_c) (x_i-\mu_c)^T  &\text{(8.117)}\\
+\end{aligned}
+$$
+
+解就是:
+$W=\Sigma_W^{-\frac{1}{2}} U$(8.118)
+
+其中的U是$\Sigma_W^{-\frac{1}{2}} \Sigma_B\Sigma_W^{-\frac{1}{2}}$的L主特征向量(L leading eigenvectors),假设$\Sigma_W$是非奇异的.(如果是奇异的,可以先对全部数据进行主成分分析(PCA).)
 
 
 
 
+此处参考原书图8.12
+
+图8.12所示为将这个方法应用到$D=10$维度的运输局,其中有$C=11$个不同的原因声音(vowel sounds).图中可见很明显FLDA得到的分类比PCA效果好.
+
+要注意FLDA是限制在最多$L\le C-1$维度的线性子空间的,不管D有多大,这是因为类间协方差矩阵$\Sigma_B$的秩(rank)就是$C-1$.(这里的-1是因为$\mu$项是$\mu_c$的线性函数.)这限制了FLDA的使用.
+
+#### 8.6.3.3 FLDA的概率论解释*
+
+对FLDA方法的概率论解释参考了(Kumar and Andreo 1998; Zhou et al. 2009).他们提出了一个模型,叫做异方差线性判别分析(heteroscedastic LDA,缩写为HLDA),过程如下所示.设W是一个$D\times D$的可逆矩阵,设$z_i=Wx$是对数据的转换.然后对转换后的数据的每一类都拟合完整协方差高斯分布(full covariance Gaussians),但仅限于前面L个成分为分类拟合(class-specific);剩下的$H=D-L$个成分在类间共享,因此也就不做区分(not be discriminative).也就是使用:
+
+$$
+\begin{aligned}
+p(z_i|\theta,y_i=c) &= N(z_i|\mu_c,\Sigma_c) &\text{(8.119)}\\
+\mu_c & \overset{\triangle}{=} (m_c;m_0) &\text{(8.120)}\\
+\Sigma_c & \overset{\triangle}{=} \begin{pmatrix}  S_c & 0\\ 0 & S_0 \end{pmatrix} &\text{(8.121)}\\
+\end{aligned}
+$$
+
+
+其中的$m_0$是共享的H维度均值,而$S_0$是共享的$H\times H$协方差.原始数据(未变换过)的概率密度函数(pdf)为:
+
+$$
+\begin{aligned}
+p(x_i|y_i=c,W,\theta)&= |W|N(Wx_i|\mu_c,\Sigma_c) &\text{(8.122)}\\
+&=|W|N(W_L x_i|m_c,S_c) N(W_H x_i|m_0,S_0)    &\text{(8.123)}\\
+\end{aligned}
+$$
+
+其中$w=\begin{pmatrix} W_L\\ W_H\end{pmatrix}$.对于固定的W,很不容易推导出$\theta$的最大似然估计(MLE).然后可以使用梯度方法优化W.
+
+在$\Sigma_c$为对角阵的特殊情况下,有一个W的闭合形式的解(Gales 1999).当所有$\Sigma_c$都一样的情况下,就会到了经典的线性判别分析(classical LDA, Zhou et al. 2009).
+
+总的来看,如果雷协方差在可判别子空间内不相等(比如$\Sigma_c$独立于c是个错误假设),那么HLDA就会优于LDA.用合成数据(synthetic dat)就很容易演示出这种情况,另外更有挑战性的一些任务比如语音识别等等当中也是如此(Kumar and Andreo 1998).另外我们还可以通过让每个类都有自己的投影矩阵来进一步扩展这个模型,这样就成了多重线性判别分析(multiple LDA,Gales 2002).
+
+练习略
 
 
 
