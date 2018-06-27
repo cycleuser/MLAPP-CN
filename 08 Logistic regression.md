@@ -1,4 +1,4 @@
-# MLAPP 读书笔记 - 08 逻辑回归回归(Logistic regression)
+# MLAPP 读书笔记 - 08 逻辑回归(Logistic regression)
 
 > A Chinese Notes of MLAPP,MLAPP 中文笔记项目 
 https://zhuanlan.zhihu.com/python-kivy
