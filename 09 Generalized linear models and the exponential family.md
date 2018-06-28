@@ -337,4 +337,48 @@ $$
 \end{aligned}
 $$
 
+### 9.2.6 指数族分布最大熵的推导*
 
+指数族分布很方便,可对这种分布的使用有什么更深层的评判方法么?还真有:就是关于数据做出最小假设的分布,受限于用户指定约束条件,后面会详细解释.加入我们想知道的是某些特定函数或者特征的期望值:
+
+$\sum_x \int_k(x)p(x)=F_k$(9.71)
+
+其中的$F_k$是已知常数,而$f_k(x)$可以是任意函数.最大熵(maximum entropy,缩写为maxent)原则说的是应该选择有最大熵的分布(最接近均匀分布),在分布的矩(moments)陪指定函数的经验矩(empirical moments)的约束条件下.
+
+要最大化对应等式9.71中约束条件下的熵,兼顾约束条件$p(x)\ge 0, \sum_x p(x)=1$,就需要使用拉格朗日乘数(Lagrange multipliers).拉格朗日函数(Lagrangian)为:
+
+$J(p,\lambda)= -\sum_x p(x)\log p(x)+\lambda_0(1-\sum_x p(x))+\sum_k \lambda _k(F_k-\sum_k p(x)f_k(x))$(9.72)
+
+可以使用方差的积分来关于函数p求导,不过需要发展一个更简单的方法,然后将p当做一个固定长度向量(因为这里假设x是离散的).然后就有:
+
+$\frac{\partial J}{\partial p(x)} =-1- \log p(x) -\lambda_0 -\sum_k \lambda_k f_k(x)$(9.73)
+
+设$\frac{\partial J}{\partial p(x)} =0$,就得到了:
+
+$p(x)=\frac{1}{Z}\exp(-\sum_k \lambda_kf_k(x))$(9.74)
+
+此处参考原书图9.1
+
+其中的 $Z=e^{1+\lambda_0}$.利用概率累加总和等于1的约束条件,就有了:
+
+$1=\sum_x p(x)=\frac{1}{Z}\sum_x \exp(-\sum_k \lambda_k f_k(x))$(9.75)
+
+因此归一化常数(normalization constant)就是:
+$Z = \sum_x \exp(-\sum_k \lambda_k f_k(x))$(9.76)
+
+
+所以最大熵分布$p(x)$就有了指数族分布中的形式(本书9.2),也叫作吉布斯分布(Gibbs distribution)
+
+## 9.3 通用线性模型(Generalized linear models,缩写为GLMs)
+
+线性回归和逻辑回归都属于通用线性模型的特例(McCullagh and Nelder 1989).
+这些模型中输出密度都是指数族分布(参考本书9.2),而均值参数都是输入的线性组合,经过可能是非线性的函数,比如逻辑函数等等.下面就要详细讲一下通用线性模型(GLMs).为了记号简单,线看标量输出的情况.(这就排除了多远逻辑回归,不过这只是为表述简单而已.)
+
+
+### 9.3.1 基础知识
+
+要理解通用线性模型,首先要考虑一个标量响应变量的无条件分布(unconditional dstribution)的情况:
+
+$p(y_i|\theta,\sigma^2)=\exp[\frac{y_i\theta - A(\theta)}{\sigma^2}+c(y_i,\sigma^2)]$(9.77)
+
+上式中的$\sigma^2$叫做色散参数(dispersion parameter),通常设为1.$\theta$是自然参数,A是分区函数,c是归一化常数.
