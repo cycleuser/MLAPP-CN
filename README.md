@@ -43,7 +43,7 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 https://github.com/Kivy-CN/MLAPP-CN/blob/master/Error.md
 
 
-## 翻译进度追踪
+## 笔记进度追踪
 
 - [x] 01 Introduction 1~26
 - [x] 02 Probability 27~64 (练习略)
