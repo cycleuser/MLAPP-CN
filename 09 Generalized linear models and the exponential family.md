@@ -381,4 +381,121 @@ $Z = \sum_x \exp(-\sum_k \lambda_k f_k(x))$(9.76)
 
 $p(y_i|\theta,\sigma^2)=\exp[\frac{y_i\theta - A(\theta)}{\sigma^2}+c(y_i,\sigma^2)]$(9.77)
 
-上式中的$\sigma^2$叫做色散参数(dispersion parameter),通常设为1.$\theta$是自然参数,A是分区函数,c是归一化常数.
+上式中的$\sigma^2$叫做色散参数(dispersion parameter),通常设为1.$\theta$是自然参数,A是分区函数,c是归一化常数.例如,在逻辑回归的情况下,$\theta$就是对数比值比(log-odds ratio),$\theta =\log ( \frac{\mu}{1-\mu} )$,其中$\mu=\mathrm{E}[y]=p(y=1)$是均值参数(mean parameter),参考本书9.2.2.1.要从均值参数转成自然参数(natural parameter),可以使用一个函数$\phi$,也就是$\theta=\phi(\mu)$.这个函数由指数族分布的形式唯一确定(uniquely determined).实际上这是一个可逆映射(invertible mapping),所以也就有$\mu=\phi^{-1}(\theta)$.另外通过本书9.2.3可以知道这个均值可以通过对分区函数(partition function)求导而得到,也就是有$\mu=\phi^{-1}(\theta)=A'(\theta)$.
+
+然后加上输入/协变量(covariates).先定义一个输入特征的线性函数:
+
+$\eta_i =w^T x_i$(9.78)
+
+|分布|Link $g(\mu)$|$\theta=\phi(\mu)$|$\mu =\phi^{-1}(\theta)=\matmrm{E}[y]$|
+|---|---|---|---|
+|$N(\mu,\sigma^2)$|indentity|$\theta=\mu$|$\mu=\theta$|
+|$Bin(N,\mu)$|logit|$\theta=\log\frac{\mu}{1-\mu}$|$\mu=sigm(\theta)$|
+|$Poi(\mu)$|log|$\theta =\log(\mu)$|$\mu=e^\theta$|
+
+表 9.1 常见通用线性模型(GLMs)的连接函数(link function)$\phi$.
+
+然后使这个分布的均值为这个线性组合的某个可逆单调函数.通过转换,得到这个函数就叫做均值函数(mean function),记作$g^{-1}$,所以:
+$\mu_i =g^{-1}(\eta_i) =g^{-1}(w^Tx_i)$(9.79)
+
+如图9.1所示为这个简单模型的总结.
+
+均值函数(mean function)的逆函数,记作$g()$,就叫做连接函数(link function).我们可以随意选择任意函数来作为连接函数,只要是可逆的,以及均值函数$g()$有适当的范围.例如在逻辑回归里面,就设置$\mu_i =g^{-1}(\eta_i)=sigm(\eta_i)$.
+
+连接函数有一个特别简单的形式,就是$g=\phi$,这也叫做规范连接函数(canonical link function).这种情况下则有$\theta_i=\eta_i=w^Tx_i$,所以模型就成了:
+
+$p(y_i|x_i,w,\sigma^2)=\exp [\frac{y_iw^Tx_i -A(w^Tx_i)}{\sigma^2}+c(y_i,\sigma^2)]$(9.80)
+
+表格9.1中所示的是一些分布和规范连接函数.可见伯努利分布或者二项分布的规范连接函数是$g(\mu)=\log (\eta/(1-\eta))$,而你函数是逻辑函数(logistic function)$\mu =sigm(\eta)$.
+
+基于本书9.2.3的结果,可以得到响应变量的均值和方差:
+
+$$
+\begin{aligned}
+\mathrm{E}[y|x_i,w,\sigma^2]&= \mu_i =A'(\theta_i)  &\text{(9.81)}\\
+var[y|x_i,w,\sigma^2]&= \sigma_i^2 =A''(\theta_i)\sigma^2 &\text{(9.82)}\\
+\end{aligned}
+$$
+
+为了记好清楚,接下来就看一些简单样例.
+
+对于线性回归,则有:
+
+$\log p(y_i|x_i,w,\sigma^2)=\frac{y_i\mu_i-\mu_i^2/2}{\sigma^2}-\frac{1}{2}(\frac{y_i^2}{\sigma^2}+\log(2\pi\sigma^2))$(9.83)
+
+其中$y_i\in R,\theta_i=\mu_i =w^Tx_i$,而$A(\theta)=\theta^2/2$,所以$\mathrm{E}[y_i]=\mu_i,var[y_i]=\sigma^2$.
+
+对于二项回归(binomial regression),则有:
+
+$\log p(y_i|x_i,w) =y_i \log(\frac{\pi_i}{1-\pi_i}+N_i\log(1-\pi_i)+\log\begin{aligned} N_i\\ y_i \end{aligned}$(9.84)
+
+其中$y_i \in \{0,1,...,N_i\},\pi_i =sigm(w^Tx_i),\theta_i=\log (\pi_i/(1-\pi_i))=w^Tx_i,\sigma^2=1$. $A(\theta)=N_i\log (1+e^\theta)$,所以$\mathrm{E}[y_i]=N_i\pi_i =\mu_i,var[y_i]= N_i\pi_i(1-\pi_i)$
+
+对于泊松分布(poisson regression),则有:
+$\log p(y_i|x_i,w)= y_i \log \mu_i -\mu_i -\log(y_i!)$(9.85)
+
+其中$y_i\in \{0,1,2,...\},\mu_i =\exp (w^Tx_i),\theta=\log(\mu_i)=w^Tx_i,\sigma^2=1$.而$A(\theta)=e^\theta$,所以$\mathrm{E}[y_i]=var[y_i]=\mu_i$.泊松回归在生物统计中应用很广,其中的$y_i$可能代表着给定人群或者地点的病患数目,或者高通量测序背景下基因组位置的读数数量,参考(Kuan et al. 2009).
+
+### 9.3.2 最大似然估计(MLE)和最大后验估计(MAP)
+
+通用线性模型的最重要的一个性质就是可以用和逻辑回归拟合的同样方法来进行拟合.对数似然函数形式如下所示:
+
+
+$$
+\begin{aligned}
+l(w) = \log p(D|w)&= \frac{1}{\sigma^2}\sum^N_{i=1}l_i &\text{(9.86)}\\
+l_i&\overset{\triangle}{=} \theta_i y_i-A(\theta_i) &\text{(9.87)}\\
+\end{aligned}
+$$
+
+
+$$
+\begin{aligned}
+\frac{dl_i}{dw_j}&=  \frac{dl_i}{d\theta_i}  \frac{d\theta_i}{d\mu_i}   \frac{d \mu_i}{d\eta_i}  \frac{d\eta_i}{\d w_j}   &\text{(9.88)}\\
+&= (y_i -A'(\theta_i))\frac{d\theta_i}{d\mu_i} \frac{}{} x_{ij} &\text{(9.89)}\\
+&= (y_i-\mu_i)\frac{d\theta_i}{d\mu_i} \frac{}{} x_{ij}  &\text{(9.90)}\\
+\end{aligned}
+$$
+
+
+
+|名称|公式|
+|---|---|
+|Logistic|$g^{-1}9\eta)sigm(\eta)=\frac{e^\eta}{1+e^\eta}$|
+|Probit|$g^{-1}9\eta)=\Phi(\eta)$|
+|Log-log|$g^{-1}9\eta)=\exp(-\exp(-\eta))$|
+|Complementary log-log|$g^{-1}9\eta)=1-\exp(-\exp(\eta))$|
+表格9.2 二值回归(binary regression)的一些可能的均值函数的总结.
+
+
+如果使用规范连接函数$\theta_i = \eta_i$,就简化成了:
+$\nabla_w l(w)=\frac{1}{\sigma^2}[\sum^N_{i=1}(y_i-\mu_i)x_i]$(9.91)
+
+这就成了输入向量以误差为权重的求和.这可以在一个(很复杂的)梯度下降过程中用到,具体参考本书8.5.2.不过为了提高效率,还是应该用一个二阶方法.如果使用一个规范连接函数,海森矩阵(Hessian)就是:
+$H=-\frac{1}{\sigma^2}\sum^N_{i=1}\frac{d\mu_i}{d\theta_i} x_ix_i^T =-\frac{1}{\sigma^2}X^TSX$(9.92)
+
+其中$S= diag(\frac{d\mu_1}{d\theta_1},...,\frac{d\mu_N}{d\theta_N})$是对角权重矩阵(diagonal weighting matrix).这可以用在一个迭代重加权最小二乘法(Iteratively reweighted least squares,缩写为IRLS)算法内部(参考本书8.3.4).然后可以有下面所示的牛顿更新:
+
+$$
+\begin{aligned}
+w_{t+1}&=  (X^TS_tX)^{-1}X^TS_tz_t &\text{(9.93)}\\
+z_t &= \theta_t+S_t^{-1}(y-\mu_t)  &\text{(9.94)}\\
+\end{aligned}
+$$
+
+其中$\theta_t =Xw_t,\mu_t =g^{-1}(\eta_t)$.
+
+如果我们扩展求导(extend derivation)来处理非规范连接函数(non-canonical links),就会发现海森矩阵(Hessian)有另外一项.不过最终期望海森矩阵(expected Hessian)和等式9.92一模一样,利用这个期望海森矩阵(也就是费舍尔信息矩阵(Fisher information matrix))来替代真实的海森矩阵就叫做费舍尔评分方法(Fisher scoring method).
+
+修改上面的过程来进行高斯先验的最大后验估计(MAP estimation)就很简单了:只需要调整目标函数(objective),梯度*gradient)和海森矩阵(Hessian),就像是在本书8.3.6里面对逻辑回归加上$l_2$规范化(regularization)一样.
+
+### 9.3.3 贝叶斯推导
+
+通用线性模型(GLMs)的贝叶斯推导通常都用马尔科夫链蒙特卡罗方法(Markov chain Monte Carlo,缩写为 MCMC),参考本书24章.可用基于迭代重加权最小二乘法(IRLS-based proposal)来的Metropolis Hastings方法(Gamerman 1997),或者每个全条件(full conditional)使用自适应拒绝采样(adaptive rejection sampling,缩写为ARS)的吉布斯采样(Gibbs sampling)(Dellaportas and Smith 1993).更多信息参考(Dey et al. 2000).另外也可以用高斯近似(Gaussian approximation,本书8.4.1)或者变分推理(variational inference,本书21.8.11).
+
+
+
+
+
+
+
