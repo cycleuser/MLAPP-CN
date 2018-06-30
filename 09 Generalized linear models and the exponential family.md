@@ -381,19 +381,19 @@ $Z = \sum_x \exp(-\sum_k \lambda_k f_k(x))$(9.76)
 
 $p(y_i|\theta,\sigma^2)=\exp[\frac{y_i\theta - A(\theta)}{\sigma^2}+c(y_i,\sigma^2)]$(9.77)
 
-上式中的$\sigma^2$叫做色散参数(dispersion parameter),通常设为1.$\theta$是自然参数,A是分区函数,c是归一化常数.例如,在逻辑回归的情况下,$\theta$就是对数比值比(log-odds ratio),$\theta =\log ( \frac{\mu}{1-\mu} )$,其中$\mu=\mathrm{E}[y]=p(y=1)$是均值参数(mean parameter),参考本书9.2.2.1.要从均值参数转成自然参数(natural parameter),可以使用一个函数$\phi$,也就是$\theta=\phi(\mu)$.这个函数由指数族分布的形式唯一确定(uniquely determined).实际上这是一个可逆映射(invertible mapping),所以也就有$\mu=\phi^{-1}(\theta)$.另外通过本书9.2.3可以知道这个均值可以通过对分区函数(partition function)求导而得到,也就是有$\mu=\phi^{-1}(\theta)=A'(\theta)$.
+上式中的$\sigma^2$叫做色散参数(dispersion parameter),通常设为1.$\theta$是自然参数,A是分区函数,c是归一化常数.例如,在逻辑回归的情况下,$\theta$就是对数比值比(log-odds ratio),$\theta =\log ( \frac{\mu}{1-\mu} )$,其中$\mu=\mathrm{E}[y]=p(y=1)$是均值参数(mean parameter),参考本书9.2.2.1.要从均值参数转成自然参数(natural parameter),可以使用一个函数$\phi$,也就是$\theta=\Psi(\mu)$.这个函数由指数族分布的形式唯一确定(uniquely determined).实际上这是一个可逆映射(invertible mapping),所以也就有$\mu=\Psi^{-1}(\theta)$.另外通过本书9.2.3可以知道这个均值可以通过对分区函数(partition function)求导而得到,也就是有$\mu=\Psi^{-1}(\theta)=A'(\theta)$.
 
 然后加上输入/协变量(covariates).先定义一个输入特征的线性函数:
 
 $\eta_i =w^T x_i$(9.78)
 
-|分布|Link $g(\mu)$|$\theta=\phi(\mu)$|$\mu =\phi^{-1}(\theta)=\matmrm{E}[y]$|
+|分布|Link $g(\mu)$|$\theta=\psi(\mu)$|$\mu =\psi^{-1}(\theta)=\matmrm{E}[y]$|
 |---|---|---|---|
 |$N(\mu,\sigma^2)$|indentity|$\theta=\mu$|$\mu=\theta$|
 |$Bin(N,\mu)$|logit|$\theta=\log\frac{\mu}{1-\mu}$|$\mu=sigm(\theta)$|
 |$Poi(\mu)$|log|$\theta =\log(\mu)$|$\mu=e^\theta$|
 
-表 9.1 常见通用线性模型(GLMs)的连接函数(link function)$\phi$.
+表 9.1 常见通用线性模型(GLMs)的连接函数(link function)$\psi$.
 
 然后使这个分布的均值为这个线性组合的某个可逆单调函数.通过转换,得到这个函数就叫做均值函数(mean function),记作$g^{-1}$,所以:
 $\mu_i =g^{-1}(\eta_i) =g^{-1}(w^Tx_i)$(9.79)
@@ -494,8 +494,196 @@ $$
 通用线性模型(GLMs)的贝叶斯推导通常都用马尔科夫链蒙特卡罗方法(Markov chain Monte Carlo,缩写为 MCMC),参考本书24章.可用基于迭代重加权最小二乘法(IRLS-based proposal)来的Metropolis Hastings方法(Gamerman 1997),或者每个全条件(full conditional)使用自适应拒绝采样(adaptive rejection sampling,缩写为ARS)的吉布斯采样(Gibbs sampling)(Dellaportas and Smith 1993).更多信息参考(Dey et al. 2000).另外也可以用高斯近似(Gaussian approximation,本书8.4.1)或者变分推理(variational inference,本书21.8.11).
 
 
+## 9.4 概率单位回归(Probit regression)
+
+
+在(二值化)洛基回归中,用到了形式为$p(y=1|x_i,w)=sigm(w^Tx_i)$的模型.对任何从区间$[-\infty,\infty]$到$[0,1]$进行映射的函数$g^{-1}$,一般都可以写出$p(y=1|x_i,w)=g^{-1}(w^Tx_i)$.表格9.2所示为若干可能的均值函数.
+在本节,要讲的情况是$g^{-1}(\eta)=\Phi(\eta)$,其中的$\Phi(\eta)$是标准正态分布(standard normal)的累积密度函数(cdf).这样就叫概率单位回归(probit regression).概率函数(probit function)和逻辑函数(logistic function)很相似,如图8.7(b)所示.不过这个模型比逻辑回归有一些优势.
+
+### 9.4.1 使用基于梯度优化的最大似然估计(MLE)和最大后验估计(MAP)
+
+我们可以对概率单位回归使用标准梯度方法来得到最大似然估计(MLE).设$\mu_i=w^Tx_i,\tilde y_i\in \{-1,+1\}$.然后对于一个特定情况的对数似然函数的梯度就是:
+$g_i \overset{\triangle}{=} \frac{d}{dw}\log p(\tilde y_i|w^Tx_i)=\frac{d\mu_i}{dw}\frac{d}{d\mu_i}\log p(\tilde y_i)|w^Tx_i)=x_i\frac{\tilde y_i\phi(\mu_i)}{\Phi(\tilde y_i\mu_i)}$(9.95)
+
+
+$H_i =\frac{d}{dw^2}\log p(\tilde y_i|w^Tx_i)=-x_i ( \frac{\phi(\mu_i)^2}{\Phi(\tilde y _i \mu_i)}+\frac{\tilde y_i \mu_i \phi(\mu_i)}{\Phi(\tilde y_i\mu_i)})x_i^T$(9.96)
+
+
+$p(w)=N(0,V_0)$   $\sum_ig_i+2V_0^{-1}w$   $\sum_iH_i+2V_0^{-1}$
+
+
+### 9.4.2 潜在变量解释(latent variable interpretation)
+
+$$
+\begin{aligned}
+u_{0i}& \overset{\triangle}{=}  w_0^Tx_i+\delta_{0i}    &\text{(9.97)}\\
+u_{1i}& \overset{\triangle}{=}  w_1^Tx_i+\delta_{1i}    &\text{(9.98)}\\
+y_i& =  I(u_{1i}\ge u_{10})     &\text{(9.99)}\\
+\end{aligned}
+$$
+
+随机效用模型(random utility model,缩写为RUM,McFadden 1974; Train 2009).
+
+$\epsil _i=\delta_{1i}-\delta_{0i}$
+
+$$
+\begin{aligned}
+z_i&  \overset{\triangle}{=} w^Tx_i+\epsilon_i          &\text{(9.100)}\\
+\epsilon_i &  \sim N(0,1)              &\text{(9.101)}\\
+y_i=1&=I(z_i\ge 0)                  &\text{(9.102)}\\
+\end{aligned}
+$$
+
+
+根据(Fruhwirth-Schnatter and Fruhwirth 2010),将这叫做差别随机效用模型(difference  random utility model,缩写为dRUM).
+
+当边缘化去掉(marginalize out)$z_i$之后,就恢复(recover)了概率单位模型(probit model):
+
+$$
+\begin{aligned}
+p(y_i=1|x_i,w)& = \int I(z_i\ge 0)N(z_i|w^Tx_i,1)dz_i     &\text{(9.103)}\\
+& p(w^Tx_i+\epsilon \ge0)=p(\epsilon\ge -w^Tx_i)      &\text{(9.104)}\\
+& 1-\Phi(-w^Tx_i)=\Phi(w^Tx_i)  &\text{(9.105)}\\
+\end{aligned}
+$$
+
+上面用到了高斯分布的对称性(symmetry).这个潜在变量解释提供了你和模型的另外一种方法,具体参考本书11.4.6.
+
+如果我们队$\delta$使用一个冈贝尔分布(Gumbel distribution),得到的就是对$\epsilon_i$的逻辑分布(logistic distribution),模型也降低到了(reduces to)逻辑回归(logistic regression).更多细节参考本书24.5.1.
+
+
+### 9.4.3 有序概率回归(Ordinal probit regression)*
+
+概率回归的潜在变量解释的一个优势就是很容易扩展到响应变量有序的情况下,也就是取C个离散值,以某种方式排序,比如从小到大等.这样就成了有序回归(ordinal regression).基本思想如下所述.引入$C+1$个阈值$\gamma_j$以及集合:
+
+$y_i =j \text{ if } \gamma_{j-1}\le z_i\le \gamma_j$(9.106)
+
+其中的$\gamma_0\le...\le \gamma_C$.为了好辨认,就设$\gamma_0=-\infty,\gamma_1=0,\gamma_C=\infty$.例如,如果$C=2$,这就降低到了标准二值化概率模型(standard binary probit model),其中$z_i<0$导致$y_i=0$,而$z_i\ge 0$对应就是$y_i=1$.如果C=3,就把这个实线(real line)分成了三个区间:$(-\infty,0],(0,\gamma_2],(\gamma_2,\infty)$.这时候通过调节参数$\gamma_2$就可以确保每个区间有正确相关规模的概率质量,也能符合每个类标签的经验频率(empirical frequencies).
+
+对这个模型找最大似然估计(MLE)就可能比二值化概率回归要更麻烦点了,因为需要优化$w$和$\gamma$,而后面的那个必须服从一个有序约束(ordering constraint).(Kawakatsu and Largey 2009)提出了一个基于期望最大化(EM)的方法.另外从这个模型也可以推导出一个简单的吉布斯采样算法(Gibbs sampling algorithm),参考(Hoff 2009, p216).
+
+
+### 9.4.4 多项概率模型(Multinomial probit models)*
+
+然后考虑响应变量可以去C个无排序分类值的情况,也就是$y_i\in \{1,...,C\}$.多项概率模型定义如下所示:
+
+$$
+\begin{aligned}
+z_{ic}&  = w^Tx_{ic}+\epsilon _{ic}  &\text{(9.107)}\\
+\epsilon &\sim N(0,R)   &\text{(9.108)}\\
+y_i &=   \arg\max_c z_{ic}   &\text{(9.109)}\\
+\end{aligned}
+$$
+
+关于这个模型的更多细节以及和多项逻辑回归(multinomial logistic regression)之间的关系可以去参考(Dow and Endersby 2004; Scott 2009; Fruhwirth-Schnatter and Fruhwirth 2010).(通过定义$w=[w_1,...,w_C],x_{ic}=[0,...,0,x_i,0,...,0]$,就可以恢复到更熟悉的函数方程$z_{ic} =x_i^T w_C$.)由于只有相对效用(relative utilities)有影响,可以将R限制为一个相关矩阵(correlation matrix).如果不去设$y_i=\arg\max_Cz_{ic}$而是使用$y_{ic} =I(z_{ic}>0)$,就得到了多元概率模型(multivariate probit model),也是对于二值化输出相关的C建模的一种方法,参考(Talhouk et al. 2011).
+
+
+## 9.5 多任务学习(multi-task learning)
+
+
+有时候要对多个相关的分类或者拟合模型进行你和.通常都可能会假设不同模型之间的输入输出映射是相似的,所以可以在同时拟合所有参数来得到更好的性能.在机器学习里面,这一般叫做多任务学习 (multi-task learning,Caruana 1998), 转换学习 (transfer learning,Raina et al.2005), 或者(learning to learn,Thrun and Pratt 1997).在统计学上,通常的解决方法是分层贝叶斯模型(hierarchical Bayesian models,Bakker and Heskes 2003),当然也有一些其他方法(Chai 2010),后文会讲到.
+
+$$(9.110)
+
+
+
+$$(9.111)
+
+
+
+$$(9.112)
+
+
+
+$$(9.113)
+
+
+
+$$(9.114)
+
+
+
+$$
+\begin{aligned}
+&                  &\text{(9.115)}\\
+&                  &\text{(9.116)}\\
+\end{aligned}
+$$
+
+
+
+$$(9.117)
+
+
+
+$$(9.118)
 
 
 
 
+$$
+\begin{aligned}
+&                  &\text{(9.119)}\\
+&\\
+&                  &\text{(9.120)}\\
+\end{aligned}
+$$
 
+
+
+$$(9.121)
+
+
+
+
+$$(9.122)
+
+
+
+
+$$(9.123)
+
+
+
+
+$$(9.124)
+
+
+
+
+$$(9.125)
+
+
+
+
+$$(9.126)
+
+
+
+
+$$(9.127)
+
+
+
+
+$$(9.128)
+
+
+
+
+$$(9.129)
+
+
+
+
+$$(9.130)
+
+
+
+$$
+\begin{aligned}
+&                  &\text{(9.131)}\\
+&                  &\text{(9.132)}\\
+&                  &\text{(9.133)}\\
+\end{aligned}
+$$
