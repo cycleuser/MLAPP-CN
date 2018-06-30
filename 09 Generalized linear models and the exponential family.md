@@ -583,107 +583,199 @@ $$
 
 有时候要对多个相关的分类或者拟合模型进行你和.通常都可能会假设不同模型之间的输入输出映射是相似的,所以可以在同时拟合所有参数来得到更好的性能.在机器学习里面,这一般叫做多任务学习 (multi-task learning,Caruana 1998), 转换学习 (transfer learning,Raina et al.2005), 或者(learning to learn,Thrun and Pratt 1997).在统计学上,通常的解决方法是分层贝叶斯模型(hierarchical Bayesian models,Bakker and Heskes 2003),当然也有一些其他方法(Chai 2010),后文会讲到.
 
-$$(9.110)
+
+### 9.5.1 多任务学习的分层贝叶斯
+
+设$y_{ij}$是第j群(group)当中的第i项(item)的响应变量,其中$i= 1:N_j,j=1:J$.例如,j可以对学校进行索引,然后i就是检索该学校中的学生,然后$y_{ij}$就是这个学生的测试分数,如本书5.6.2所示.或者也可以用j来对人进行索引,然后i代表队是购买次数,这样$y_{ij}$就只带被购买的特定商品(这就叫做离散选择模型(discrete choice modeling, Train 2009).设$x_{ij}$是对应$y_[ij}$的特征向量.目标就是要对于所有的j拟合出模型$p(y_j|x_j)$.
+
+虽然有的组可能有很多数据,通常都是长尾的(long tail),其中大多数组都只有很少的数据.因此不能很有把握地去分开拟合各个模型,可又不想对所有组使用同一个模型.所以就折中一下,可以对每个组拟合一个离散的模型,但设置在不同的组织间模型参数具有相似性.更具体来说就是设$\mathrm{E}[y_{ij}|x_{ij}]= g(x_i^T\Beta_j)$,其中的g是通用线性模型(GLM)的连接函数(link function).另外设$\Beta_j\sim N(\Beta_*,\sigma_j^2 I),\Beta_* \sim N(\mu,\sigma^2_*I)$.在这个模型里面,小样本规模的组就从更多样本的组借用统计强度,因为$\Beta_j$是和潜在通用母变量(latent common parents)$\Beta_*$相关的(这一点相关内容参考本书5.5).$\sigma_j^2$这一项控制了第j组对通用母变量(common parents)的依赖程度,而$\sigma_*^2$这一项控制了全局先验的强度.
+
+为了简单起见,假设$\mu=0$,这样$\sigma_j^2$和$\sigma_*^2$就都是一直的了(可以通过交叉验证来设置).全局对数概率函数(overall log probability)形式为:
+
+$\log p(D|\Beta)+\log p(\Beta)=\sum_j [\log \p((D_j|\beta_j)-\frac{||\Beta_j-\Beta_*||^2}{2\sigma_j^2})]-\frac{||\Beta_*||^2}{2\sigma^2_*}$(9.110)
+
+可以使用标准梯度方法进行对$\beta=(\Beta_{1:j},\Beta_*)$的最大后验估计(MAP).或者也可以使用迭代优化的策略,在$\Beta_j$和$\Beta_*$之间进行优化;因为似然函数和先验都是凸函数,这就保证了会收敛到全局最优解.要记住一旦一个模型训练出来了,就可以不用理会$\Beta_*$,分别使用每个模型.
 
 
 
-$$(9.111)
+### 9.5.2 应用:个性化垃圾邮件过滤
+
+多任务学习的一个有趣应用就是个性化垃圾邮件过滤(personalized email spam filtering).假如要针对每个用户来拟合一个分类器$\Beta_j$.由于大部分用户都不会来标记他们的邮件是不是垃圾邮件,这就很难分开来对他们各自的模型进行估计.所以要设$\Beta_j$有一个通用的先验$\Beta_*$,表示了一个通用用户的参数.
+
+这时候就可以利用上面的模型来估计这行为,这需要一点小技巧(Daume 2007b; Attenberg et al. 2009; Weinberger et al. 2009):将每个特征$x_i$都只做两个分本,一个联接(concatenated)到用户id,另外的一份则不做联接.这样要学习的预测器(predictor)的形式就为:
+
+$\mathrm{E}[y_i|x_i,u]= (\Beta_*,w_1,...,w_J)^T [x_i,I(u=1)x_i,...,I(u=J)x_i]$(9.111)
+
+其中的u是用户id.也就是说:
+
+$\mathrm{E}[y_i|x_i,u=j]=(\Beta_*+w_j)^Tx_i$(9.112)
+
+因此$\Beta_*$就可以从每个人的邮件中来进行估计,而$w_j$则只从第j个用户的邮件中来估计.
+
+这和上面的分层贝叶斯模型具有对应关系(correspondence),定义$w_j=\Beta_j-\Beta_*$.然后原始模型的对数概率函数就可以重新写成下面的形式:
+
+$\sum_j [\log p(D_j|\Beta_*+w_j)-frac{||w_j||^2}{2\sigma^2_j}]-\frac{||\Beta_*||^2}{2\sigma^2_*}$(9.113)
+
+如果我们假设$\sigma^2_j=\sigma^2_*$,效果就和使用增强特征技巧(augmented feature trick)一样了,对$w_i$和$\Beta_*$都有一样的规范化强度(regularizer strength).不过如果让这两个不相等通常能得到更好的性能(Finkel and Manning 2009).
+
+### 9.5.3 应用:域自适应(Domain adaptation)
+
+域自适应问题是要训练从不同分布取样来的数据,比如邮件和新闻报道的文本.这个问题很明显是一个多任务学习的特例,其中各个任务都相同.
+
+(Finkel and Manning 2009)使用了上面的分层贝叶斯模型来使用域自适应来实现两个自然语言处理任务(NLP tasks),命名实体识别(namely named entity recognition)和解译(parsing).他们的研究成果比区分每个数据集来拟合分散模型有更大的进步,而对于将所有数据放到一个简单模型来拟合相比就提升较小了.
+
+
+### 9.5.4 其他类别的先验
+
+在多任务学习里面,通常都假设先验是高斯分布的.不过有时候也可能选择别的先验更适合.比如对于联合分析(conjoint analysis)的任务,这个任务需要想办法弄清用户最喜欢产品的哪个特征.这可以使用跟前文同样的分层贝叶斯模型设置,不过要对$\Beta_j$使用更加稀疏的先验(sparsity-promoting prior),而不是高斯先验.这就叫做多任务特征选择(multi-task feature selection).更多可用方法等等参考(Lenk et al. 1996; Argyriou et al. 2008).
+
+总去假设所有任务都一样想死并不总是很合理的.如果把不同质量(qualitatively different)的任务的参数汇集到一起,计算性能回避不汇聚要更差,因为咱们先验中的归纳偏见(inductive bias)是错误的.实际上已经有研究发现有点时候多任务学习要比分开解决每个任务效果更差,这也叫做负转换(negative transfer).
+
+这类问题的另外一个方法就是使用更灵活的先验,比如混合高斯模型.这类灵活先验可以提供健壮性,应对先验误判(prior mis-specification).更多细节参考(Xue et al.2007; Jacob et al. 2008).当然也可以把稀疏提升先验(sparsity-promoting priors)混合起来使用(Ji et al. 2009).当然也有很多其他变体方法.
+
+## 9.6 通用线性混合模型(Generalized linear mixed models)*
+
+$\mathrm{E}[y_{ij}|x_{ij},x_j]=g(\phi(x_{ij})^T\Beta_j+\phi_2(x_j)^T\Beta'_j +\phi_3 (x_{ij})^T\alpha+\phi_t(x_j)^T\alpha')$(9.114)
 
 
 
-$$(9.112)
+### 9.6.1 样例:针对医疗数据的半参数化通用线性混合模型(semi-parametric GLMMs for medical data)
+
+$$
+\begin{aligned}
+\mathrm{E}[y_{ij}|x_{ij},x_j]& = \Beta_j +\alpha^Tb(x_{ij})+\epsilon_{ij} &\text{(9.115)}\\
+&+ \alpha'_wI(x_j=w)+\alpha'_aI(x_j=a)+\alpha'_bI(x_j=b)+\alpha'_hI(x_j=h) &\text{(9.116)}\\
+\end{aligned}
+$$
+
+$\epsion_{ij}\sim N(0,\sigma_y^2)$.  $p(\alpha,\alpha',\Beta,\sigma^2|D)$
+
+此处参考原书图9.2
+
+
+### 9.6.2 计算问题
+
+
+$p(y_{ij}|\theta)$  $p(\theta)$  $\theta =(\alpha,\Beta)$       $\eta =(\mu,\sigma)$
+
+
+$p(\theta|\eta,D)$   
+
+
+## 9.7 学习排序(Learning to rank)*
+
+
+$sim(q,d)\overset{\triangle}{=}p(q|d)=\prod^n_{i=1}p(q_i|d)$
+
+$p(q_i|d)$
+
+$p(t|d)=(1-\lambda)\frac{TF(td)}{LEN(d)}+\lambda p(t|background)$(9.117)
+
+$TF(t|d)$  $d$   $LEN(d)$  $0<\lambda <1$
 
 
 
-$$(9.113)
+### 9.7.1 单点法(pointwise approach)
 
 
 
-$$(9.114)
+$d_j, \text{for} j=1:m$.  $x(q,d)$
+
+
+$p(y=1|x(q,d))$      $p(y=r|x(q,d))$
+
+
+
+### 9.7.2 成对法(pairwise approach)
+
+
+$p(y_{jk}|x(q,d_j),x(q,d_k))$     $rel(d_j,q)>rel(d_k,q)$  $y_{jk}=1$
+
+$p(y_{jk}=1|x_j,x_k)=sigm(f(x_j)-f(x_k))$(9.118)
+
+
+$f(x)$   $f(x)=w^Tx$
+
 
 
 
 $$
 \begin{aligned}
-&                  &\text{(9.115)}\\
-&                  &\text{(9.116)}\\
+L& =sum^N_{i=1} \sum^{m_i}_{j=1}\sum^{m_i}_{k=j+1} L_{ijk}      &\text{(9.119)}\\
+-L_{ijk}&=I(y_{ijk}=1)\log p(y_{ijk}=1|x_{ij},x_{ik},w)  \\
+& + I(y_{ijk}=0)\log p(y_{ijk}=0|x_{ij},x_{ik},w) &\text{(9.120)}\\
 \end{aligned}
 $$
 
+### 9.7.3 列表法(listwise approach)
+
+$p(\pi|s)=\prod^m_{j=1}\frac{s_j}{\sum^m_{u=j}s_u}$(9.121)
 
 
-$$(9.117)
+
+
+$p(\pi|s)=\frac{s_A}{s_A+s_B+s_C}\times \frac{s_B}{s_B+s_C}\times \frac{s_C}{s_C}$(9.122)
 
 
 
-$$(9.118)
 
+$-\sum_i\sum_pi p(\pi|y_i)\log p(\pi |s_i)$(9.123)
+
+
+
+
+$p(\pi_{1:k}|s_{1:m}) = \prod^k_{j=1}\frac{s_j}{\sum^m_{u=1}s_u}$(9.124)
+
+
+
+
+$p(y_i=c|x)=\frac{\exp(s_C)}{\sum^m_(c'=1)\exp(s_{c'})}$(9.125)
+
+
+### 9.7.4 排序的损失函数
+
+
+
+
+$P\@ k(\pi)\overset{\triangle}{=}  \frac{\text{num. relevant documents in the top k positions of} \pi}{k}$(9.126)
+
+
+
+
+$AP(\pi)\overset{\triangle}{=}  \frac{\sum_k P\@k(\pi) \times I_k}{\text{num relevant documents}}$(9.127)
+
+$y = (1, 0, 1, 0, 1)$ $\frac13(\frac11 +\frac23 +\frac35 )\approx 0.76$
+
+
+$DCG\@k(r)=r_1+\sum^k_{i=2} \frac{r_i}{\log_2 i}$(9.128)
+
+
+
+
+$DCG\@k(r)= \sum^k_{i=1} \frac{2^{r_i}-1}{\log_2(1+i)}$(9.129)
+
+
+
+
+$\tau(\pi,\pi^*)=\frac{\sum_{u<v} w_{uv} [1+sgn(\pi_u-\pi_v)sgn(\pi^*_u-\pi^*_v)]}{2\sum_{u<v}w_{uv}}$(9.130)
 
 
 
 $$
 \begin{aligned}
-&                  &\text{(9.119)}\\
-&\\
-&                  &\text{(9.120)}\\
+WARP(f(x,:),y)&\overset{\triangle}{=}  L(rank(f(x,:),y)  &\text{(9.131)}\\
+rank(f(x,:),y)&= \sum_{y'\ne y}I(fx,y')\ge f(x,y))   &\text{(9.132)}\\
+L(k)&\overset{\triangle}{=}  \sum^k_{j=1}\alpha_j,\text{with} \alpha_1\ge \alpha_\ge ...\ge 0   &\text{(9.133)}\\
 \end{aligned}
 $$
 
 
-
-$$(9.121)
-
+$f(x,:)=[f(x,1),...,f(x,|y|)]$
 
 
 
-$$(9.122)
+$rank(f(x,:),y)$
 
 
 
-
-$$(9.123)
-
-
-
-
-$$(9.124)
-
-
-
-
-$$(9.125)
-
-
-
-
-$$(9.126)
-
-
-
-
-$$(9.127)
-
-
-
-
-$$(9.128)
-
-
-
-
-$$(9.129)
-
-
-
-
-$$(9.130)
-
-
-
-$$
-\begin{aligned}
-&                  &\text{(9.131)}\\
-&                  &\text{(9.132)}\\
-&                  &\text{(9.133)}\\
-\end{aligned}
-$$
+$\alpha_1=1,\alpha_{j>1}=0$
