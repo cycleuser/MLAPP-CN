@@ -42,7 +42,7 @@ A(\theta) &=  \log Z(\theta) &\text{(9.4)}\\
 \end{aligned}
 $$
 
-因此$\theta$也叫作自然参数(natural parameters)或者规范参数(canonical parameters),$\phi(x)\in R^d$叫做充分统计向量(vector of sufficient statistics),$Z(\theta)$叫做分区函数(partition function),$A(\theta)$叫做对数分区函数(log partition function)或者累积函数(cumulant function),$h(x)$是一个缩放常数,通常为1.如果$\phi(x)=x$,就说这个是一个自然指数族(natural exponential family).
+因此$\theta$也叫作自然参数(natural parameters)或者规范参数(canonical parameters),$\phi(x)\in R^d$叫做充分统计向量(vector of sufficient statistics),$Z(\theta)$叫做配分函数(partition function),$A(\theta)$叫做对数配分函数(log partition function)或者累积函数(cumulant function),$h(x)$是一个缩放常数,通常为1.如果$\phi(x)=x$,就说这个是一个自然指数族(natural exponential family).
 
 等式9.2可以泛华扩展,写成下面这种方式:
 $p(x|\theta)=h(x)\exp[\eta(\theta)^T\phi(x)-A(\eta(\theta))]$(9.5)
@@ -137,9 +137,9 @@ $$
 肯定不可能所有分布都属于指数族啊.比如均匀分布$X\sim Unif(a,b)$就不属于指数族,因为这个分布的支撑(support,其实大概也就是定义域的意思)是一来参数的.另外本书11.4.5所示的学生T分布也不属于指数族,因为不含有要求的形式.
 
 
-### 9.2.3 对数分区函数(log partition function)
+### 9.2.3 对数配分函数(log partition function)
 
-指数族的一个重要性质就是对数分区函数的导数(derivatives)可以用来生成充分统计的累积量(cumulants).由于这个原因才使得$A(\theta)$有时候也被叫做累积函数(cumulant function).先对一个单参数分布来证明一下;然后可以直接泛化扩展到K个参数的分布上.首先是求一阶导数得到了:
+指数族的一个重要性质就是对数配分函数的导数(derivatives)可以用来生成充分统计的累积量(cumulants).由于这个原因才使得$A(\theta)$有时候也被叫做累积函数(cumulant function).先对一个单参数分布来证明一下;然后可以直接泛化扩展到K个参数的分布上.首先是求一阶导数得到了:
 $$
 \begin{aligned}
 \frac{dA}{d\theta}&   =  \frac{d}{d\theta} (\log \int \exp (\theta \phi(x)) h(x)dx)   &\text{(9.27)}\\
@@ -216,7 +216,7 @@ $p(D|\theta)=\theta^{-N}I(0\le \max\{ x_i\}\le \theta)$(9.44)
 $\log p(D|\theta) =\theta^T\phi(D)-NA(\theta)$(9.45)
 
 
-由于$-A(\theta)$在$\theta$上是凹的,而$\theta^T\phi(D)$在$\theta$上是线性的,而对数似然函数是凹的,所以这就会有唯一的一个全局最大值.要推导这个最大值,要用到对数分区函数(log partition function)的导数生成充分统计量向量的期望值(参考本书9.2.3):
+由于$-A(\theta)$在$\theta$上是凹的,而$\theta^T\phi(D)$在$\theta$上是线性的,而对数似然函数是凹的,所以这就会有唯一的一个全局最大值.要推导这个最大值,要用到对数配分函数(log partition function)的导数生成充分统计量向量的期望值(参考本书9.2.3):
 
 $\nabla_\theta\log p(D|\theta)=\phi(D)-N\mathrm{E}[\phi(X)]$(9.46)
 
@@ -381,7 +381,7 @@ $Z = \sum_x \exp(-\sum_k \lambda_k f_k(x))$(9.76)
 
 $p(y_i|\theta,\sigma^2)=\exp[\frac{y_i\theta - A(\theta)}{\sigma^2}+c(y_i,\sigma^2)]$(9.77)
 
-上式中的$\sigma^2$叫做色散参数(dispersion parameter),通常设为1.$\theta$是自然参数,A是分区函数,c是归一化常数.例如,在逻辑回归的情况下,$\theta$就是对数比值比(log-odds ratio),$\theta =\log ( \frac{\mu}{1-\mu} )$,其中$\mu=\mathrm{E}[y]=p(y=1)$是均值参数(mean parameter),参考本书9.2.2.1.要从均值参数转成自然参数(natural parameter),可以使用一个函数$\phi$,也就是$\theta=\Psi(\mu)$.这个函数由指数族分布的形式唯一确定(uniquely determined).实际上这是一个可逆映射(invertible mapping),所以也就有$\mu=\Psi^{-1}(\theta)$.另外通过本书9.2.3可以知道这个均值可以通过对分区函数(partition function)求导而得到,也就是有$\mu=\Psi^{-1}(\theta)=A'(\theta)$.
+上式中的$\sigma^2$叫做色散参数(dispersion parameter),通常设为1.$\theta$是自然参数,A是配分函数,c是归一化常数.例如,在逻辑回归的情况下,$\theta$就是对数比值比(log-odds ratio),$\theta =\log ( \frac{\mu}{1-\mu} )$,其中$\mu=\mathrm{E}[y]=p(y=1)$是均值参数(mean parameter),参考本书9.2.2.1.要从均值参数转成自然参数(natural parameter),可以使用一个函数$\phi$,也就是$\theta=\Psi(\mu)$.这个函数由指数族分布的形式唯一确定(uniquely determined).实际上这是一个可逆映射(invertible mapping),所以也就有$\mu=\Psi^{-1}(\theta)$.另外通过本书9.2.3可以知道这个均值可以通过对配分函数(partition function)求导而得到,也就是有$\mu=\Psi^{-1}(\theta)=A'(\theta)$.
 
 然后加上输入/协变量(covariates).先定义一个输入特征的线性函数:
 
