@@ -27,7 +27,7 @@ $N(x|\mu,\Sigma)\overset{*}{=} \frac{1}{(2\pi)^{D/2}|\Sigma |^{1/2}}\exp[ -\frac
 
 此处参考原书图4.1
 
-指数函数内部的是一个数据向量**x**和均值向量**$\mu$** 之间的马氏距离(马哈拉诺比斯距离,Mahalanobis distance).对$\Sigma$进行特征分解(eigendecomposition)有助于更好理解这个量.$\Sigma = U\Lambda U ^T$,其中的U是标准正交矩阵(orthonormal matrix),满足$U^T U = I$,而$\Lambda $是特征值组成的对角矩阵.经过特征分解就得到了:
+指数函数内部的是一个数据向量**x**和均值向量**$\mu$** 之间的马氏距离(马哈拉诺比斯距离,Mahalanobis distance).对$\Sigma$进行特征分解(eigendecomposition)有助于更好理解这个量.$\Sigma = U\Lambda U ^T$,其中的U是标准正交矩阵(orthonormal matrix),满足$U^T U = I$,而$\Lambda$是特征值组成的对角矩阵.经过特征分解就得到了:
 
 $\Sigma^{-1}=U^{-T}\Lambda^{-1}U^{-1}=U\Lambda ^{-1}U^T=\sum^D_{i=1}\frac{1}{\lambda_i}u_iu_i^T$(4.2)
 
@@ -56,7 +56,7 @@ $\hat\mu_{mle}=\frac{1}{N}\sum^N_{i=1}x_i \overset{*}{=} \bar x$(4.6)
 $\hat\Sigma_{mle}=\frac{1}{N}\sum^N_{i=1}(x_i-\bar x)(x_i-\bar x)^T=\frac{1}{N}(\sum^N_{i=1}x_ix_i^T)-\bar x\bar x^T$(4.7)
 
 也就是MLE就是经验均值(empirical mean)和经验协方差(empirical covariance).在单变量情况下结果就很熟悉了:
-$\hat\mu =\frac{1}{N}\sum_ix_i=\bar x $(4.8)
+$\hat\mu =\frac{1}{N}\sum_ix_i=\bar x$(4.8)
 $\hat\sigma^2 =\frac{1}{N}\sum_i(x_i-x)^2=(\frac{1}{N}\sum_ix_i^2)-\bar x^2$(4.9)
 
 #### 4.1.3.1 证明
@@ -81,7 +81,7 @@ $x^TAx=tr(x^TAx)=tr(xx^TA)=tr(Axx^T)$(4.11)
 ##### 证明过程
 接下来要开始证明了,对数似然函数为:
 
-$l(\mu,\Sigma)=\log p(D|\mu,\Sigma)=\frac{N}{2}\log|\Lambda| -\frac{1}{2}\sum^N_{i=1}(x_i-\mu)^T\Lambda (x_i-\mu) $(4.12)
+$l(\mu,\Sigma)=\log p(D|\mu,\Sigma)=\frac{N}{2}\log|\Lambda| -\frac{1}{2}\sum^N_{i=1}(x_i-\mu)^T\Lambda (x_i-\mu)$(4.12)
 
 上式中$\Lambda=\Sigma^{-1}$,是精度矩阵(precision matrix)
 
@@ -172,14 +172,14 @@ $p(x|y=c,\theta)=N(x|\mu_c,\Sigma_c)$(4.30)
 此处参考原书图4.2
 
 从等式2.13可以推导出来下面的决策规则,对一个特征向量进行分类:
-$\hat y(x)=\arg \max_c[\log  p(y=c|\pi)  +\log p(x|\theta_c)] $(4.31)
+$\hat y(x)=\arg \max_c[\log  p(y=c|\pi)  +\log p(x|\theta_c)]$(4.31)
 
 计算x 属于每一个类条件密度的概率的时候,测量的距离是x到每个类别中心的马氏距离(Mahalanobis distance).这也是一种最近邻质心分类器(nearest centroids classiﬁer).
 
 例如图4.2展示的就是二维下的两个高斯类条件密度,横纵坐标分别是身高和体重,包含了男女两类人.很明显身高体重这两个特征有相关性,就如同人们所想的,个子高的人更可能重.每个分类的椭圆都包含了95%的概率质量.如果对两类有一个均匀分布的先验,就可以用如下方式来对新的测试向量进行分类:
 
 
-$\hat y(x)=\arg \max_c(x-\mu_c)^T\Sigma_c^{-1}(x-\mu_c) $(4.32)
+$\hat y(x)=\arg \min_c(x-\mu_c)^T\Sigma_c^{-1}(x-\mu_c)$(4.32)
 
 
 ### 4.2.1 二次判别分析(Quadratic discriminant analysis,QDA)
@@ -210,7 +210,7 @@ $$
 
 $$
 \begin{aligned}
-\gamma_c &= -\frac12\mu-c^T\Sigma^{-1}\mu_c+\log\pi_c&\text{(4.36)}\\
+\gamma_c &= -\frac12\mu_c^T\Sigma^{-1}\mu_c+\log\pi_c&\text{(4.36)}\\
 &\text{(4.37)}\\
 \beta_c &= \Sigma^{-1}\mu_c\end{aligned}
 $$
@@ -301,7 +301,7 @@ $\log p(D|\theta) =[\sum^N_{i=1}\sum^C_{c=1}I(y_i=c)\log\pi_c] + \sum^C_{c=1}[\s
 
 显然这个式子可以因式分解成一个含有$\pi$的项,以及对应每个$\mu_c,\Sigma_c$的C个项.因此可以分开对这些参数进行估计.对于类先验(class prior),有$\hat\pi_c=\frac{N_c}{N}$,和朴素贝叶斯分类器里一样.对于类条件密度(class-conditional densities),可以根据数据的类别标签来分开,对于每个高斯分布进行最大似然估计:
 
-$\hat\mu_c=\frac{1}{N_c}\sum_{i:y_i=c}x_i,\hat\Sigma_c=\frac{1}{N_c}\sum_{i:y_i=c}(x_i-\hat\mu_c)(x_i-\hat\mu_c)^T $(4.53)
+$\hat\mu_c=\frac{1}{N_c}\sum_{i:y_i=c}x_i,\hat\Sigma_c=\frac{1}{N_c}\sum_{i:y_i=c}(x_i-\hat\mu_c)(x_i-\hat\mu_c)^T$(4.53)
 
 具体实现可以参考本书配套的PMTK3当中的discrimAnalysisFit是MATLAB代码.一旦一个模型拟合出来了,就可以使用discrimAnalysisPredict来进行预测了,具体用到的是插值近似(plug-in approximation).
 
@@ -348,7 +348,7 @@ $$
 $$
 
 注意,我们并不需要真正去计算出来这个$D\times D$矩阵$\hat\Sigma_{map}$.这是因为等式4.38告诉我们,要使用线性判别分析(LDA)进行分类,唯一需要计算的也就是$p(y=c|x,\theta)\propto \exp(\delta_c)$,其中:
-$\delta_c=-x^T\beta_c+\gamma_c,\beta_c=\hat\Sigma^{-1}\mu_c,\gamma_c=- \frac{1}{2}\mu_c^T \beta_c+\log \pi_c $(4.62)
+$\delta_c=-x^T\beta_c+\gamma_c,\beta_c=\hat\Sigma^{-1}\mu_c,\gamma_c=- \frac{1}{2}\mu_c^T \beta_c+\log \pi_c$(4.62)
 
 然后可以并不需要求逆$D\times D$矩阵就能计算正交线性判别分析(RDA)的关键项$\beta_c$.
 $\beta_c =\hat\Sigma^{-1}_{map}\mu_c = (V\tilde\Sigma V^Ts)^{-1}\mu_c =V\tilde\Sigma^{-1}V^T\mu_c=V\tilde\Sigma^{-1}\mu_{z,c}$(4.63)
@@ -358,7 +358,7 @@ $\beta_c =\hat\Sigma^{-1}_{map}\mu_c = (V\tilde\Sigma V^Ts)^{-1}\mu_c =V\tilde\S
 
 上文所述的是正交线性判别分析(RDA),有一种简单的替代方法,就是绑定协方差矩阵(covariance matrice),即线性判别分析(LDA)中$\Sigma_c=\Sigma$,然后对于每个类都是用一个对角协方差矩阵.这个模型就叫做对角线性判别分析模型(diagonal LDA model),等价于$\lambda =1$时候的正交线性判别分析(RDA).对应的判别函数如下所示(和等式4.33相对比一下):
 
-$\delta _c(x)=\log p(x,y=c|\theta) =-\sum^D_{j=1}\frac{(x_j-\mu_{cj})^2}{2\sigma^2_j}+\log\pi_c $(4.64)
+$\delta _c(x)=\log p(x,y=c|\theta) =-\sum^D_{j=1}\frac{(x_j-\mu_{cj})^2}{2\sigma^2_j}+\log\pi_c$(4.64)
 
 通常设置$\hat\mu_{cj}=\bar x_{cj},\hat\sigma^2_j=s^2_j$,这个$s^2_j$是特征j(跨类汇集)的汇集经验方差(pooled empirical variance).
 
@@ -694,11 +694,11 @@ $$(4.105)
 
 #### 推论4.3.1 矩阵求逆引理(matrix inversion lemma)
 设有一个常规分区矩阵(general partitioned matrix)$M=\begin{pmatrix} E&F \\  G&H \end{pmatrix}$,假设E和H都可逆.则有:
-$(E-FH^{-1}G)^{-1}= E^{-1}+ E^{-1}F(H-GE ^{-1}F )^{-1}GE^{-1} $(4.106)
+$(E-FH^{-1}G)^{-1}= E^{-1}+ E^{-1}F(H-GE ^{-1}F )^{-1}GE^{-1}$(4.106)
 $(E-FH^{-1}G)^{-1}FH^{-1}=E^{-1}F(H-GE^{-1}F)^{-1}$(4.107)
 $|E-FH^{-1}G|=|H-GE^{-1}F||H^{-1}||E|$(4.108)
 上式中前两个方程就叫做矩阵求逆引理(matrix inversion lemma)或者叫做Sherman Morrison-Woodbury 公式(Sherman Morrison-Woodbury formula).第三个等式叫做矩阵行列式引理(matrix determinant lemma).在机器学习和统计学中上面这些公式的典型用法如下所示.设$E=\Sigma$是一个$N\times N$的对角矩阵,设$F=G^T= X$规模为$N\times D$,其中的N远大于D,即$N>>D$,设$H^{-1}=-I$.则有:
-$(\Sigma+XX^T )^{-1} =\Sigma^{-1}-\Sigma^{-1}X(I+X^T\Sigma^{-1}X)^{-1}X^T\Sigma^{-1}  $(4.109)
+$(\Sigma+XX^T )^{-1} =\Sigma^{-1}-\Sigma^{-1}X(I+X^T\Sigma^{-1}X)^{-1}X^T\Sigma^{-1} $(4.109)
 
 等号左侧的计算需要$O(N^ 3)$时间,等号右侧的计算需要$O(D^ 3)$时间.
 
@@ -800,7 +800,7 @@ $p(y)=N(y|A\mu_x+b,\Sigma_y+A\Sigma_x A^T)$(4.126)
 
 #### 4.4.2.1 从有噪音测量(noisy measurements)中推测未知标量(unknown scalar)
 
-假如我们对某个隐藏量(underlying quantity)x进行N此有噪音测量 $y_i$;然后假设测量噪音有固定的精确度(precision)$\lambda_y=\frac{1}{\sigma^2}$,则似然率(likelihood)为:
+假如我们对某个隐藏量(underlying quantity)x进行N此有噪音测量$y_i$;然后假设测量噪音有固定的精确度(precision)$\lambda_y=\frac{1}{\sigma^2}$,则似然率(likelihood)为:
 
 $p(y_i|x)=N(y_i|x,\lambda_y^{-1})$(4.127)
 
@@ -835,7 +835,7 @@ $$
 
 上式中的$\Gamma_0^2=1/\lambda_0$是先验方差(prior variance),而$\Gamma_N^2 =1/\lambda_N$是后验方差(posterior variance).
 
-我们也可以通过每次观测后更新来逐渐计算后验.如果$N=1$,在进行一次单独观测后就可以重写后验,如下所示(下面定义了$ \Sigma_y =\sigma^2,\Sigma_0= \Gamma_0^2, \Sigma_1=\Gamma_1^2 $分别是似然函数/先验/后验的方差):
+我们也可以通过每次观测后更新来逐渐计算后验.如果$N=1$,在进行一次单独观测后就可以重写后验,如下所示(下面定义了$ \Sigma_y =\sigma^2,\Sigma_0= \Gamma_0^2, \Sigma_1=\Gamma_1^2$分别是似然函数/先验/后验的方差):
 
 $$
 \begin{aligned}
@@ -881,7 +881,7 @@ $$
 
 在图4.14(a)中,设置了$\Sigma_{y,1} =\Sigma_{y,2} =0.01I_2$,所以两个传感器就都是可靠程度相同.这时候后验均值就是两次观测$y_1,y_2$的均值.在图4.14(b)中,设置的是$\Sigma_{y,1} =0.05I_2,\Sigma_{y,2} =0.01I_2$,这也就意味着第二个传感器比第一个更可靠.,这时候后验均值就距离$y_2$更近了.在图4.14(c)中,设置有:
 
-$\Sigma_{y,1} =  0.01\begin{pmatrix} 10& 1\\1&1 \end{pmatrix}  , \Sigma_{y,2} = 0.01 \begin{pmatrix}  1&1\\1&10 \end{pmatrix}  $(4.145)
+$\Sigma_{y,1} =  0.01\begin{pmatrix} 10& 1\\1&1 \end{pmatrix}  , \Sigma_{y,2} = 0.01 \begin{pmatrix}  1&1\\1&10 \end{pmatrix} $(4.145)
 
 所以也就是说第一个传感器对于$y_2$成分(component)(竖着的方向)更可靠,而第二个传感器对于$y_1$成分(横着的方向)更可靠.这时候后验均值就使用了$y_1$的竖直元素和$y_2$的水平元素.
 
@@ -954,10 +954,10 @@ $$
 
 
 Wishart 分布的概率密度函数定义如下:
-$Wi(\Lambda|S,v)=\frac{1}{Z_{Wi}}|\Lambda|^{(v-D-1)/2}\exp(-\frac{1}{2}tr(\Lambda S^{-1}) $(4.159)
+$Wi(\Lambda|S,v)=\frac{1}{Z_{Wi}}|\Lambda|^{(v-D-1)/2}\exp(-\frac{1}{2}tr(\Lambda S^{-1})$(4.159)
 上式中的v也叫做自由度(degrees of freedom),S就是缩放矩阵(scale matrix).稍后会对这些参数的含义给出更多讲解.
 这个分布的归一化常数(normalization constant)(需要在整个对称的概率密度矩阵上进行积分)为下面的表达式:
-$Z_{Wi}=2^{vD/2} \Gamma_D(v/2)|S|^{v/2}  $(4.160)
+$Z_{Wi}=2^{vD/2} \Gamma_D(v/2)|S|^{v/2} $(4.160)
 上式中的$\Gamma_D$是多元$\gamma$函数(multivariate gamma function):
 
 $\Gamma _D(x)= \pi^{D(D-1)/4 }\prod^D_{i=1}\Gamma(x+(1-i)/2)$(4.161)
@@ -1017,7 +1017,7 @@ $R_{ij}=\frac{\Sigma_{ij}}{ \sqrt{\Sigma_{ii}\Sigma_{jj}}   }$(4.170)
 之前已经讲的是在已知参数$\theta=(\mu,\Sigma)$的时候对一个高斯分布(正态分布)的推测.现在来讨论对这些参数本身的推测.假设数据形式为$x_i\sim N(\mu,\Sigma),i= 1:N$的全部范围都得到了观测,所以就没有缺失数据(本书11.6.1是讨论在有缺失数据的情况下对多元正态分布(MVN)进行参数估计).简单来说,就是把后验推断分成三部分,首先是计算$p(\mu|D,\Sigma)$,然后计算$p(\Sigma|D,\mu)$,最后计算联合分布$p(\mu,\Sigma|D)$.
 
 
-### 4.6.1 $\mu$的后验分布
+### 4.6.1$\mu$的后验分布
 
 
 之前说过如何对$\mu$进行最大似然估计(MLE)了,现在说下如何计算其后验,这对于对其本身值的不确定性进行建模很有用.
@@ -1040,7 +1040,7 @@ $$
 
 可以设置$V_0=\infty I$来建立一个无信息先验.这样则有$p(\mu|D,\Sigma)=N(\bar x \frac{1}{N}\Sigma)$,所以后验均值就等于最大似然估计(MLE).另外我们还能发现后验方差降低到了$\frac{1}{N}$,这是频率视角概率统计(frequentist statistics)的标准结果. 
 
-### 4.6.2 $\Sigma$的后验分布*
+### 4.6.2$\Sigma$的后验分布*
 
 然后说如何计算$p(\Sigma|D,\mu)$.似然函数形式如下:
 $p(D|\mu,\Sigma)\propto |\Sigma|^{-\frac{N}{2}}\exp(-\frac{1}{@}tr(S_{\mu}\Sigma^{-1}))$(4.175)
@@ -1067,7 +1067,7 @@ S_N^{-1}&=S_0+S_{\mu} &\text{(4.181)}\\
 \end{aligned}
 $$
 
-用文字来表述,就是说后验强度(posterior strength)$v_N$就是先验强度(prior strength) $v_)$加上观测次数N,而后验散布矩阵(posterior scatter matrix)$S_N$也就是先验散布矩阵(prior scatter matrix)$S_0$加上数据散布矩阵(data scatter matrix)$S_{\mu}$.
+用文字来表述,就是说后验强度(posterior strength)$v_N$就是先验强度(prior strength)$v_)$加上观测次数N,而后验散布矩阵(posterior scatter matrix)$S_N$也就是先验散布矩阵(prior scatter matrix)$S_0$加上数据散布矩阵(data scatter matrix)$S_{\mu}$.
 
 
 #### 4.6.2.1 最大后验估计(MAP estimation)
@@ -1138,7 +1138,7 @@ $$
 
 可以设$v_0=0$来模拟一个无信息先验(uninformative prior)$p(\sigma^2)\propto\sigma^{-2}$,也很好直观理解,就是对应着零虚拟样本规模(zero virtual sample size).
 
-## 4.6.3 $\mu$和$\Sigma$的后验分布*
+## 4.6.3$\mu$和$\Sigma$的后验分布*
 
 现在来讨论一下如何计算$p(\mu,\Sigma|D)$.这些结论有点复杂,不过在本书后面的章节会很有用.对于第一次阅读的读者来说,可以先跳过.
 
@@ -1146,7 +1146,7 @@ $$
 
 似然函数为:
 
-$p(D|\mu,\Sigma) = (2\pi)^{-ND/2}|\Sigma|^{-\frac{N}{2}}\exp(-\frac{N}{2}(x_i-\mu)^T\Sigma^{-1}(x_i-\mu)  )  $(4.194)
+$p(D|\mu,\Sigma) = (2\pi)^{-ND/2}|\Sigma|^{-\frac{N}{2}}\exp(-\frac{N}{2}(x_i-\mu)^T\Sigma^{-1}(x_i-\mu)  ) $(4.194)
 
 很明显:
 
@@ -1223,10 +1223,10 @@ $$
 #### 4.6.3.4 后验模(Posterior mode)
 
 联合分布的众数(mode)如下所示:
-$\arg\max p(\mu,\Sigma|D) = (m_N,\frac{S_N}{v_N+D+2})         $(4.215)
+$\arg\max p(\mu,\Sigma|D) = (m_N,\frac{S_N}{v_N+D+2})        $(4.215)
 
 如果设置$k_0=0$,就降低(reduce)成了:
-$\arg\max p(\mu,\Sigma|D) = (\bar x,\frac{S_0+S_{\bar x}}{v_N+N+D+2})  $(4.216)
+$\arg\max p(\mu,\Sigma|D) = (\bar x,\frac{S_0+S_{\bar x}}{v_N+N+D+2}) $(4.216)
 
 对应的估计$\hat \Sigma$几乎和等式4.183所述一样,唯一区别是分母上差了一个1,这是因为这个众数(mode)是联合分布的,而不是边缘分布的.
 
@@ -1235,7 +1235,7 @@ $\arg\max p(\mu,\Sigma|D) = (\bar x,\frac{S_0+S_{\bar x}}{v_N+N+D+2})  $(4.216)
 
 $\Sigma$的后验边缘分布就很简单了,如下所示:
 
-$p(\Sigma|D) =\int p(\mu,\Sigma|D)d\mu=IW(\Sigma|S_N,v_N)   $(4.217)
+$p(\Sigma|D) =\int p(\mu,\Sigma|D)d\mu=IW(\Sigma|S_N,v_N)  $(4.217)
 
 这个边缘分布的众数(mode)和均值(mean)分别为:
 
@@ -1243,7 +1243,7 @@ $\hat\Sigma_{map}=\frac{S_N}{v_N+D+1}, E[\Sigma]=\frac{S_N}{v_N-D-1}$(4.218)
 
 不难发现对$\mu$的后验边缘分布正好就是一个多元学生Ｔ分布:
 
-$p(\mu|D)=\int p(\mu,\Sigma|D)d\Sigma = T(\mu|m_N,\frac{１}{v_N－Ｄ＋１}S_N,v_N－Ｄ＋１)       $(4.219)
+$p(\mu|D)=\int p(\mu,\Sigma|D)d\Sigma = T(\mu|m_N,\frac{１}{v_N－Ｄ＋１}S_N,v_N－Ｄ＋１)      $(4.219)
 
 这是由于学生分布可以表示做多个高斯分布（正态分布）的缩放混合，参考本书等式11.61.
 
@@ -1299,7 +1299,7 @@ $p(\sigma^2|D)=\int p(\mu,\sigma^2|D)d\mu =\chi^{-2}(\sigma^2|v_N,\sigma^2_N)$(4
 
 $\mu$的后验边缘分布为学生T分布,是学生分布的缩放混合形式,如下所示:
 
-$p(\mu|D)= \int  p(\mu,\sigma^2|D)d\sigma^2 =T(\mu|m_N,\sigma^2_N/k_N,v_N)  $(4.231)
+$p(\mu|D)= \int  p(\mu,\sigma^2|D)d\sigma^2 =T(\mu|m_N,\sigma^2_N/k_N,v_N) $(4.231)
 其后验均值为:$E[\mu|D]=m_N$
 
 如果我们使用下面的无信息先验,结果会是什么样呢?
@@ -1336,7 +1336,7 @@ $I_{.95}(\mu|D)=\bar x \pm 2\frac{s}{\sqrt{N}}$(4.238)
 #### 4.6.3.8 贝叶斯T检验
 
 我们要检验一个假设:给定正态分布$x \sim N(\mu,\sigma^2)$,对某个未知值$\mu_0$(通常都是0),$\mu \ne \mu_0$,这叫做双面单样本t检验(two-sided, one-sample t-test).简单方法就是检查$\mu_0\in I_{0.95+(\mu|D)}$是否成立.如果不成立,则有95%的信心认为$\mu\ne \mu_0$.更普遍的做法是检验两对样本是否有同样的均值.更确切来说,设$y_i \sim N(\mu_1,\sigma^2),z_i\sim N(\mu_2,\sigma^2)$.就可以使用$x_i=y_i-z_i$来验证是否有$\mu=\mu_1-\mu_2 >0$.可以用下面的形式来对这个量进行估计:
-$p(\mu>\mu_0|D)= \int^{\infty}_{\mu_0}p(\mu|D)d{\mu}  $(4.239)
+$p(\mu>\mu_0|D)= \int^{\infty}_{\mu_0}p(\mu|D)d{\mu} $(4.239)
 
 这也叫做单面成对T检验(one sided paired t-text).(对未配对测试(unpaired test)有类似的方法,对比在二项比例(binomial proportions)上有所不同,本书5.2.3会介绍.)
 
@@ -1445,11 +1445,11 @@ $$
 
 利用$N_x=2$来简化到:
 
-$I=\int \lambda_x^{-1}\lambda_x^1\exp(-\lambda_x[(\bar x-\mu)^2+s_x^2])d\lambda_x $(4.259)
+$I=\int \lambda_x^{-1}\lambda_x^1\exp(-\lambda_x[(\bar x-\mu)^2+s_x^2])d\lambda_x$(4.259)
 
 看出来了吧,这个和一个非正则$\gamma$密度函数(unnormalized Gamma density)的积分成正比:
 
-$Ga(\lambda|a,b)\propto \lambda^{a-1}e^{-\lambda b}     $(4.260)
+$Ga(\lambda|a,b)\propto \lambda^{a-1}e^{-\lambda b}    $(4.260)
 
 其中的$a=1,b=(\bar x -\mu)^2+s^2_x$.因此这个积分也就和$\gamma$分布的归一化常数(normalizing constant)$\Gamma(a)b^{-a}$成正比,就得到了:
 
@@ -1458,7 +1458,7 @@ $I\propto \int p(D_x|\mu,\lambda_x)p(\lambda_x|\mu)d\lambda_x  \propto [(\bar x 
 
 然后后验则成了:
 
-$p(\mu|D)\propto \frac{1}{(\bar x -\mu)^2+s^2_x} \frac{1}{(\bar y -\mu)^2+s^2_y}  $(4.262)
+$p(\mu|D)\propto \frac{1}{(\bar x -\mu)^2+s^2_x} \frac{1}{(\bar y -\mu)^2+s^2_y} $(4.262)
 
 
 
