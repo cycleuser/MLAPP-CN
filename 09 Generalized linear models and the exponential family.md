@@ -485,7 +485,7 @@ $$
 
 其中$\theta_t =Xw_t,\mu_t =g^{-1}(\eta_t)$.
 
-如果我们扩展求导(extend derivation)来处理非规范连接函数(non-canonical links),就会发现海森矩阵(Hessian)有另外一项.不过最终期望海森矩阵(expected Hessian)和等式9.92一模一样,利用这个期望海森矩阵(也就是费舍尔信息矩阵(Fisher information matrix))来替代真实的海森矩阵就叫做费舍尔评分方法(Fisher scoring method).
+如果我们扩展求导(extend derivation)来处理非规范连接函数(non-canonical links),就会发现海森矩阵(Hessian)有另外一项.不过最终期望海森矩阵(expected Hessian)和等式9.92一模一样,利用这个期望海森矩阵(也就是费舍尔信息矩阵(Fisher information matrix))来替代真实的海森矩阵就叫做费舍尔排序方法(Fisher scoring method).
 
 修改上面的过程来进行高斯先验的最大后验估计(MAP estimation)就很简单了:只需要调整目标函数(objective),梯度*gradient)和海森矩阵(Hessian),就像是在本书8.3.6里面对逻辑回归加上$l_2$规范化(regularization)一样.
 
@@ -689,33 +689,28 @@ $p(t|d)=(1-\lambda)\frac{TF(td)}{LEN(d)}+\lambda p(t|background)$(9.117)
 
 其中$TF(t|d)$是文档d中第t项的频率,而$LEN(d)$是文档d中词汇长度,而$0<\lambda <1$是光滑参数(smoothing parameter,更多细节参考 Zhai and Lafferty 2004).
 
-不过也可能还有很多其他的信号也能用来衡量相关性.比如网络文本的页面排序(PageRank)就是对其权威性(authoritativeness)的衡量,是从网页链接结构来推导的(具体参考本书17.2.4).可以计算在一个文档中某个查询项目出现的次数和位置.接下来就讲一下如何将这些信号集中起来学习使用.
+不过也可能还有很多其他的信号也能用来衡量相关性.比如网络文本的页面评级(PageRank)就是对其权威性(authoritativeness)的衡量,是从网页链接结构来推导的(具体参考本书17.2.4).可以计算在一个文档中某个查询项目出现的次数和位置.接下来就讲一下如何将这些信号集中起来学习使用.
 
 
 
 ### 9.7.1 单点法(pointwise approach)
 
+假如我们要收集代表一系列文档对每个查询项的相关度的训练数据.具体来说就是对每个查询q,设找到了m个可能的相关文档 $d_j, \text{for} j=1:m$.对每个查询文档对,定义一个特征向量$x(q,d)$.比如可能包含了查询项和文档的相似度排序,以及文档的页面评级分数(page rank score).然后假设有一系列的标签$y_i$代表的是文档$d_j$和查询项q之间的相关程度.这样的类标签可以十二指华东(比如是相关或不想管),或者也可以使用离散的相关程度来描述(比如很相关,有点相关,不相关).这样的类标签可以从查询项日志(query logs)获得,通过限制一个文档对于一个给定的查询项被点击的次数.
 
-
-$d_j, \text{for} j=1:m$.  $x(q,d)$
-
-
-$p(y=1|x(q,d))$      $p(y=r|x(q,d))$
+如果使用二值化相关标签,就可以使用标准二值化分类来估计$p(y=1|x(q,d))$,来解决这个问题你.如果使用排序相关标签,就可以使用有序回归(ordinal regression)$p(y=r|x(q,d))$来预测排序.这两种情况下都可以通过排序矩阵(scoring metric)来整理文档.这就叫做学习排序(LETOR)的单点法(pointwise approach),用的很广泛,因为特别简单.不过这个方法没有将文档在列表中的各自位置考虑进去.因此对列表中最末项目和最首位项目有一样的错误惩罚,这通常就不符合预期了.另外每次对相关性的判断也都非常短视(myopically).
 
 
 
 ### 9.7.2 成对法(pairwise approach)
 
+Carterette et al. 2008 的研究证明人类要更擅长判断两个对象之间的相对相性,而不是绝对相关性.结果就导致数据可能告诉我们$d_j$比$d_k$和给定的查询更相关,或者反过来.可以对这种数据使用二值化分类器来进行建模,形式为$p(y_{jk}|x(q,d_j),x(q,d_k))$ ,当$rel(d_j,q)>rel(d_k,q)$时设$y_{jk}=1$,反之则设置$y_{jk}=0$.
 
-$p(y_{jk}|x(q,d_j),x(q,d_k))$     $rel(d_j,q)>rel(d_k,q)$  $y_{jk}=1$
+对这个函数建模的一种方法如下所示:
 
 $p(y_{jk}=1|x_j,x_k)=sigm(f(x_j)-f(x_k))$(9.118)
 
 
-$f(x)$   $f(x)=w^Tx$
-
-
-
+其中的$f(x)$是排序函数,一般都设置为线性函数$f(x)=w^Tx$.这是一类特殊的神经网络,叫做排序网络(RankNet,Burges et al. 2005,关于神经网络的讨论参考本书16.5).可以通过最大化对数似然函数来找到w的最大似然估计(MLE),或者也可以等价地对交叉熵损失函数(cross entropy loss)最小化,也就是:
 
 $$
 \begin{aligned}
@@ -725,59 +720,77 @@ L& =sum^N_{i=1} \sum^{m_i}_{j=1}\sum^{m_i}_{k=j+1} L_{ijk}      &\text{(9.119)}\
 \end{aligned}
 $$
 
+这就可以使用梯度下降法来优化了.微软的Bing搜索引擎就使用了排序网络的一个变种.
+
 ### 9.7.3 列表法(listwise approach)
+
+承兑发的问题就是关于相关性的决策判断只是基于一对项目或者一堆文档,而不是考虑完整的语境(context).接下来要讲的方法就要同时查看整个项目列表.
+
+在列表上可以制定一个索引排序来定义一个全排列,$\pi$.要对关于$\pi$的不确定性建模,就可以使用一个Plackett-Luce分布,这个分布的命名就是基于两个独立推导该公式的人(Plackett 1975)和(Luce 1959).这个分布形式如下所示:
 
 $p(\pi|s)=\prod^m_{j=1}\frac{s_j}{\sum^m_{u=j}s_u}$(9.121)
 
+其中的$s_j=s(\pi^{-1}(j))$是对排在第j个位置的文档的排序.
 
-
+要理解等式9.121,可以举个简单例子.设$\pi =(A,B,C)$.然后就得到了$p(\pi)$是A排第一的概率,乘以A排第一的条件下B排第二的概率,再乘以AB分别排第一第二之后C排第三未知的概率,也就是说:
 
 $p(\pi|s)=\frac{s_A}{s_A+s_B+s_C}\times \frac{s_B}{s_B+s_C}\times \frac{s_C}{s_C}$(9.122)
 
-
+要整合特征,可以定义$s(d)=f(x(q,d))$,通常都设f为线性函数$f(x)=w^Tx$.这就叫做列表网络模型(ListNet model,Cao et al. 2007).要训练这个模型,设$y_i$是文档对于查询项目i的相关性分数.然后就要最小化交叉熵项(cross entropy term):
 
 
 $-\sum_i\sum_pi p(\pi|y_i)\log p(\pi |s_i)$(9.123)
 
-
+当然了,这也很困难,因为第i项目需要累加总共超过$m_i!$次排列才行.要让这个好处理,可以考虑只在前面的k个位置上进行排列:
 
 
 $p(\pi_{1:k}|s_{1:m}) = \prod^k_{j=1}\frac{s_j}{\sum^m_{u=1}s_u}$(9.124)
 
+这样就只需要$m!/(m-k)!$次这样的排列了.如果设置$k=1$,那就可以在$O(m)$时间内计算每个交叉熵以及其导数了.
 
-
+在列表中只有一个文档被认为相关的特例下,比如设$y_i=c$,就可以使用多项逻辑回归(multinomial logistic regressi)了:
 
 $p(y_i=c|x)=\frac{\exp(s_C)}{\sum^m_(c'=1)\exp(s_{c'})}$(9.125)
 
+这个方法至少能达到排序方法的性能水平,至少在协作过滤(collaborative filtering)的情况下如此(Yang et al. 2011).
 
 ### 9.7.4 排序的损失函数
 
+对一个排序系统的性能衡量,有好几种方法,大概如下所述.
 
-
+* 平均排序倒数(Mean reciprocal rank,缩写为MRR).对于一个查询项q,设其第一个相关文档的排序位置记作$r(q)$.然后定义一个平均排序倒数为$1/r(q)$.这是很简单的性能衡量.
+* 均值平均准确率(Mean average precision,缩写为MAP,注意要和最大后验分布 MAP相区分).在二值化相关标签的情况下,可以定义某个排序在k位置上的精度如下:
 
 $P\@ k(\pi)\overset{\triangle}{=}  \frac{\text{num. relevant documents in the top k positions of} \pi}{k}$(9.126)
 
-
-
+然后可以定义平均精度(average precision)如下:
 
 $AP(\pi)\overset{\triangle}{=}  \frac{\sum_k P\@k(\pi) \times I_k}{\text{num relevant documents}}$(9.127)
 
-$y = (1, 0, 1, 0, 1)$ $\frac13(\frac11 +\frac23 +\frac35 )\approx 0.76$
+其中当且仅当文档k为相关的时候$I_k$才等于1.例如,如果有相关标签$y = (1, 0, 1, 0, 1)$,然后AP就是 $\frac13(\frac11 +\frac23 +\frac35 )\approx 0.76$最终就定义了均值平均精度(mean average precision)为对所有查询上的AP求平均值.
 
-
+* 归一化折扣累积增益(Normalized discounted cumulative gain,缩写为NDCG).假如香瓜鸟枪有多种层次.就可以定义对前面以一定次序排列的k个项目的折扣累积增益(discounted cumulative gain)如下所示:
+ 
 $DCG\@k(r)=r_1+\sum^k_{i=2} \frac{r_i}{\log_2 i}$(9.128)
 
-
-
+其中的$r_i$是第i项的相关性,而$\log_2$项目是用来稍后在列表中扣除项目的.表9.3展示了一个简单的数值样本.另一重定义就是强调了检索到相关文档(retrieving relevant documents),使用的是:
 
 $DCG\@k(r)= \sum^k_{i=1} \frac{2^{r_i}-1}{\log_2(1+i)}$(9.129)
 
 
+折扣累积增益(DCG)的一个问题就是只要返回列表的长度变化,这个增益的数量级就会有变化.因此通常都要用理想折扣累积增益(ideal DCG)来将其归一化,理想折扣累积增益(ideal DCG)是指通过使用最优排序来得到的DCG,即$IDCG\@ k(r)=\arg\max_\pi DCG\@k(r)$.最终就定义出来了归一化折扣累积增益(Normalized discounted cumulative gain,缩写为NDCG),定义为$DCG/IDCG$.表9.4给出了一个简单数值样本.NDCG方法可以对查询项目进行平均然后来衡量性能.
 
+* 排序相关性(Rank correlation).可以在排序列表$\pi$和相关性判断$\pi^*$之间衡量相关性,使用的方法就很多了.比如可以使用加权肯德尔$\tau$统计(weighted Kendall’s τ statistics),这个统计定义形式为两个列表间不连续的加权值对:
 
 $\tau(\pi,\pi^*)=\frac{\sum_{u<v} w_{uv} [1+sgn(\pi_u-\pi_v)sgn(\pi^*_u-\pi^*_v)]}{2\sum_{u<v}w_{uv}}$(9.130)
 
+其他方法也都很常用.
 
+这些损失函数可以有不同用法.在贝叶斯方法中,首先使用后验推断来拟合模型;这就一来似然函数和先验,但不用管损失函数.然后选在测试的时候选择行为来最小化期望未来损失(expected future loss).一种方法就是从后严重对参数取样,即$\theta^s\sim p(\theta|D)$,然后评估,比如对在k精确度不同的阈值,在$\theta^s$上取平均值.这种方法的具体样例参考(Zhang et al. 2010).
+
+在频率论方法中,在训练集上就要试图最小化经验损失函数.问题就是这些损失函数并不是模型参数的可微函数(differentiable functions).要么就要用非梯度的优化方法,要么就要使用代理损失函数来替代进行最小化.交叉熵损失函数(比如负对数似然函数)是一个广泛使用的代理损失函数.
+
+另外一种损失函数,也叫作加权估计-排序成对损失函数(weighted approximate-rank pairwise loss,缩写为WARP loss),由(Usunier et al. 2009)提出,然后由(Weston et al. 2010)对其进行了扩展,提供了对在k精度上的损失函数的更好的估计.这个损失函数的定义如下所示:
 
 $$
 \begin{aligned}
@@ -788,12 +801,7 @@ L(k)&\overset{\triangle}{=}  \sum^k_{j=1}\alpha_j,\text{with} \alpha_1\ge \alpha
 $$
 
 
-$f(x,:)=[f(x,1),...,f(x,|y|)]$
+上式中的$f(x,:)=[f(x,1),...,f(x,|y|)]$是对每个可能输出标签的评分向量,或者在迭代重加权(IR)项目中,就是对每个对应输入查询x的每个可能文章的评分向量.表达式$rank(f(x,:),y)$衡量由该评分函数分配真实标签y的评分.最后的L是讲整数值的评分转化成实数值的惩罚项(real-valued penalty).使用$\alpha_1=1,\alpha_{j>1}=0$可以优化前部位置分类标签正确的比例.设置$\alpha_1:k}$为非零值可以优化排序列表中的前k个项目,因为使用了均值平均准确率(MAP)或k精确度来衡量,所以性能不错.即便这样,加权估计-排序成对损失函数(weighted approximate-rank pairwise loss,缩写为WARP loss)也还是很难去优化的,但是可以使用蒙特卡罗取样方法来近似,然后再用梯度下降法去优化,这部分参考(Weston et al. 2010).
 
 
-
-$rank(f(x,:),y)$
-
-
-
-$\alpha_1=1,\alpha_{j>1}=0$
+练习略
