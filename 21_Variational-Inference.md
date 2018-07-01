@@ -33,13 +33,13 @@ https://zhuanlan.zhihu.com/python-kivy
 假设$p^*(x)$使我们的真实却难以处理的分布，而$q(x)$是某个便于处理的近似分布，比如说一个多维高斯分布或者因子分解过的分布。我们假设$q$具有一些可以自由参数，并且我们可以通过优化这些参数使得$q$更加像$p^*$。我们显然可以最小化损失函数KL散度:
 
 $$
-\KLDiv)(p^*||q) = \sum_{x} p^*（x） \log \frac{p^*(x)}{q(x)}  ~~\text{(21.1)}\label{eqn:21.1}
+\KLDiv)(p^*||q) = \sum_{x} p^*（x） \log \frac{p^*(x)}{q(x)}  ~~\tag{21.1}\label{eqn:21.1}
 $$
 
 但是，这玩意非常难算，因为在分布$p^*$上求期望根据题设是难以处理的。一个自然的替代选项是最小化逆KL散度：
 
 $$
-\KLDiv)(q||p^*) = \sum_{x} q(x) \log \frac{q(x)}{p^*(x)}  ~~\text{(21.2)}\label{eqn:21.2}
+\KLDiv)(q||p^*) = \sum_{x} q(x) \log \frac{q(x)}{p^*(x)}  ~~\tag{21.2}\label{eqn:21.2}
 $$
 
 这个目标函数最大的优势是在分布$q$上的期望是便于计算的(通过选取适当形式的$q$)。我们会在Sec21.2.2\ref{sec:21.2.2}中讨论这两个目标函数的区别。
@@ -48,22 +48,22 @@ $$
 
 $$
 J（q） = \KLDiv(q||\tilde{p})
-~~\text{(21.3)}\label{eqn:21.3}
+~~\tag{21.3}\label{eqn:21.3}
 $$
 
 当然这个写法有点滥用记号的意思，因为$\tilde{p}$严格意义上讲并不是一个概率分布。不过无所谓，让我们带入KL散度的定义：
 
 \begin{align}
 J(q) &= \sum_{x} q(x) \log \frac{q(x)}{\tilde{p}(x)}
-~~\text{(21.4)}\label{eqn:21.4}
+~~\tag{21.4}\label{eqn:21.4}
 \\
 &= \sum_{x} q(x) \log \frac{q(x)}{Z p ^ * (x)}
-~~\text{(21.5)}\label{eqn:21.5}
+~~\tag{21.5}\label{eqn:21.5}
 \\ &= \sum_{x} q(x) \log \frac{q(x)}{p^*(x)} - \log Z
-~~\text{(21.6)}\label{eqn:21.6}
+~~\tag{21.6}\label{eqn:21.6}
 \\
 &= \KLDiv(q||p^*) - \log Z
-~~\text{(21.7)}\label{eqn:21.7}
+~~\tag{21.7}\label{eqn:21.7}
 \end{align}
 
 因为$Z$是一个常数，所以最小化$J(q)$的同时我们也就达到了迫使 $q$ 趋近 $p^*$ 的目的。
@@ -72,14 +72,14 @@ J(q) &= \sum_{x} q(x) \log \frac{q(x)}{\tilde{p}(x)}
 
 $$
 J(q) = \KLDiv(q||p^*) - \log Z \ge -\log Z = -\log p（D）
-~~\text{(21.8)}\label{eqn:21.8}
+~~\tag{21.8}\label{eqn:21.8}
 $$
 
 换句话说，我们可以尝试最大化如下被称作能量泛函的量(@Koller&Friedman2009)。它同时也是数据似然度的下界：
 
 $$
 L(q) \triangleq -J(q) = - \KLDiv(q||p^*) + \log Z \le \log Z = \log p(D)
-~~\text{(21.9)}\label{eqn:21.9}
+~~\tag{21.9}\label{eqn:21.9}
 $$
 
 因为这个界在$q=p^*$时是紧的，可以看出变分推断法和EM算法联系之紧密(见Sec11.4.7\ref{sec:11.4.7})。
@@ -91,7 +91,7 @@ $$
 
 $$
 J(q) = \bE_q[\log q(x) ] + \bE [-\log \tilde{p}(x)] = - \mathbb{H}(q) + \bE_q [E(x)] 
-~~\text{(21.10)}\label{eqn:21.10}
+~~\tag{21.10}\label{eqn:21.10}
 $$
 
 也就是能量的期望（因为$E(x)=-\log \tilde { p} (x)$）减去系统的熵。在统计物理里，$J(q)$被称为变分自由能，或者也叫亥姆霍兹自由能。
@@ -101,13 +101,13 @@ $$
 \begin{align}
 J(q) 
 &= \bE_q{ [\log q(x) - \log p(x) p (D|x) ] }
-~~\text{(21.11)}\label{eqn:21.11}
+~~\tag{21.11}\label{eqn:21.11}
 \\ 
 &= \bE_q{ [\log q(x) - \log p(x) - \log p (D|x) ] }
-~~\text{(21.12)}\label{eqn:21.12}
+~~\tag{21.12}\label{eqn:21.12}
 \\ 
 &= \bE_q [ -\log p(D|x)  ] + \KLDiv (q(x)||p(x)) 
-~~\text{(21.13)}\label{eqn:21.13}
+~~\tag{21.13}\label{eqn:21.13}
 \end{align}
 
 也就是负对数似然的期望加上一个表示后验分布到确切的先验距离的惩罚项。
@@ -122,7 +122,7 @@ J(q)
 
 $$
 \KLDiv(q||p) = \sum_x q(x) \ln {q(x) \over p(x)}
-~~\text{(21.14)}\label{eqn:21.14}
+~~\tag{21.14}\label{eqn:21.14}
 $$
 
 这个量在 $p(x)=0$ 且 $q(x)>0$ 是无穷的。 因此如果 $p(x)=0$ 就必须要有 $q(x) = 0$。 因此后向KL被称作是**迫零的**，而且近似分布 $q$ 常常会欠估计 $p$ 的支撑集。
@@ -131,7 +131,7 @@ $$
 
 $$
 \KLDiv(p||q) = \sum_x p(x) \ln {p(x) \over q(x)}
-~~\text{(21.15)}\label{eqn:21.15}
+~~\tag{21.15}\label{eqn:21.15}
 $$
 
 这个量在 $q(x)=0$ 且 $p(x)>0$ 是无穷的。 因此如果 $p(x)>0$ 就必须要有 $q(x) > 0$。因此前向KL被称作**避零的**，而且近似分布 $p$ 常常会过估计 $p$ 的支撑集。
@@ -158,13 +158,13 @@ $$
 \begin{align}
 q(x) &= \mathcal{N}(x_1|m_1,\Lambda_{11}^{-1})
 \mathcal{N}(x_2|m_2,\Lambda_{22}^{-1})
-~~\text{(21.17)}\label{eqn:21.17}
+~~\tag{21.17}\label{eqn:21.17}
 \\ 
 m1 &=  \mu_1 - \Lambda_{11}^{-1} \Lambda_{12} (m_2 - \mu_2)
-~~\text{(21.18)}\label{eqn:21.18}
+~~\tag{21.18}\label{eqn:21.18}
 \\ 
 m2 &=  \mu_2 - \Lambda_{22}^{-1} \Lambda_{21} (m_1 - \mu_1)
-~~\text{(21.19)}\label{eqn:21.19}
+~~\tag{21.19}\label{eqn:21.19}
 \end{align}
 
 
@@ -175,7 +175,7 @@ m2 &=  \mu_2 - \Lambda_{22}^{-1} \Lambda_{21} (m_1 - \mu_1)
 $$
 q(x) = \mathcal{N}(x_1 | \mu_1,\Lambda_{11}^{-1})
 \mathcal{N}(x_2 | \mu_2,\Lambda_{22}^{-1})
-~~\text{(21.20)}\label{eqn:21.20}
+~~\tag{21.20}\label{eqn:21.20}
 $$
 
 图Fig21.2b\ref{fig:21.2b}显示出这个估计是过泛的，因为它过估计了 $p$ 的支撑集。
@@ -190,14 +190,14 @@ $$
 D_{\alpha}( p || q ) \triangleq \frac{4}{1-\alpha^2} 
 \left( 1 - \int p(x) ^{(1+\alpha)/2} q(x) ^{(1-\alpha)/2} dx
 \right)
-~~\text{(21.21)}\label{eqn:21.21}
+~~\tag{21.21}\label{eqn:21.21}
 $$
 
 这个量满足 $D_\alpha (p || q) \iff p=q$，但是它们显然也是不对称的，因而不是一个度规。 $\KLDiv(p||q)$ 对应极限 $\alpha \rightarrow 1$ ，而 $\KLDiv(q||p)$ 对应极限 $\alpha \rightarrow -1$。当 $\alpha=0$，我们取得一个和海灵格距离线性相关的对称的散度，定义如下
 
 $$
 D_H(p||q) \triangleq \int \left( p(x)^{1\over2} - q(x) ^{1\over 2}\right)^2
-~~\text{(21.22)}\label{eqn:21.22}
+~~\tag{21.22}\label{eqn:21.22}
 $$
 
 注意到 $\sqrt{D_H(p||q)}$ 是一个有效的距离度规。也就是说，它对称非负且满足三角不等式，详见(@Minka2005)。
@@ -212,14 +212,14 @@ $$
 
 $$
 p(\mu,\lambda) = \mathcal{N}(\mu|\mu_0,(\kappa \lambda)^{-1})\text{Ga}(\lambda|a_0,b_0)
-~~~~\text{(21.65)}\label{eqn:21.65}
+~~~~\tag{21.65}\label{eqn:21.65}
 $$
 
 但是呢，我们用来近似后验的是一个如下的因子分布
 
 $$
 q(\mu,\lambda) = q_\mu(\mu) q_\lambda(\lambda)
-~~~~\text{(21.66)}\label{eqn:21.66}
+~~~~\tag{21.66}\label{eqn:21.66}
 $$
 
 我们不需要指定分布 $q_\mu,\,q_\lambda$ 的确切形式，因为其最优形式会在推导的时候自动“出现”(方便的是，它们恰巧是相应的高斯分布和伽马分布)
@@ -233,11 +233,11 @@ $$
 \begin{align}
 \log \tilde{p}(\mu,\lambda) = \log p(\mu,\lambda,D) 
 &= \log p(D|\mu,\lambda) + \log p(\mu|\lambda) + \log p(\lambda)
-~~~~\text{(21.67)}\label{eqn:21.67}
+~~~~\tag{21.67}\label{eqn:21.67}
 \\
 &=\frac{N}{2}\log\lambda - {\lambda \over 2 } \sum_{i=1}^N (x_i - \mu)^2 - \frac{\kappa_0 \lambda}{2}(\mu-\mu_0)^2 
 \\ & ~~ +{1\over 2}\log(\kappa_0 \lambda) + (a_0 - 1)\log \lambda - b_0 \lambda + \text{const}  
-~~~~\text{(21.68)}\label{eqn:21.68}
+~~~~\tag{21.68}\label{eqn:21.68}
 \end{align}
 
 #### 21.5.1.2 更新 $q_\mu（\mu）$
@@ -246,19 +246,19 @@ $$
 
 \begin{align}
 \log q_\mu(\mu) &= \bE_{q_\lambda}[\log p(D|\mu,\lambda) + \log p(\mu|\lambda) ] + \text{const} 
-~~~~\text{(21.69)}\label{eqn:21.69}
+~~~~\tag{21.69}\label{eqn:21.69}
 \\
 &= -\frac{\bE[\lambda]}{2} \left\{
 \kappa_0 (\mu - \mu_0)^2 + \sum_{i=1}^N (x_i - \mu)^2
 \right \} + \text{const}
-~~~~\text{(21.70)}\label{eqn:21.70}
+~~~~\tag{21.70}\label{eqn:21.70}
 \end{align}
 
-通过展开平方项（？疑）可以证明 $q_\mu(\mu) = \mathcal(\mu | \mu_N , \kappa^{-1}_N)$,且有
+通过展开平方项（？疑）可以证明 $q_\mu(\mu) = \mathcal{N}(\mu | \mu_N , \kappa^{-1}_N)$,且有
 
 $$
 \mu_N={ \kappa_0 \mu_0 + N \bar{x} \over \kappa_0 + N }, \kappa_N = (\kappa_0 + N ) \bE_{q_\lambda}[\lambda]
-~~~~\text{(21.71)}\label{eqn:21.71}
+~~~~\tag{21.71}\label{eqn:21.71}
 $$
 
 此时我们还不知道 $q_\lambda(\lambda)$ 的确切分布所以无法计算 $\bE[\lambda]$，但我们马上就会解决这个玩意
@@ -271,26 +271,26 @@ $q_\lambda(\lambda)$ 的最优分布有如下表示
 \log q_\lambda(\lambda) 
 &= \bE_{q_\mu}[ 
 \log p(D|\mu,\lambda) + \log p(\mu | \lambda ) + \log p(\lambda)  ] + \const
-~~~~\text{(21.72)}\label{eqn:21.72}
+~~~~\tag{21.72}\label{eqn:21.72}
 \\
 &= (a_0 - 1 )\log \lambda -　b_0 \lambda + {1\over2}\log\lambda + {N\over2} \log\lambda 
 \\
 &~~-{\lambda\over2}\bE_{q_\mu}\left[
 \kappa_0 (\mu - \mu_0)^2 +  \sum_{i=1}^N (x_i-\mu)^2
 \right] + \const
-~~~~\text{(21.73)}\label{eqn:21.73}
+~~~~\tag{21.73}\label{eqn:21.73}
 \end{align}
 
 可以发现这对应一个伽马分布，因而有　$q_\lambda(\lambda)=Ga(\lambda|a_N,b_N)$,且有
 
 \begin{align}
 a_N &= a_0 + \frac{N+1}{2}
-~~~~\text{(21.74)}\label{eqn:21.74}
+~~~~\tag{21.74}\label{eqn:21.74}
 \\
 b_N &= b_0 + \frac{1}{2}\bE_{q_\mu}\left[
 \kappa_0 (\mu - \mu_0)^2 +  \sum_{i=1}^N (x_i-\mu)^2
 \right]
-~~~~\text{(21.75)}\label{eqn:21.75}
+~~~~\tag{21.75}\label{eqn:21.75}
 \end{align}
 
 #### 21.5.1.4 计算期望
@@ -299,17 +299,17 @@ b_N &= b_0 + \frac{1}{2}\bE_{q_\mu}\left[
 
 \begin{align}
 \bE_{q_(\mu)}[\mu] &= \mu_N
-~~~~\text{(21.76)}\label{eqn:21.76}
+~~~~\tag{21.76}\label{eqn:21.76}
 \\
 \bE_{q(\mu)}[\mu^2] &= {1\over \kappa_N} + \mu_N^2
-~~~~\text{(21.77)}\label{eqn:21.77}
+~~~~\tag{21.77}\label{eqn:21.77}
 \end{align}
 
 鉴于 $q(\lambda) = \text{Ga}(\lambda \gvn a_N, b_N)$，我们有
 
 $$
 \bE_{q(\lambda)}[\lambda] = \frac{a_N}{b_N}
-~~~~\text{(21.78)}\label{eqn:21.78}
+~~~~\tag{21.78}\label{eqn:21.78}
 $$
 
 如此我们可以显式地给出更新方程。对 $q(\mu)$ 有
@@ -317,22 +317,22 @@ $$
 \begin{align}
 \mu_N 
 &= \frac{\kappa_0 \mu_0 + N \bar{x}}{\kappa_0 + N}
-~~~~\text{(21.79)}\label{eqn:21.79}
+~~~~\tag{21.79}\label{eqn:21.79}
 \\
 \kappa_N 
 &= (\kappa_0 + N ) \frac{a_N}{b_N}
-~~~~\text{(21.80)}\label{eqn:21.80}
+~~~~\tag{21.80}\label{eqn:21.80}
 \end{align}
 
 相应地对 $q(\lambda)$ 有
 
 \begin{align}
 a_N &= a_0 + \frac{N+1}{2}
-~~~~\text{(21.81)}\label{eqn:21.81}
+~~~~\tag{21.81}\label{eqn:21.81}
 \\
 b_N &= b_0 + \kappa_0 (\bE[\mu^2] +\mu_0^2 -2\bE[\mu]\mu_0 ) 
 + \frac{1}{2}\sum_{i=1}^N (x_i^2 + \bE[\mu^2] -2 \bE[\mu ] x_i)
-~~~~\text{(21.82)}\label{eqn:21.82}
+~~~~\tag{21.82}\label{eqn:21.82}
 \end{align}
 
 可以看到 $\mu_N$ 和 $a_N$ 实际上是固定的常数，且只有 $\kappa_N\,,b_N$需要被迭代更新。(事实上，我们可以利用迭代方程，解析地求出$\kappa_N\,\,b_N$的不动点，但是在此不作展示，只介绍迭代更新法)
@@ -349,7 +349,7 @@ b_N &= b_0 + \kappa_0 (\bE[\mu^2] +\mu_0^2 -2\bE[\mu]\mu_0 )
 
 $$
 L(q) \le \log p(D) = \log \int \int p(D\mu) p(\mu, \lambda) d\mu d\lambda
-~~~~\text{(21.83)}\label{eqn:21.83}
+~~~~\tag{21.83}\label{eqn:21.83}
 $$
 
 出于多种原因，计算这个下界本身是很有用的。首先，下界可以用来检查算法是否收敛了；其次，它可以用来检查算法的正确性：和期望最大算法(EM)的情况一样，如果下界不是单调增加的话，那一定是哪里出幺蛾子了；再次，下界可以用作一个对数据边际似然的近似，因而可以用来做贝叶斯模型选择。
@@ -366,14 +366,14 @@ L(q)
 \frac{ p(D,\mu,\lambda) }
 {q(\mu,\lambda) }
 d\mu d\lambda
-~~~~\text{(21.84)}\label{eqn:21.84}
+~~~~\tag{21.84}\label{eqn:21.84}
 \\
 &= \bE [\log p(D\ gvn \mu,\lambda) ] 
 + \bE[ \log p(\mu \gvn \lambda) ] 
 + \bE[ \log p(\lambda) ] 
 \\ 
 & ~~ -\bE[\log q(u)] - \bE[ \log q(\lambda) ]  
-~~~~\text{(21.85)}\label{eqn:21.85}
+~~~~\tag{21.85}\label{eqn:21.85}
 \end{align}
 
 
@@ -382,11 +382,11 @@ d\mu d\lambda
 \begin{align}
 \bH ( \mathcal{N}(\mu_N,\kappa_N^{-1} ) &= 
 -\frac{1}{2} \log \kappa_N + \frac{1}{2} (1 + \log (2\pi))
-~~~~\text{(21.86)}\label{eqn:21.86}
+~~~~\tag{21.86}\label{eqn:21.86}
 \\
 \bH(\text{Ga}(a_N,b_N)) 
 &= \log \Gamma(a_N) - (a_N - 1) \psi (a_N) - \log (b_N) + a_N
-~~~~\text{(21.87)}\label{eqn:21.87}
+~~~~\tag{21.87}\label{eqn:21.87}
 \end{align}
 
 此处 $\psi()$ 是双伽马函数。
@@ -397,19 +397,19 @@ d\mu d\lambda
 \begin{align}
 \bE [ \log x \gvn x \sim \text{Ga}(a,b)] 
 &= \psi(a) - \log(b) 
-~~~~\text{(21.88)}\label{eqn:21.88}
+~~~~\tag{21.88}\label{eqn:21.88}
 \\
 \bE [ x \gvn x \sim \text{Ga}(a,b) ] 
 &= {a \over b}
-~~~~\text{(21.89)}\label{eqn:21.89}
+~~~~\tag{21.89}\label{eqn:21.89}
 \\
 \bE [ x \gvn x \sim \mathcal{N}(\mu, \sigma^2) ]
 &= \mu
-~~~~\text{(21.90)}\label{eqn:21.90}
+~~~~\tag{21.90}\label{eqn:21.90}
 \\
 \bE [ x^2 \gvn x \sim \mathcal{N} (\mu, \sigma^2)] 
 &= \mu^2 + \sigma^2 
-~~~~\text{(21.91)}\label{eqn:21.91}
+~~~~\tag{21.91}\label{eqn:21.91}
 \end{align}
 
 
@@ -417,18 +417,18 @@ d\mu d\lambda
 
 \begin{align}
 \bE_{q(\mu,\lambda)}&[ \log p(D \gvn \mu \lambda) ] 
-~~~~\text{(21.92)}\label{eqn:21.92}
+~~~~\tag{21.92}\label{eqn:21.92}
 \\
 &= -{N\over 2 }\log(2\pi) + {N\over 2} \bE_{q_\lambda}[\log \lambda] - \frac{\bE_{q_\lambda}[ \lambda]}{2} \sum_{i=1}^N 
 \bE_{q(\mu)} [ (x_i - \mu)^2 ] 
-~~~~\text{(21.93)}\label{eqn:21.93}
+~~~~\tag{21.93}\label{eqn:21.93}
 \\
 &= -{N\over 2 }\log(2\pi) + {N\over 2} (\psi(a_N) - \log b_N)
 \\
 & ~~ - {N a_N \over 2 b_N} \left( \hat{\sigma}^2 + \bar{x}^2 - 
 2\mu_N \bar{x} + \mu^2_N + \frac{1}{\kappa_N}
 \right)
-~~~~\text{(21.94)}\label{eqn:21.94}
+~~~~\tag{21.94}\label{eqn:21.94}
 \end{align}
 
 此处的 $\bar{x},\,\hat{\sigma}^2$ 对应观测平均和方差。
@@ -438,11 +438,11 @@ d\mu d\lambda
 \begin{align}
 \bE_{q(\lambda)}[ \log p(\lambda) ] 
 ~~&=~~ (a_0 - 1)\bE[ \log \lambda] -b_0 \bE [\lambda ] + a_0\log b_0 -\log \Gamma ( a_0 )
-~~~~\text{(21.95)}\label{eqn:21.95}
+~~~~\tag{21.95}\label{eqn:21.95}
 \\
 ~~&=~~ (a_0 - 1)(\psi(a_N) - \log b_N) -b_0 \frac{a_N}{b_N}
 + a_0\log b_0 -\log \Gamma ( a_0 )
-~~~~\text{(21.96)}\label{eqn:21.96}
+~~~~\tag{21.96}\label{eqn:21.96}
 \end{align}
 
 对$\mu$ 的对数先验的期望可做如下处理
@@ -458,14 +458,14 @@ d\mu d\lambda
 \\
 & ~~ - \frac{\kappa_0}{2} \frac{a_N}{b_N} 
 \left[ (\mu_N - \mu_0)^2 + \frac{1}{\kappa_N}  \right]
-~~~~\text{(21.97)}\label{eqn:21.97}
+~~~~\tag{21.97}\label{eqn:21.97}
 \end{align}
 
 将以上结果结合，可以得到对数似然的下界
 
 $$
 L(q) = {1 \over 2 }\log {1 \over \kappa_N} + \log \Gamma(a_N) - a_N \log b_N + \const
-~~~~\text{(21.98)}\label{eqn:21.98}
+~~~~\tag{21.98}\label{eqn:21.98}
 $$
 
 这个量随着变贝的迭代更新是单调递增的。
@@ -482,7 +482,7 @@ $$
 
 $$
 p(\theta, z_{1:N} \gvn D)\approx q(\theta) q(z) = q(\theta) \prod_i q(z_i)
-~~~~\text{(21.120)}\label{eqn:21.120}
+\tag{21.120}\label{eqn:21.120}
 $$
 
 第一个关于 $\theta,\, z_i$ 的因子分解是一个简化算法的关键假设。第二个因子分解可以从模型对隐变量在给定参变量 $\theta$ 后独立同分布的的假设中得出。
@@ -507,7 +507,7 @@ $$
 
 $$
 p(z,X \gvn \theta ) = \prod_i \prod_k \pi_k^{z_{ik}} \mathcal{N}(x_i \gvn \mu_k, \Lambda_k^{-1})^{z_{ik}}
-~~~~\text{(21.121)}\label{eqn:21.121}
+~~~~\tag{21.121}\label{eqn:21.121}
 $$
 
 此处有指示函数 $z_{ik} = 1$ 如若第 $i$ 个样本属于类别 $k$, 反之则有 $z_{ik}=0$。
@@ -517,7 +517,7 @@ $$
 $$
 p(\theta) = \text{Dir}(\pi \gvn \alpha_0) \pi_k \mathcal{N} 
 (\mu_k \gvn m_0, (\beta_0 \Lambda_k)^{-1}) \text{Wi}(\Lambda_k \gvn L_0, \nu_0)
-~~~~\text{(21.122)}\label{eqn:21.122}
+~~~~\tag{21.122}\label{eqn:21.122}
 $$
 
 此处 $\Lambda_k$ 是类别 $k$ 的精度矩阵。下标0对应着先验参数，并假设所有的类别共享同样的先验参数。对于混合权重，则使用对称先验 $\pmb{\alpha}_0=\alpha_0\pmb{1}$。
@@ -526,7 +526,7 @@ $$
 
 $$
 p(\theta,z_{1:N} \gvn D) \approx q(\theta)\prod_i q(z_i)
-~~~~\text{(21.123)}\label{eqn:21.123}
+~~~~\tag{21.123}\label{eqn:21.123}
 $$
 
 此处我们还没有选定函数 $q$ 的具体形式，它们会由似然和先验的形式共同决定。接下来我们会证明有如下的最优形式
@@ -534,14 +534,14 @@ $$
 \begin{align}
 q(z,\theta) &= q(z \gvn \theta) q(\theta) = 
 \left[ \prod_i \text{Cat}(z_i \gvn r_i ) \right] \cdot
-~~~~\text{(21.124)}\label{eqn:21.124} 
+~~~~\tag{21.124}\label{eqn:21.124} 
 \\
 &~~\left[
 \text{Dir}(\pi \gvn \alpha) \prod_k 
 \mathcal{N} ( \mu_k \gvn m_k, (\beta_k \Lambda_k)^{-1})
 \text{Wi}(\Lambda_k \gvn L_k,\nu_k)
 \right]
-~~~~\text{(21.125)}\label{eqn:21.125}
+~~~~\tag{21.125}\label{eqn:21.125}
 \end{align}
 
 （注意上式中不含下标0因而都是后验而非先验的参数）。接下来会给出的这些变分参数的更新公式。
@@ -554,10 +554,10 @@ q(z,\theta) &= q(z \gvn \theta) q(\theta) =
 \log q(z) 
 &= \bE_{q(\theta)} [ 
 \log p(x,z,\theta) ] + \const
-~~~~\text{(21.126)}\label{eqn:21.126}
+~~~~\tag{21.126}\label{eqn:21.126}
 \\
 &= \sum_k \sum_i z_{ik} +\const
-~~~~\text{(21.127)}\label{eqn:21.127}
+~~~~\tag{21.127}\label{eqn:21.127}
 \end{align}
 
 并定义
@@ -567,9 +567,10 @@ q(z,\theta) &= q(z \gvn \theta) q(\theta) =
 &\triangleq \bE_{q(\theta)}[ \log \pi_k ] 
 + \frac{1}{2} \bE_{q(\theta)}[
 \log |\Lambda_k| ] -\frac{D}{2}\log(2\pi)
+\\
 &~~ - \frac{1}{2} \bE_{q(\theta)}
-[(x_i-\mu_k)^T \Lambda_k (x_i - \mu_k)]
-~~~~\text{(21.128)}\label{eqn:21.128}
+[(x_i-\mu_k)^T \Lambda_k (x_i - \mu_k)] 
+~~~~\tag{21.128}\label{eqn:21.128}
 \end{align}
 
 由于已经有 $q(\pi) = \text{Dir}(\pi)$，可以得出
@@ -577,7 +578,7 @@ q(z,\theta) &= q(z \gvn \theta) q(\theta) =
 $$
 \log \tilde{\pi} \triangleq \bE[\log \pi_k] 
 = \psi(\alpha_k) - \psi( \sum_{k'} \alpha_{k'} )
-~~~~\text{(21.129)}\label{eqn:21.129}
+~~~~\tag{21.129}\label{eqn:21.129}
 $$
 
 此处 $\psi()$ 是双伽马函数。（详细推导见Exer21.5\ref{exer:21.5}）接下来利用如下事实
@@ -586,7 +587,7 @@ $$
 q(\mu_k, \Lambda_k) = \mathcal{N} (
 \mu_k \gvn m_k, (\beta_k \Lambda_k)^{-1})
 \text{Wi}(\Lambda_k \gvn L_k, \nu_k)
-~~~~\text{(21.130)}\label{eqn:21.130}
+~~~~\tag{21.130}\label{eqn:21.130}
 $$
 
 然后得出
@@ -595,7 +596,7 @@ $$
 \log \tilde{\Lambda_k} \triangleq 
 \bE[\log|\Lambda_k|] = \sum_{j=1}^D \psi\left({v_k + 1 -j \over 2}\right) 
 + D\log 2  + \log |\Lambda_k|
-~~~~\text{(21.131)}\label{eqn:21.131}
+~~~~\tag{21.131}\label{eqn:21.131}
 $$
 
 最后，对二次项求期望可以得出
@@ -603,7 +604,7 @@ $$
 $$
 \bE[ (x_i - \mu_k)^T \Lambda_k (x_i - \mu_k) ]
 = D\beta_k^{-1} + \nu_k (x_i - m_k)^T \Lambda_k (x_i - m_k) 
-~~~~\text{(21.132)}\label{eqn:21.132}
+~~~~\tag{21.132}\label{eqn:21.132}
 $$
 
 
@@ -613,7 +614,7 @@ $$
 $$
 r_{ik} \propto \tilde{\pi_k}\tilde{\Lambda}_k^{\frac{1}{2}} \exp\left( -{D\over 2\beta_k} - {\nu_k \over 2}(x_i - m_k)^T \Lambda_k (x_i - m_k)
 \right)
-~~~~\text{(21.133)}\label{eqn:21.133}
+~~~~\tag{21.133}\label{eqn:21.133}
 $$
 
 将以上形式与常用的期最算法作对比
@@ -621,7 +622,7 @@ $$
 $$
 r_{ik}^{EM} \propto \hat{\pi}_k |\hat{\Lambda}|_k^{1/2} \exp\left(-{1\over 2}(x_i - \hat{\mu}_k)^T \hat{\Lambda}_k (x_i - \hat{\mu}_k)
 \right)
-~~~~\text{(21.134)}\label{eqn:21.134}
+~~~~\tag{21.134}\label{eqn:21.134}
 $$
 
 两者的区别会晚些在Sec21.6.1.7\ref{sec:21.6.1.7}中探讨。
@@ -632,22 +633,23 @@ $$
 
 \begin{align}
 \log q(\theta) &= \log p(\pi) + \sum_k \log p (\mu_k, \Lambda_k) + \sum_i \bE_{q(z)} [ \log p(z_i \gvn \pi)] 
+\\
 &~~+ \sum_k \sum_i \bE_{q(z)}[ z_{ik} ] \log \mathcal{N}(x_i \gvn \mu_k, \Lambda_k^{-1}) + \const
-~~~~\text{(21.135)}\label{eqn:21.135}
+~~~~\tag{21.135}\label{eqn:21.135}
 \end{align}
 
 这玩意可以因子分解成
 
 $$
 q(\theta) = q(\pi) \prod_k q(\mu_k, \Lambda_k)
-~~~~\text{(21.136)}\label{eqn:21.136}
+~~~~\tag{21.136}\label{eqn:21.136}
 $$
 
 收集所有含 $\pi$ 的项可以得出
 
 $$
 \log q(\pi) = (\alpha_0 - 1 ) \sum_k \log \pi_k + \sum_k \sum_i r_{ik} \log \pi_k + \const
-~~~~\text{(21.137)}\label{eqn:21.137}
+~~~~\tag{21.137}\label{eqn:21.137}
 $$
 
 两边取指数，可以看出这是一个狄利克雷分布(?-\_-)
@@ -655,16 +657,16 @@ $$
 \begin{align}
 q(\pi) 
 &= \text{Dir} ( \pi \gvn \alpha)
-&~~~~\text{(21.138)}\label{eqn:21.138}
+&~~~~\tag{21.138}\label{eqn:21.138}
 \\
 \alpha_k
 &=  \alpha_0 + N_k
-&~~~~\text{(21.139)}\label{eqn:21.139}
+&~~~~\tag{21.139}\label{eqn:21.139}
 \\
 N_k
 &= 
 \sum_i r_{ik}
-&~~~~\text{(21.138)}\label{eqn:21.140}
+&~~~~\tag{21.138}\label{eqn:21.140}
 \end{align}
 
 收集所有含 $\mu_k,\,\Lambda_k$ 的项目，可以得出
@@ -672,31 +674,31 @@ N_k
 \begin{align}
 q(\mu_k, \Lambda_k) 
 &= \mathcal{N}(\mu_k \gvn m_k, (\beta_k \Lambda_k)^{-1} ) \text{Wi}(\Lambda_k \gvn L_k,\nu_k)
-&~~~~\text{(21.141)}\label{eqn:21.141}
+&~~~~\tag{21.141}\label{eqn:21.141}
 \\
 \beta_k
 &= \beta_0 + N_k
-&~~~~\text{(21.142)}\label{eqn:21.142}
+&~~~~\tag{21.142}\label{eqn:21.142}
 \\
 m_k 
 &= (\beta_0 m_0 + N_k \bar{x_k})/\beta_k
-&~~~~\text{(21.143)}\label{eqn:21.143}
+&~~~~\tag{21.143}\label{eqn:21.143}
 \\
 L_k^{-1} 
 &= L_0^{-1} + N_k S_k + \frac{\beta_0 N_k}{\beta_0 + N_k} (\bar{x}_k -m_0)(\bar{x}_k - m_0)^T
-&~~~~\text{(21.144)}\label{eqn:21.144}
+&~~~~\tag{21.144}\label{eqn:21.144}
 \\
 \nu_k 
 &= \nu_0 + N_k + 1
-&~~~~\text{(21.145)}\label{eqn:21.145}
+&~~~~\tag{21.145}\label{eqn:21.145}
 \\
 \bar{x}_k 
 &= \frac{1}{N_k} \sum_i r_{ik} x_i
-&~~~~\text{(21.146)}\label{eqn:21.146}
+&~~~~\tag{21.146}\label{eqn:21.146}
 \\
 S_k
 &= \frac{1}{N_k} \sum_i r_{ik} (x_i - \bar{x}_k)(x_i - \bar{x}_k)^T
-&~~~~\text{(21.147)}\label{eqn:21.147}
+&~~~~\tag{21.147}\label{eqn:21.147}
 \end{align}
 
 以上结果和最大似然后验点估计(见Sec11.4.2.8\ref{sec:11.4.2.8})的最大化步是很相似的，不过这里我们计算的是参变量 $\theta$ 之后验分布的超参数，而不是最大似然点估计。
@@ -707,7 +709,7 @@ S_k
 
 $$
 \mathcal{L} = \sum_z \int q(z,\theta) \log \frac{ p(x,z,\theta) }{ q(z, \theta) }d\theta \le \log p(\mathcal{D}) 
-~~~~\text{(21.148)}\label{eqn:21.148}
+~~~~\tag{21.148}\label{eqn:21.148}
 $$
 
 这个量应该随着每次迭代单调增加，如图Fig21.7\ref{fig:21.7}所示。不幸的是，这个界限的推导过程有些杂乱，因为需要同时取未正规化的对数后验的期望并计算 $q$ 的熵。该函数的推导细节(其实和Sec21.5.1.6\ref{sec:21.5.1.6}很相似)留作习题Exer21.4\ref{exer:21.4}。
@@ -718,7 +720,7 @@ $$
 
 $$
 q(\theta) = \text{Dir}(\pi\gvn\alpha)\prod_k \mathcal{N}( \mu_k \gvn m_k, (\beta_k\Lambda_k)^{-1}) \text{Wi}(\Lambda_k \gvn L_k,\nu_k)
-~~~~\text{(21.149)}\label{eqn:21.149}
+~~~~\tag{21.149}\label{eqn:21.149}
 $$
 
 因此后验预测分布可以参照Sec4.6.3.6\ref{sec:4.6.3.6}的结果作如下近似
@@ -726,17 +728,17 @@ $$
 \begin{align}
 p(x\gvn \mathcal{D}) 
 &\approx \sum_z \int p(x\gvn z,\theta) p(z\gvn \theta) q(\theta) d \theta 
-&~~~~\text{(21.150)}\label{eqn:21.150}
+&~~~~\tag{21.150}\label{eqn:21.150}
 \\
 &= \sum_k \int \pi_k \mathcal{N}(x\gvn\mu_k, \Lambda_k^{-1})q(\theta) d\theta
-&~~~~\text{(21.151)}\label{eqn:21.151}
+&~~~~\tag{21.151}\label{eqn:21.151}
 \\
 &= \sum_k \frac{\alpha_k}{\sum_{k'}\alpha_{k'}} \mathcal{T}(x\gvn m_k, M_k,\nu_k + 1 -D)
-&~~~~\text{(21.152)}\label{eqn:21.152}
+&~~~~\tag{21.152}\label{eqn:21.152}
 \\
 M_k
 &= {(v_k + 1 -D)\beta_k\over 1+\beta_k} L_k
-&~~~~\text{(21.153)}\label{eqn:21.153}
+&~~~~\tag{21.153}\label{eqn:21.153}
 \end{align}
 
 这实际上是一个学生t-分布的加权混合。如果我们现在改作一个[Plug-In近似](https://en.wikipedia.org/wiki/Plug-in_principle)，则会得出高斯分布的加权和。
@@ -747,7 +749,7 @@ M_k
 
 $$
 p(K\gvn \mathcal{D}) \approx \frac{\exp^{\mathcal{L}(K)}}{\sum_{K'}\exp^{\mathcal{L}(K')}}
-~~~~\text{(21.154)}\label{eqn:21.154}
+~~~~\tag{21.154}\label{eqn:21.154}
 $$
 
 实际上，这个下界还要考虑到参数的不可分辨性而做一些修改(Sec11.3.1\ref{sec:11.3.1})。特别地，尽管分贝能够近似参变量后验附近的概率密度 $K$, 它事实上只能对付其中一个局域模态。对于 $K$ 组分的混合分布， 有 $K!$ 个由于标注的可置换性而等价的模态。因此我们应该使用如下修正： $\log p(\mathcal{D}\gvn K) \approx \mathcal{L} + \log (K!)$。
@@ -761,7 +763,7 @@ $$
 
 $$
 \tilde{\pi}_k = \frac{\exp[\Psi(\alpha_k)]}{\exp [ \Psi( \sum_{k'}\alpha_{k'} ) ]}
-~~~~\text{(21.155)}\label{eqn:21.155}
+~~~~\tag{21.155}\label{eqn:21.155}
 $$
 
 对于 $x>1$ 有近似 $\exp{\Psi(x)} \approx x-0.5$。因而如果 $\alpha_k=0$,那么就相当于我们在计算 $\tilde{\pi}_k$ 的时候从后验个数中减去了0.5。 这个效果对于没几个有分量成员的的小分类来说是更加严重的(就像累退税那样)。其最终结果就是，随着不断地迭代，小分类变得越来越空而成员众多的分类变得越来越大。这也被称作是马太效应,这在Sec25.2\ref{sec:25.2}讨论狄利克雷过程混合模型的时候会被再次提起。
