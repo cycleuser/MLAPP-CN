@@ -1,4 +1,4 @@
-# MLAPP 读书笔记 - 09 通用线性模型(Generalized linear models)和指数族分布(exponential family)
+# MLAPP 读书笔记 - 09 广义线性模型(Generalized linear models)和指数族分布(exponential family)
 
 > A Chinese Notes of MLAPP,MLAPP 中文笔记项目 
 https://zhuanlan.zhihu.com/python-kivy
@@ -11,7 +11,7 @@ https://zhuanlan.zhihu.com/python-kivy
 
 之前已经见到过很多概率分布了:正态(高斯)分布,伯努利分布(Bernoulli),学生T分布,均匀分布,$\gamma$分布等等.这些大多数都属于指数族分布(exponential family).本章就要讲这类分布的各种特点.然后我们就能用来推出很多广泛应用的定力和算法.
 
-接下来我们会看到要构建一个生成分类器如何简单地用指数族分布中的某个成员来作为类条件密度.另外还会讲到如何构建判别模型,其中响应变量服从指数族分布,均值是输入特征的线性函数;这就叫做通用线性模型(Generalized linear models),将逻辑回归上的思想扩展到了其他类别的响应变量上去.
+接下来我们会看到要构建一个生成分类器如何简单地用指数族分布中的某个成员来作为类条件密度.另外还会讲到如何构建判别模型,其中响应变量服从指数族分布,均值是输入特征的线性函数;这就叫做广义线性模型(Generalized linear models),将逻辑回归上的思想扩展到了其他类别的响应变量上去.
 
 
 ## 9.2 指数族分布
@@ -20,7 +20,7 @@ https://zhuanlan.zhihu.com/python-kivy
 * 在特定的规范化条件下(regularity conditions),指数族分布是唯一有限规模充分统计量(finite-sized sufficient statistics)的分布族,这意味着可以将数据压缩称固定规模的浓缩概括而不损失信息.这在在线学习情况下特别有用,后面会看到.
 * 指数族分布是唯一有共轭先验的分布族,这就简化了后验的计算,参考本书9.2.5.
 * 指数族分布对于用户选择的某些约束下有最小假设集合,参考本书9.2.6.
-* 指数族分布是通用线性模型(generalized linear models)的核心,参考本书9.3.
+* 指数族分布是广义线性模型(generalized linear models)的核心,参考本书9.3.
 * 指数族分布也是变分推理(variational inference)的核心,参考本书21.2.
 
 ### 9.2.1 定义
@@ -369,15 +369,15 @@ $Z = \sum_x \exp(-\sum_k \lambda_k f_k(x))$(9.76)
 
 所以最大熵分布$p(x)$就有了指数族分布中的形式(本书9.2),也叫作吉布斯分布(Gibbs distribution)
 
-## 9.3 通用线性模型(Generalized linear models,缩写为GLMs)
+## 9.3 广义线性模型(Generalized linear models,缩写为GLMs)
 
-线性回归和逻辑回归都属于通用线性模型的特例(McCullagh and Nelder 1989).
-这些模型中输出密度都是指数族分布(参考本书9.2),而均值参数都是输入的线性组合,经过可能是非线性的函数,比如逻辑函数等等.下面就要详细讲一下通用线性模型(GLMs).为了记号简单,线看标量输出的情况.(这就排除了多远逻辑回归,不过这只是为表述简单而已.)
+线性回归和逻辑回归都属于广义线性模型的特例(McCullagh and Nelder 1989).
+这些模型中输出密度都是指数族分布(参考本书9.2),而均值参数都是输入的线性组合,经过可能是非线性的函数,比如逻辑函数等等.下面就要详细讲一下广义线性模型(GLMs).为了记号简单,线看标量输出的情况.(这就排除了多远逻辑回归,不过这只是为表述简单而已.)
 
 
 ### 9.3.1 基础知识
 
-要理解通用线性模型,首先要考虑一个标量响应变量的无条件分布(unconditional dstribution)的情况:
+要理解广义线性模型,首先要考虑一个标量响应变量的无条件分布(unconditional dstribution)的情况:
 
 $p(y_i|\theta,\sigma^2)=\exp[\frac{y_i\theta - A(\theta)}{\sigma^2}+c(y_i,\sigma^2)]$(9.77)
 
@@ -393,7 +393,7 @@ $\eta_i =w^T x_i$(9.78)
 |$Bin(N,\mu)$|logit|$\theta=\log\frac{\mu}{1-\mu}$|$\mu=sigm(\theta)$|
 |$Poi(\mu)$|log|$\theta =\log(\mu)$|$\mu=e^\theta$|
 
-表 9.1 常见通用线性模型(GLMs)的连接函数(link function)$\psi$.
+表 9.1 常见广义线性模型(GLMs)的连接函数(link function)$\psi$.
 
 然后使这个分布的均值为这个线性组合的某个可逆单调函数.通过转换,得到这个函数就叫做均值函数(mean function),记作$g^{-1}$,所以:
 $\mu_i =g^{-1}(\eta_i) =g^{-1}(w^Tx_i)$(9.79)
@@ -438,7 +438,7 @@ $\log p(y_i|x_i,w)= y_i \log \mu_i -\mu_i -\log(y_i!)$(9.85)
 
 ### 9.3.2 最大似然估计(MLE)和最大后验估计(MAP)
 
-通用线性模型的最重要的一个性质就是可以用和逻辑回归拟合的同样方法来进行拟合.对数似然函数形式如下所示:
+广义线性模型的最重要的一个性质就是可以用和逻辑回归拟合的同样方法来进行拟合.对数似然函数形式如下所示:
 
 
 $$
@@ -491,7 +491,7 @@ $$
 
 ### 9.3.3 贝叶斯推导
 
-通用线性模型(GLMs)的贝叶斯推导通常都用马尔科夫链蒙特卡罗方法(Markov chain Monte Carlo,缩写为 MCMC),参考本书24章.可用基于迭代重加权最小二乘法(IRLS-based proposal)来的Metropolis Hastings方法(Gamerman 1997),或者每个全条件(full conditional)使用自适应拒绝采样(adaptive rejection sampling,缩写为ARS)的吉布斯采样(Gibbs sampling)(Dellaportas and Smith 1993).更多信息参考(Dey et al. 2000).另外也可以用高斯近似(Gaussian approximation,本书8.4.1)或者变分推理(variational inference,本书21.8.11).
+广义线性模型(GLMs)的贝叶斯推导通常都用马尔科夫链蒙特卡罗方法(Markov chain Monte Carlo,缩写为 MCMC),参考本书24章.可用基于迭代重加权最小二乘法(IRLS-based proposal)来的Metropolis Hastings方法(Gamerman 1997),或者每个全条件(full conditional)使用自适应拒绝采样(adaptive rejection sampling,缩写为ARS)的吉布斯采样(Gibbs sampling)(Dellaportas and Smith 1993).更多信息参考(Dey et al. 2000).另外也可以用高斯近似(Gaussian approximation,本书8.4.1)或者变分推理(variational inference,本书21.8.11).
 
 
 ## 9.4 概率单位回归(Probit regression)
@@ -588,7 +588,7 @@ $$
 
 设$y_{ij}$是第j群(group)当中的第i项(item)的响应变量,其中$i= 1:N_j,j=1:J$.例如,j可以对学校进行索引,然后i就是检索该学校中的学生,然后$y_{ij}$就是这个学生的测试分数,如本书5.6.2所示.或者也可以用j来对人进行索引,然后i代表队是购买次数,这样$y_{ij}$就只带被购买的特定商品(这就叫做离散选择模型(discrete choice modeling, Train 2009).设$x_{ij}$是对应$y_[ij}$的特征向量.目标就是要对于所有的j拟合出模型$p(y_j|x_j)$.
 
-虽然有的组可能有很多数据,通常都是长尾的(long tail),其中大多数组都只有很少的数据.因此不能很有把握地去分开拟合各个模型,可又不想对所有组使用同一个模型.所以就折中一下,可以对每个组拟合一个离散的模型,但设置在不同的组织间模型参数具有相似性.更具体来说就是设$\mathrm{E}[y_{ij}|x_{ij}]= g(x_i^T\Beta_j)$,其中的g是通用线性模型(GLM)的连接函数(link function).另外设$\Beta_j\sim N(\Beta_*,\sigma_j^2 I),\Beta_* \sim N(\mu,\sigma^2_*I)$.在这个模型里面,小样本规模的组就从更多样本的组借用统计强度,因为$\Beta_j$是和潜在通用母变量(latent common parents)$\Beta_*$相关的(这一点相关内容参考本书5.5).$\sigma_j^2$这一项控制了第j组对通用母变量(common parents)的依赖程度,而$\sigma_*^2$这一项控制了全局先验的强度.
+虽然有的组可能有很多数据,通常都是长尾的(long tail),其中大多数组都只有很少的数据.因此不能很有把握地去分开拟合各个模型,可又不想对所有组使用同一个模型.所以就折中一下,可以对每个组拟合一个离散的模型,但设置在不同的组织间模型参数具有相似性.更具体来说就是设$\mathrm{E}[y_{ij}|x_{ij}]= g(x_i^T\Beta_j)$,其中的g是广义线性模型(GLM)的连接函数(link function).另外设$\Beta_j\sim N(\Beta_*,\sigma_j^2 I),\Beta_* \sim N(\mu,\sigma^2_*I)$.在这个模型里面,小样本规模的组就从更多样本的组借用统计强度,因为$\Beta_j$是和潜在通用母变量(latent common parents)$\Beta_*$相关的(这一点相关内容参考本书5.5).$\sigma_j^2$这一项控制了第j组对通用母变量(common parents)的依赖程度,而$\sigma_*^2$这一项控制了全局先验的强度.
 
 为了简单起见,假设$\mu=0$,这样$\sigma_j^2$和$\sigma_*^2$就都是一直的了(可以通过交叉验证来设置).全局对数概率函数(overall log probability)形式为:
 
@@ -633,16 +633,16 @@ $\sum_j [\log p(D_j|\Beta_*+w_j)-frac{||w_j||^2}{2\sigma^2_j}]-\frac{||\Beta_*||
 
 这类问题的另外一个方法就是使用更灵活的先验,比如混合高斯模型.这类灵活先验可以提供健壮性,应对先验误判(prior mis-specification).更多细节参考(Xue et al.2007; Jacob et al. 2008).当然也可以把稀疏提升先验(sparsity-promoting priors)混合起来使用(Ji et al. 2009).当然也有很多其他变体方法.
 
-## 9.6 通用线性混合模型(Generalized linear mixed models)*
+## 9.6 广义线性混合模型(Generalized linear mixed models)*
 
 假如将多任务学习场景扩展来允许响应变量包含分组水平(group level)$x_j$,和项目水平(item level)$x_{ij}$.然后也允许参数$\Beta_j$在组间改变,或者参数$\alpha$在组间固定.这样就得到了下面的模型:
 
 $\mathrm{E}[y_{ij}|x_{ij},x_j]=g(\phi(x_{ij})^T\Beta_j+\phi_2(x_j)^T\Beta'_j +\phi_3 (x_{ij})^T\alpha+\phi_t(x_j)^T\alpha')$(9.114)
 其中的$\phi_k$是基函数(basis functions).这个函数如图9.2(a)所示.(这种图在本书第十章会解释.)参数$\Beta_j$的个数随着组个数增长而增长,而参数$\alpha$则是固定的.
 
-频率论里面将$\Beta_j$这一项叫做随机效应(random effects),因为它们在各组中随机变化;称$\alpha$为固定效应(fixed effect),看做是一个固定但未知的敞亮.如果一个模型同时有固定效应和随机效应,就称之为混合模型(mixed model).如果$p(y|x)$是一个通用线性模型(GLM),整个模型就叫做通用线性混合模型(generalized linear mixed effects model,缩写为GLMM).这种模型在统计学里面用的很普遍.
+频率论里面将$\Beta_j$这一项叫做随机效应(random effects),因为它们在各组中随机变化;称$\alpha$为固定效应(fixed effect),看做是一个固定但未知的敞亮.如果一个模型同时有固定效应和随机效应,就称之为混合模型(mixed model).如果$p(y|x)$是一个广义线性模型(GLM),整个模型就叫做广义线性混合模型(generalized linear mixed effects model,缩写为GLMM).这种模型在统计学里面用的很普遍.
 
-### 9.6.1 样例:针对医疗数据的半参数化通用线性混合模型(semi-parametric GLMMs for medical data)
+### 9.6.1 样例:针对医疗数据的半参数化广义线性混合模型(semi-parametric GLMMs for medical data)
 
 
 下面的例子来自(Wand 2009).假如$y_{ij}$是第j个病人在第i次测量的脊椎骨矿物密度(spinal bone mineral density,缩写为SBMD).设$x_{ij}$为这个人的年龄,设$x_j$为此人的种族(ethnicity),可以是白种人/亚裔/黑种人/拉丁裔.主要目标就是要判断四个种族的平均脊椎骨矿物密度是否有显著区别.数据如图9.2(b)中浅灰色线所示.其中可见脊椎骨矿物密度(SBMD)和年龄有一个非线性关系,所以可以使用一个半参数化模型(semi-parametric model)综合了线性回归和非参数化回归(Ruppert et al. 2003).另外还可以发现每个组内不同个体之间也有变化,所以要用一个混合效应模型.具体来说就是使用$\phi_1(x_{ij})=1$来计量每个人的随机效应;$\phi_2(x_{ij})=0$,因为没有其他的按照人来变化的量;$\phi_3(x_{ij})=[b_k(x_{ij})]$,其中的$b_k$是第k个样条基函数(spline basis functions)(参考本书15.4.6.2),这是用来及计数年龄的非线性效应(nonlinear effect);另外还有个计算不同种族效应的$\phi_4(x_j) =[I(x_j=w),I(x_j=a),I(x_j=b),I(x_j=h)]$.然后使用一个线性连接函数(linear link function).整个模型就是:
@@ -661,14 +661,14 @@ $$
 
 ### 9.6.2 计算问题
 
-通用线性混合模型(GLMMs)的主要问题是不太好拟合,这有两个原因.首先是$p(y_{ij}|\theta)$可能和先验$p(\theta)$未必共轭,其中$\theta=\(\alpha,\Beta)$.另外一个原因是这个模型里面有两个未知层次,回归系数$\theta#以及先验$\eta=(\mu,\sigma)$的均值和方差.
+广义线性混合模型(GLMMs)的主要问题是不太好拟合,这有两个原因.首先是$p(y_{ij}|\theta)$可能和先验$p(\theta)$未必共轭,其中$\theta=\(\alpha,\Beta)$.另外一个原因是这个模型里面有两个未知层次,回归系数$\theta#以及先验$\eta=(\mu,\sigma)$的均值和方差.
 
 一个方法是采用全贝叶斯方法(fully Bayesian inference methods),比如变分贝叶斯(variational Bayes,Hall et al.2011),或者马尔科夫链蒙特卡罗方法(MCMC,Gelman and Hill 2007).变分贝叶斯(VB)在本书21.5会讲到,而马尔科夫链蒙特卡罗方法(MCMC)在本书24.1.
 
-另一种方法就是使用经验贝叶斯(empirical Bayes),在本书5.6大概讲过.在通用线性混合模型的语境下,可以使用期望最大化算法(EM algorithm,本书11.4).
+另一种方法就是使用经验贝叶斯(empirical Bayes),在本书5.6大概讲过.在广义线性混合模型的语境下,可以使用期望最大化算法(EM algorithm,本书11.4).
 其中的E步骤计算$p(\tehta|\eta,D$,而M这一步骤优化$\eta$.如果是线性回归的情况下,E步骤就可以确切进行,但一般都不用确切计算出来,使用个近似值就行了.传统方法是使用数值正交(numerical quadrature)或者蒙特卡罗方法(Breslow and Clayton 1993).更快的方法是使用变分期望最大化(variational EM),参考Braun and McAuliffe 2010提供了对多水平离散选择模型问题使用变分期望最大化的应用案例.
 
-在频率论统计学中,有一个拟合通用线性混合模型的流行方法叫做通用估计方程(generalized estimating equations,缩写为GEE,Hardin and Hilbe 2003).不过不推荐这个方法,因为在统计学上这个方法效率不如似然函数方法(参考本书6.4.3).另外这个方法也只能对人口参数$\alpha$进行估计,而不能对随机效应$\Beta_j$进行估计,而后者可能是更需要的.
+在频率论统计学中,有一个拟合广义线性混合模型的流行方法叫做广义估计方程(generalized estimating equations,缩写为GEE,Hardin and Hilbe 2003).不过不推荐这个方法,因为在统计学上这个方法效率不如似然函数方法(参考本书6.4.3).另外这个方法也只能对人口参数$\alpha$进行估计,而不能对随机效应$\Beta_j$进行估计,而后者可能是更需要的.
 
 $p(y_{ij}|\theta)$  $p(\theta)$  $\theta =(\alpha,\Beta)$       $\eta =(\mu,\sigma)$
 
@@ -681,7 +681,7 @@ $p(\theta|\eta,D)$
 
 在本节降低是学习排序(learning to rank,缩写为LETOR)问题.也就是要学习一个函数,可以将一系列项目进行排序(后面会详细说具体内容).最常见的用途是信息检索(information retrieval).假如有一个检索查询(query)q,以及一系列文档$d^1,...,d^m$,这些文档和q可能相关(比如所有文档都包含字符串q).然后我们想要对文档按照和q的相关性来降序排列,展示出其中前面k个给用户.类似问题也出现在其他领域,比如协作过滤(collaborative filtering)(在一个游戏里面对玩家进行排名或者类似的问题,具体参考本书22.5.5).
 
-接下来简单总结一些解决这个问题的方法,这部分内容参考了(Liu 2009).这部分内容其实并不是基于通用线性模型(GLM)的,但这本书其他地方也不适合放这些内容,就放这里了,就是这么任性.
+接下来简单总结一些解决这个问题的方法,这部分内容参考了(Liu 2009).这部分内容其实并不是基于广义线性模型(GLM)的,但这本书其他地方也不适合放这些内容,就放这里了,就是这么任性.
 
 衡量文档d和查询q之间相关性的标准方法是使用一个概率语言模型(probabilistic language model),基于词汇袋模型(bag of words model).也就是定义$sim(q,d)\overset{\triangle}{=} p(q|d)=\prod^n_{i=1}p(q_i|d)$,其中的$q_i$是第i个查询项目或者词汇,而$p(q_i|d)$是从文档d里面估计的一个多重伯努利分布(multinoulli distribution).实际使用中需要将这个估计分布进行光滑处理,比如使用狄利克雷先验(Dirichlet prior),来表示每个词汇的全局频率(overall frequency).这可以从系统中的全部文档来估计.具体来说就是使用下面这个表达式:
 
