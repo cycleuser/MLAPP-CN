@@ -681,15 +681,15 @@ $p(\theta|\eta,D)$
 
 在本节降低是学习排序(learning to rank,缩写为LETOR)问题.也就是要学习一个函数,可以将一系列项目进行排序(后面会详细说具体内容).最常见的用途是信息检索(information retrieval).假如有一个检索查询(query)q,以及一系列文档$d^1,...,d^m$,这些文档和q可能相关(比如所有文档都包含字符串q).然后我们想要对文档按照和q的相关性来降序排列,展示出其中前面k个给用户.类似问题也出现在其他领域,比如协作过滤(collaborative filtering)(在一个游戏里面对玩家进行排名或者类似的问题,具体参考本书22.5.5).
 
+接下来简单总结一些解决这个问题的方法,这部分内容参考了(Liu 2009).这部分内容其实并不是基于通用线性模型(GLM)的,但这本书其他地方也不适合放这些内容,就放这里了,就是这么任性.
 
-
-$sim(q,d)\overset{\triangle}{=}p(q|d)=\prod^n_{i=1}p(q_i|d)$
-
-$p(q_i|d)$
+衡量文档d和查询q之间相关性的标准方法是使用一个概率语言模型(probabilistic language model),基于词汇袋模型(bag of words model).也就是定义$sim(q,d)\overset{\triangle}{=} p(q|d)=\prod^n_{i=1}p(q_i|d)$,其中的$q_i$是第i个查询项目或者词汇,而$p(q_i|d)$是从文档d里面估计的一个多重伯努利分布(multinoulli distribution).实际使用中需要将这个估计分布进行光滑处理,比如使用狄利克雷先验(Dirichlet prior),来表示每个词汇的全局频率(overall frequency).这可以从系统中的全部文档来估计.具体来说就是使用下面这个表达式:
 
 $p(t|d)=(1-\lambda)\frac{TF(td)}{LEN(d)}+\lambda p(t|background)$(9.117)
 
-$TF(t|d)$  $d$   $LEN(d)$  $0<\lambda <1$
+其中$TF(t|d)$是文档d中第t项的频率,而$LEN(d)$是文档d中词汇长度,而$0<\lambda <1$是光滑参数(smoothing parameter,更多细节参考 Zhai and Lafferty 2004).
+
+不过也可能还有很多其他的信号也能用来衡量相关性.比如网络文本的页面排序(PageRank)就是对其权威性(authoritativeness)的衡量,是从网页链接结构来推导的(具体参考本书17.2.4).可以计算在一个文档中某个查询项目出现的次数和位置.接下来就讲一下如何将这些信号集中起来学习使用.
 
 
 
