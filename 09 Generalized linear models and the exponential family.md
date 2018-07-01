@@ -635,11 +635,17 @@ $\sum_j [\log p(D_j|\Beta_*+w_j)-frac{||w_j||^2}{2\sigma^2_j}]-\frac{||\Beta_*||
 
 ## 9.6 通用线性混合模型(Generalized linear mixed models)*
 
+假如将多任务学习场景扩展来允许响应变量包含分组水平(group level)$x_j$,和项目水平(item level)$x_{ij}$.然后也允许参数$\Beta_j$在组间改变,或者参数$\alpha$在组间固定.这样就得到了下面的模型:
+
 $\mathrm{E}[y_{ij}|x_{ij},x_j]=g(\phi(x_{ij})^T\Beta_j+\phi_2(x_j)^T\Beta'_j +\phi_3 (x_{ij})^T\alpha+\phi_t(x_j)^T\alpha')$(9.114)
+其中的$\phi_k$是基函数(basis functions).这个函数如图9.2(a)所示.(这种图在本书第十章会解释.)参数$\Beta_j$的个数随着组个数增长而增长,而参数$\alpha$则是固定的.
 
-
+频率论里面将$\Beta_j$这一项叫做随机效应(random effects),因为它们在各组中随机变化;称$\alpha$为固定效应(fixed effect),看做是一个固定但未知的敞亮.如果一个模型同时有固定效应和随机效应,就称之为混合模型(mixed model).如果$p(y|x)$是一个通用线性模型(GLM),整个模型就叫做通用线性混合模型(generalized linear mixed effects model,缩写为GLMM).这种模型在统计学里面用的很普遍.
 
 ### 9.6.1 样例:针对医疗数据的半参数化通用线性混合模型(semi-parametric GLMMs for medical data)
+
+
+下面的例子来自(Wand 2009).假如$y_{ij}$是第j个病人在第i次测量的脊椎骨矿物密度(spinal bone mineral density,缩写为SBMD).设$x_{ij}$为这个人的年龄,设$x_j$为此人的种族(ethnicity),可以是白种人/亚裔/黑种人/拉丁裔.主要目标就是要判断四个种族的平均脊椎骨矿物密度是否有显著区别.数据如图9.2(b)中浅灰色线所示.其中可见脊椎骨矿物密度(SBMD)和年龄有一个非线性关系,所以可以使用一个半参数化模型(semi-parametric model)综合了线性回归和非参数化回归(Ruppert et al. 2003).另外还可以发现每个组内不同个体之间也有变化,所以要用一个混合效应模型.具体来说就是使用$\phi_1(x_{ij})=1$来计量每个人的随机效应;$\phi_2(x_{ij})=0$,因为没有其他的按照人来变化的量;$\phi_3(x_{ij})=[b_k(x_{ij})]$,其中的$b_k$是第k个样条基函数(spline basis functions)(参考本书15.4.6.2),这是用来及计数年龄的非线性效应(nonlinear effect);另外还有个计算不同种族效应的$\phi_4(x_j) =[I(x_j=w),I(x_j=a),I(x_j=b),I(x_j=h)]$.然后使用一个线性连接函数(linear link function).整个模型就是:
 
 $$
 \begin{aligned}
@@ -648,13 +654,21 @@ $$
 \end{aligned}
 $$
 
-$\epsion_{ij}\sim N(0,\sigma_y^2)$.  $p(\alpha,\alpha',\Beta,\sigma^2|D)$
+其中$\epsion_{ij}\sim N(0,\sigma_y^2)$.  $\alpha$包含了模型中和年龄相关的非参数部分,$\alpha'$包含了和种族相关的参数部分,而$\Beta_j$则包含了随着每个人j变化的随机偏移量.将这些回归系数(regression coefficients)都赋予各自的高斯先验.然后可以进行后验推导来计算$p(\alpha,\alpha',\Beta,\sigma^2|D)$(计算细节参考本书9.6.2).你喝了模型之后,可以对每个组计算预测.结果如图9.2(b)所示.还可以进行显著性检验(significance testing),以某个种群作为基准值(比如白人),来对每个种群g计算$p(\alpha_g-\alpha_w|D)$,这就跟本书5.2.3里面讲的一样了.
 
 此处参考原书图9.2
 
 
 ### 9.6.2 计算问题
 
+通用线性混合模型(GLMMs)的主要问题是不太好拟合,这有两个原因.首先是$p(y_{ij}|\theta)$可能和先验$p(\theta)$未必共轭,其中$\theta=\(\alpha,\Beta)$.另外一个原因是这个模型里面有两个未知层次,回归系数$\theta#以及先验$\eta=(\mu,\sigma)$的均值和方差.
+
+一个方法是采用全贝叶斯方法(fully Bayesian inference methods),比如变分贝叶斯(variational Bayes,Hall et al.2011),或者马尔科夫链蒙特卡罗方法(MCMC,Gelman and Hill 2007).变分贝叶斯(VB)在本书21.5会讲到,而马尔科夫链蒙特卡罗方法(MCMC)在本书24.1.
+
+另一种方法就是使用经验贝叶斯(empirical Bayes),在本书5.6大概讲过.在通用线性混合模型的语境下,可以使用期望最大化算法(EM algorithm,本书11.4).
+其中的E步骤计算$p(\tehta|\eta,D$,而M这一步骤优化$\eta$.如果是线性回归的情况下,E步骤就可以确切进行,但一般都不用确切计算出来,使用个近似值就行了.传统方法是使用数值正交(numerical quadrature)或者蒙特卡罗方法(Breslow and Clayton 1993).更快的方法是使用变分期望最大化(variational EM),参考Braun and McAuliffe 2010提供了对多水平离散选择模型问题使用变分期望最大化的应用案例.
+
+在频率论统计学中,有一个拟合通用线性混合模型的流行方法叫做通用估计方程(generalized estimating equations,缩写为GEE,Hardin and Hilbe 2003).不过不推荐这个方法,因为在统计学上这个方法效率不如似然函数方法(参考本书6.4.3).另外这个方法也只能对人口参数$\alpha$进行估计,而不能对随机效应$\Beta_j$进行估计,而后者可能是更需要的.
 
 $p(y_{ij}|\theta)$  $p(\theta)$  $\theta =(\alpha,\Beta)$       $\eta =(\mu,\sigma)$
 
@@ -663,6 +677,10 @@ $p(\theta|\eta,D)$
 
 
 ## 9.7 学习排序(Learning to rank)*
+
+
+在本节降低是学习排序(learning to rank,缩写为LETOR)问题.也就是要学习一个函数,可以将一系列项目进行排序(后面会详细说具体内容).最常见的用途是信息检索(information retrieval).假如有一个检索查询(query)q,以及一系列文档$d^1,...,d^m$,这些文档和q可能相关(比如所有文档都包含字符串q).然后我们想要对文档按照和q的相关性来降序排列,展示出其中前面k个给用户.类似问题也出现在其他领域,比如协作过滤(collaborative filtering)(在一个游戏里面对玩家进行排名或者类似的问题,具体参考本书22.5.5).
+
 
 
 $sim(q,d)\overset{\triangle}{=}p(q|d)=\prod^n_{i=1}p(q_i|d)$
