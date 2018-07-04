@@ -69,7 +69,10 @@ $p(x_{1:V})=p(x_1)\prod^V_{t=1}p(x_t|x_{t-1})$(10.3)
 * 拓扑排序(Topological ordering)对一个有向无环图(DAG),拓扑排序(topological ordering)或者也叫全排序(total ordering)是所有父节点比子节点数目少的节点的计数.比如在图10.1(a)中,就可以使用(1, 2, 3, 4, 5)或者(1, 3, 2, 5, 4)等.
 * 路径(Path/trail)对于$s\rightsquigarrow t$来说路径就是一系列从s到t的有向边(directed edges).
 * 树(Tree)无向树(undirected tree)就是没有闭环的无向图.有向树(directed tree)是没有有向闭环的有向无环图(DAG).如果一个节点可以有多个父节点,就称为超树(polytree),如果不能有多个父节点,就成为规范有向树(moral directed tree).
-
+* 森林(Forest)就是树的集合.
+* 子图(Subgraph)(包括节点的)子图$G_A$是使用A中的节点和对应的边(edges)创建的$G_A=(\mathcal{V}_A,\mathcal{E}_A)$.
+* 团(clique)对一个无向图,团是一系列互为邻节点的节点的集合.在不损失团性质的情况下能达到的最大规模的团就叫做最大团(maximal clique).比如图10.1(b)
+当中的{1,2}就是一个团,但不是最大团,因为把3加进去依然保持了团性质(clique property).图10.1(b)中的最大团:{1, 2, 3}, {2, 3, 4}, {3, 5}.
 
 
 
