@@ -41,7 +41,7 @@ $p(x_{1:V})=p(x_1)\prod^V_{t=1}p(x_t|x_{t-1})$(10.3)
 
 虽然一阶马尔科夫假设对于定义一维序列分布很有用,但对于二维图像.或者三维视频,或者更通用的任意维度的变量集(比如生物通路上的基因归属等等),要怎么定义呢?这时候就需要图模型了.
 
-图模型(Graphical models,缩写为GM)是通过设置条件独立性假设(CI assumption)来表示一个联合分布(joint distribution).具体来说就是图上的节点表示随机变量,而(缺乏的)边缘表示条件独立性假设(CI assumption)(对这类模型的更好命名应该是独立性图(independence diagrams),不过图模型这个叫法已经根深蒂固了.)有几种不同类型的图模型,取决于图是有方向(directed)/无方向(undirected)/或者两者结合.在本章只说有方向图(directed graphs).到第19章再说无方向图(undirected graphs).
+图模型(Graphical models,缩写为GM)是通过设置条件独立性假设(CI assumption)来表示一个联合分布(joint distribution).具体来说就是图上的节点表示随机变量,而(缺乏的)边缘表示条件独立性假设(CI assumption)(对这类模型的更好命名应该是独立性图(independence diagrams),不过图模型这个叫法已经根深蒂固了.)有几种不同类型的图模型,取决于图是有向(directed)/无向(undirected)/或者两者结合.在本章只说有向图(directed graphs).到第19章再说无向图(undirected graphs).
 
 此处参考原书图10.1
 
@@ -50,21 +50,25 @@ $p(x_{1:V})=p(x_1)\prod^V_{t=1}p(x_t|x_{t-1})$(10.3)
 
 在继续讨论之前,先要定义一些基本术语概念,大部分都很好理解.
 
-一个图(graph)$G=(V,\mathcal{E})$包括了一系列节点(node)或者顶点(vertices),$V=\{1,...,V\}$,还有一系列的边(deges)$\mathcal{E} =\{ (s,t):s,t\in V \}$.可以使用邻近矩阵(adjacency matrix)来表示这个图,其中用$G(s,t)$来表示$(s,t)\in \mathcal{E}$,也就是$s\rightarrow t$是凸中的一个遍.如果当且仅当$G(t,s)=1$的时候$G(s,t)=1$,就说这个图是无方向的(undirected),否则就是有方向的(directed).一般假设$G(s,s)=0$,意思是没有自我闭环(self loops).
+一个图(graph)$G=(V,\mathcal{E})$包括了一系列节点(node)或者顶点(vertices),$V=\{1,...,V\}$,还有一系列的边(deges)$\mathcal{E} =\{ (s,t):s,t\in V \}$.可以使用邻近矩阵(adjacency matrix)来表示这个图,其中用$G(s,t)$来表示$(s,t)\in \mathcal{E}$,也就是$s\rightarrow t$是凸中的一个遍.如果当且仅当$G(t,s)=1$的时候$G(s,t)=1$,就说这个图是无向的(undirected),否则就是有向的(directed).一般假设$G(s,s)=0$,意思是没有自我闭环(self loops).
 
 下面是其他一些要常用到的术语:
 
 
-* 父节点(Parent)对一个有方向图,一个节点的父节点就是所有节点所在的集合:$pa(s) \overset{\triangle}{=} {t : G(t, s) = 1}$.
-* 子节点(Child)对一个有方向图,一个节点的子节点就是从这个节点辐射出去的所有节点的集合:$ch(s) \overset{\triangle}{=} {t : G(s,t) = 1}$.
-* 族(Family)对一个有方向图,一个节点的族是该节点以及所有其父节点:$fam(s)= \{s\}\cup pa(s)$.
-* 根(root)对一个有方向图,根是无父节点的节点.
-* 叶(leaf)对一个有方向图,叶就是无子节点的节点.
-* 祖先(Ancestors)对一个有方向图,祖先包括一个节点的父节点/祖父节点等等.也就是说t的祖先是所有通过父子关系向下连接到t的节点:$anc(t)\overset{\triangle}{=} \{s:s\rightsquigarrow t\}$.
-* 后代(Descendants)对一个有方向图,后代包括一个节点的子节点/次级子节点等等.也就是s的后代就是可以通过父子关系上溯到s的所有节点集合:$desc(t)\overset{\triangle}{=} \{t:s\rightsquigarrow t\}$.
-* 邻节点(Neighbors),对于任意图来说,所有直接连接的节点都叫做邻节点:$nbr(s) \overset{\triangle}{=}  \{t : G(s, t) = 1 \vee G(t, s) = 1\}$.对于无方向图(undirected graph)来说,可以用$s \sim t$来表示s和t是邻节点(这样$(s,t)\in \mathcal{E}$就是图的边(edge)了).
-
-
+* 父节点(Parent)对一个有向图,一个节点的父节点就是所有节点所在的集合:$pa(s) \overset{\triangle}{=} {t : G(t, s) = 1}$.
+* 子节点(Child)对一个有向图,一个节点的子节点就是从这个节点辐射出去的所有节点的集合:$ch(s) \overset{\triangle}{=} {t : G(s,t) = 1}$.
+* 族(Family)对一个有向图,一个节点的族是该节点以及所有其父节点:$fam(s)= \{s\}\cup pa(s)$.
+* 根(root)对一个有向图,根是无父节点的节点.
+* 叶(leaf)对一个有向图,叶就是无子节点的节点.
+* 祖先(Ancestors)对一个有向图,祖先包括一个节点的父节点/祖父节点等等.也就是说t的祖先是所有通过父子关系向下连接到t的节点:$anc(t)\overset{\triangle}{=} \{s:s\rightsquigarrow t\}$.
+* 后代(Descendants)对一个有向图,后代包括一个节点的子节点/次级子节点等等.也就是s的后代就是可以通过父子关系上溯到s的所有节点集合:$desc(t)\overset{\triangle}{=} \{t:s\rightsquigarrow t\}$.
+* 邻节点(Neighbors),对于任意图来说,所有直接连接的节点都叫做邻节点:$nbr(s) \overset{\triangle}{=}  \{t : G(s, t) = 1 \vee G(t, s) = 1\}$.对于无向图(undirected graph)来说,可以用$s \sim t$来表示s和t是邻节点(这样$(s,t)\in \mathcal{E}$就是图的边(edge)了).
+* 度数(Degree)一个节点的度数是指该节点的邻节点个数.对有向图,又分为入度数(in-degree)和出度数(out-degree),指代的分别是某个节点的父节点和子节点的个数.
+* 闭环(cycle/loop)顾名思义,只要沿着一系列节点能回到初始的位置,顺序为$s_1 \rightarrow s_2 ... \rightarrow s_n \rightarrow s_1, n \ge 2$,就称之为一个闭环.如果图是有向的,闭环也是有向的.图10.1(a)中没有有向的闭环,倒是有个无向闭环$1\rightarrow 2\rightarrow 4 \rightarrow 3 \rightarrow 1$.
+* 有向无环图(directed acyclic graph,缩写为DAG)顾名思义,就是有向但没有有向闭环的,比如图10.1(a)就是一例.
+* 拓扑排序(Topological ordering)对一个有向无环图(DAG),拓扑排序(topological ordering)或者也叫全排序(total ordering)是所有父节点比子节点数目少的节点的计数.比如在图10.1(a)中,就可以使用(1, 2, 3, 4, 5)或者(1, 3, 2, 5, 4)等.
+* 路径(Path/trail)对于$s\rightsquigarrow t$来说路径就是一系列从s到t的有向边(directed edges).
+* 树(Tree)无向树(undirected tree)就是没有闭环的无向图.有向树(directed tree)是没有有向闭环的有向无环图(DAG).如果一个节点可以有多个父节点,就称为超树(polytree),如果不能有多个父节点,就成为规范有向树(moral directed tree).
 
 
 
