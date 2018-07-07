@@ -30,7 +30,9 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 
 [07 Linear regression](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/07%20Linear%20regression.html)
 
+[08 Linear regression](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/08%20Logistic%20regression.html)
 
+[09 Linear regression](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/09%20Generalized%20linear%20models%20and%20the%20exponential%20family.html)
 
 # 笔记项目概述
 本系列是一个新坑, 还希望大家批评指正！
