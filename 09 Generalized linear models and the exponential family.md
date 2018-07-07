@@ -75,7 +75,7 @@ $\mu=sigm(\theta)=\frac{1}{1+e^{-\theta}}$(9.9)
 
 #### 9.2.2.2 多重伯努利(Multinoulli)
 
-多重伯努利分布表述成最小指数族如下所示(其中的$x_k\I(x=k)$):
+多重伯努利分布表述成最小指数族如下所示(其中的$x_k/I(x=k)$):
 $$
 \begin{aligned}
 Cat(x|\mu)&= \prod^K_{k=1} \mu_k^{x_k} =\exp[\sum^K_{k=1}x_k\log \mu_k]     &\text{(9.10)}\\
@@ -116,9 +116,9 @@ $A(\theta)=\log(1+\sum^{K-1}_{k=1} e^{\theta_k})$(9.19)
 
 $$
 \begin{aligned}
-  N(x|\mu,\sigma^2) &= \frac{1}{(2\pi\sigma^2)^{1/2}} \exp[-\frac{1}{2\sigma^2}(x-\mu)^2]    &\text{(9.20)}\\
-  &=  \frac{1}{(2\pi\sigma^2)^{1/2}} \exp[-\frac{1}{2\sigma^2}x^2 +\frac{\mu}{\sigma^2}x  -\frac{1}{2\sigma^2}\mu^2]   &\text{(9.21)}\\
-  &= \frac{1}{Z(\theta}\exp(\theta^T\phi(x)))}   &\text{(9.22)}\\
+N(x|\mu,\sigma^2) &= \frac{1}{(2\pi\sigma^2)^{1/2}} \exp[ -\frac{1}{2\sigma^2}(x-\mu)^2]    &\text{(9.20)}\\
+&=  \frac{1}{(2\pi\sigma^2)^{1/2}} \exp[-\frac{1}{2\sigma^2} x^2 +\frac{\mu}{\sigma^2}x  -\frac{1}{2\sigma^2}\mu^2]   &\text{(9.21)}\\
+&= \frac{1}{ Z(\theta \exp(\theta^T\phi(x) ) )}   &\text{(9.22)}\\
 \end{aligned}
 $$
 
@@ -805,3 +805,4 @@ $$
 
 
 练习略
+
