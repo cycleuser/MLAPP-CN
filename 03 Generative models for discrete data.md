@@ -181,7 +181,7 @@ $Beta(\theta|a,b)\propto \theta^{a-1}(1-\theta)^{b-1} $(3.15)
 
 把二项分布的似然率和$\beta$分布的先验乘到一起,就得到下面的后验了(参考公式3.14):
 
-$p(\theta|D ) \propto Bin(N_1|\theta ,N_0+ N_1)Beta(\theta|a,b) = Beta(\theta|N_1+a,N_0+b)$(3.16)
+$p(\theta|D ) \propto Bin(N_1|N_0+ N_1,\theta)Beta(\theta|a,b) \propto Beta(\theta|N_1+a,N_0+b)$(3.16)
 
 具体来说,这个后验是通过在经验计数(empirical counts)基础上加上了先验超参数(prior hyper-parameters)而得到的.因此将这些超参数称之为伪计数(pseudo counts).先验的强度,也是先验的有效取样规模(effective sample size)就是伪计数的和$a+b$;这个量起到的作用类似于数据集规模$N_1 + N_0 = N$.
 

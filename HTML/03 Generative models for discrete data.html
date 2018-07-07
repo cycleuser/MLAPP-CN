@@ -949,7 +949,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 
 <p>为了对人类行为进行建模,Tenenbaum 在他的论文中用了一个更复杂的先验,这个先验是通过一个实验数据分析而推导得到的,这个实验测试了人们对数字相似性如何衡量,具体参考其博士论文的208页.结果就是得到了一个集合,跟前文的类似,也是数学概念组成的,相比之下多了一个就是在n到m中的所有间隔,\(1\le n,m\le 100\).(注意这些假设并不是互斥的.)所以这个先验实际上是两个先验的混合,其中的一个是算数规则,另外一个是数字间隔:</p>
 
-<p>\(p(h)=\pi_0 p_{rules}(h)+( -\pi_0)p_{interval}()h\)(3.10)</p>
+<p>\(p(h)=\pi_0 p_{rules}(h)+( -\pi_0)p_{interval}(h)\)(3.10)</p>
 
 <p>给定先验的两部分之后,这个模型中的唯一一个自由参数就是相对权重,\(\pi_0\).只要\(\pi_0 &gt;0.5\),结果就对这个值不是很敏感,反映的是人们更倾向于选择算数规则假设.这个模型的预测分布如图3.5所示,使用了更大的假设空间.这个分布和图3.1中人类的预测分布具有惊人的相似,虽然这个模型除了假设空间的选择之外并没有使用人类案例的数据进行拟合.</p>
 
@@ -982,10 +982,10 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 <h3 id="toc_10">3.3.2 先验(prior)</h3>
 
 <p>需要一个定义在区间[0,1]上的先验.为了数学运算简便,可以让先验和似然率形式相同,也就是说对于参数为\(\gamma _1,\gamma_2\)的某个先验来说:<br/>
-\(p(\theta)\propto \theta^{\gamma_1}(1-\theta)^{\gamma_2}\)(3.13)$<br/>
+\(p(\theta)\propto \theta^{\gamma_1}(1-\theta)^{\gamma_2}\)(3.13)<br/>
 这样的话,后验就很好估算了,只要合并指数就可以了:</p>
 
-<p>\(p(\theta) \propto p(D|\theta)p(\theta) = \theta^{ N_1} (1 − \theta) ^{N_0 }\theta ^{\gamma_1 }(1 − \theta) ^{\gamma_2 }= \theta ^{N_1 +\gamma_1} (1 − \theta) ^{N_0 +\gamma_2}\)(3.14)$</p>
+<p>\(p(\theta) \propto p(D|\theta)p(\theta) = \theta^{ N_1} (1 − \theta) ^{N_0 }\theta ^{\gamma_1 }(1 − \theta) ^{\gamma_2 }= \theta ^{N_1 +\gamma_1} (1 − \theta) ^{N_0 +\gamma_2}\)(3.14)</p>
 
 <p>这样先验和后验形式都一样了,就说这个先验是所对应似然率的共轭先验(conjugate prior).共轭先验用处很广泛,因为计算起来简单,也好理解.</p>
 
@@ -1001,7 +1001,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 
 <p>把二项分布的似然率和\(\beta\)分布的先验乘到一起,就得到下面的后验了(参考公式3.14):</p>
 
-<p>\(p(\theta|D ) \propto Bin(N_1|\theta ,N_0+ N_1)Beta(\theta|a,b)Beta(\theta|N_1+a,N_0+b)\)(3.16)</p>
+<p>\(p(\theta|D ) \propto Bin(N_1|N_0+ N_1,\theta)Beta(\theta|a,b) \propto Beta(\theta|N_1+a,N_0+b)\)(3.16)</p>
 
 <p>具体来说,这个后验是通过在经验计数(empirical counts)基础上加上了先验超参数(prior hyper-parameters)而得到的.因此将这些超参数称之为伪计数(pseudo counts).先验的强度,也是先验的有效取样规模(effective sample size)就是伪计数的和\(a+b\);这个量起到的作用类似于数据集规模\(N_1 + N_0 = N\).</p>
 
