@@ -96,7 +96,7 @@ $$
 
 从规范参数里面恢复出均值参数$\mu$:
 
-$\mu_k =\frac{e^{\theta_k}{1+\sum^{K-1}_{j=1} e^{\theta_j}}$(9.17)
+$\mu_k =\frac{e^{\theta_k}}{1+\sum^{K-1}_{j=1} e^{\theta_j}}$(9.17)
 
 然后就能发现:
 
@@ -387,7 +387,7 @@ $p(y_i|\theta,\sigma^2)=\exp[\frac{y_i\theta - A(\theta)}{\sigma^2}+c(y_i,\sigma
 
 $\eta_i =w^T x_i$(9.78)
 
-|分布|Link $g(\mu)$|$\theta=\psi(\mu)$|$\mu =\psi^{-1}(\theta)=\matmrm{E}[y]$|
+|分布|Link $g(\mu)$|$\theta=\psi(\mu)$|$\mu =\psi^{-1}(\theta)=\mathrm{E}[y]$|
 |---|---|---|---|
 |$N(\mu,\sigma^2)$|indentity|$\theta=\mu$|$\mu=\theta$|
 |$Bin(N,\mu)$|logit|$\theta=\log\frac{\mu}{1-\mu}$|$\mu=sigm(\theta)$|
@@ -451,7 +451,7 @@ $$
 
 $$
 \begin{aligned}
-\frac{dl_i}{dw_j}&=  \frac{dl_i}{d\theta_i}  \frac{d\theta_i}{d\mu_i}   \frac{d \mu_i}{d\eta_i}  \frac{d\eta_i}{\d w_j}   &\text{(9.88)}\\
+\frac{dl_i}{dw_j}&=  \frac{dl_i}{d\theta_i}  \frac{d\theta_i}{d\mu_i}   \frac{d \mu_i}{d\eta_i}  \frac{d\eta_i}{d w_j}   &\text{(9.88)}\\
 &= (y_i -A'(\theta_i))\frac{d\theta_i}{d\mu_i} \frac{}{} x_{ij} &\text{(9.89)}\\
 &= (y_i-\mu_i)\frac{d\theta_i}{d\mu_i} \frac{}{} x_{ij}  &\text{(9.90)}\\
 \end{aligned}
@@ -524,7 +524,7 @@ $$
 
 随机效用模型(random utility model,缩写为RUM,McFadden 1974; Train 2009).
 
-$\epsil _i=\delta_{1i}-\delta_{0i}$
+$\epsilon_i=\delta_{1i}-\delta_{0i}$
 
 $$
 \begin{aligned}
@@ -592,7 +592,7 @@ $$
 
 为了简单起见,假设$\mu=0$,这样$\sigma_j^2$和$\sigma_*^2$就都是一直的了(可以通过交叉验证来设置).全局对数概率函数(overall log probability)形式为:
 
-$\log p(D|\beta )+\log p(\beta )=\sum_j [\log \p((D_j|\beta _j)-\frac{||\beta _j-\beta _*||^2}{2\sigma_j^2})]-\frac{||\beta _*||^2}{2\sigma^2_*}$(9.110)
+$\log p(D|\beta )+\log p(\beta )=\sum_j [\log  p((D_j|\beta _j)-\frac{||\beta _j-\beta _*||^2}{2\sigma_j^2})]-\frac{||\beta _*||^2}{2\sigma^2_*}$(9.110)
 
 可以使用标准梯度方法进行对$\beta =(\beta _{1:j},\beta _*)$的最大后验估计(MAP).或者也可以使用迭代优化的策略,在$\beta _j$和$\beta _*$之间进行优化;因为似然函数和先验都是凸函数,这就保证了会收敛到全局最优解.要记住一旦一个模型训练出来了,就可以不用理会$\beta _*$,分别使用每个模型.
 
@@ -654,19 +654,19 @@ $$
 \end{aligned}
 $$
 
-其中$\epsion_{ij}\sim N(0,\sigma_y^2)$.  $\alpha$包含了模型中和年龄相关的非参数部分,$\alpha'$包含了和种族相关的参数部分,而$\beta _j$则包含了随着每个人j变化的随机偏移量.将这些回归系数(regression coefficients)都赋予各自的高斯先验.然后可以进行后验推导来计算$p(\alpha,\alpha',\beta ,\sigma^2|D)$(计算细节参考本书9.6.2).你喝了模型之后,可以对每个组计算预测.结果如图9.2(b)所示.还可以进行显著性检验(significance testing),以某个种群作为基准值(比如白人),来对每个种群g计算$p(\alpha_g-\alpha_w|D)$,这就跟本书5.2.3里面讲的一样了.
+其中$\epsilon_{ij}\sim N(0,\sigma_y^2)$.  $\alpha$包含了模型中和年龄相关的非参数部分,$\alpha'$包含了和种族相关的参数部分,而$\beta _j$则包含了随着每个人j变化的随机偏移量.将这些回归系数(regression coefficients)都赋予各自的高斯先验.然后可以进行后验推导来计算$p(\alpha,\alpha',\beta ,\sigma^2|D)$(计算细节参考本书9.6.2).你喝了模型之后,可以对每个组计算预测.结果如图9.2(b)所示.还可以进行显著性检验(significance testing),以某个种群作为基准值(比如白人),来对每个种群g计算$p(\alpha_g-\alpha_w|D)$,这就跟本书5.2.3里面讲的一样了.
 
 此处参考原书图9.2
 
 
 ### 9.6.2 计算问题
 
-广义线性混合模型(GLMMs)的主要问题是不太好拟合,这有两个原因.首先是$p(y_{ij}|\theta)$可能和先验$p(\theta)$未必共轭,其中$\theta=\(\alpha,\beta )$.另外一个原因是这个模型里面有两个未知层次,回归系数$\theta#以及先验$\eta=(\mu,\sigma)$的均值和方差.
+广义线性混合模型(GLMMs)的主要问题是不太好拟合,这有两个原因.首先是$p(y_{ij}|\theta)$可能和先验$p(\theta)$未必共轭,其中$\theta=(\alpha,\beta )$.另外一个原因是这个模型里面有两个未知层次,回归系数$\theta$以及先验$\eta=(\mu,\sigma)$的均值和方差.
 
 一个方法是采用全贝叶斯方法(fully Bayesian inference methods),比如变分贝叶斯(variational Bayes,Hall et al.2011),或者马尔科夫链蒙特卡罗方法(MCMC,Gelman and Hill 2007).变分贝叶斯(VB)在本书21.5会讲到,而马尔科夫链蒙特卡罗方法(MCMC)在本书24.1.
 
 另一种方法就是使用经验贝叶斯(empirical Bayes),在本书5.6大概讲过.在广义线性混合模型的语境下,可以使用期望最大化算法(EM algorithm,本书11.4).
-其中的E步骤计算$p(\tehta|\eta,D$,而M这一步骤优化$\eta$.如果是线性回归的情况下,E步骤就可以确切进行,但一般都不用确切计算出来,使用个近似值就行了.传统方法是使用数值正交(numerical quadrature)或者蒙特卡罗方法(Breslow and Clayton 1993).更快的方法是使用变分期望最大化(variational EM),参考Braun and McAuliffe 2010提供了对多水平离散选择模型问题使用变分期望最大化的应用案例.
+其中的E步骤计算$p(\theta |\eta,D$,而M这一步骤优化$\eta$.如果是线性回归的情况下,E步骤就可以确切进行,但一般都不用确切计算出来,使用个近似值就行了.传统方法是使用数值正交(numerical quadrature)或者蒙特卡罗方法(Breslow and Clayton 1993).更快的方法是使用变分期望最大化(variational EM),参考Braun and McAuliffe 2010提供了对多水平离散选择模型问题使用变分期望最大化的应用案例.
 
 在频率论统计学中,有一个拟合广义线性混合模型的流行方法叫做广义估计方程(generalized estimating equations,缩写为GEE,Hardin and Hilbe 2003).不过不推荐这个方法,因为在统计学上这个方法效率不如似然函数方法(参考本书6.4.3).另外这个方法也只能对人口参数$\alpha$进行估计,而不能对随机效应$\beta _j$进行估计,而后者可能是更需要的.
 
@@ -761,24 +761,24 @@ $p(y_i=c|x)=\frac{\exp(s_C)}{\sum^m_(c'=1)\exp(s_{c'})}$(9.125)
 * 平均排序倒数(Mean reciprocal rank,缩写为MRR).对于一个查询项q,设其第一个相关文档的排序位置记作$r(q)$.然后定义一个平均排序倒数为$1/r(q)$.这是很简单的性能衡量.
 * 均值平均准确率(Mean average precision,缩写为MAP,注意要和最大后验分布 MAP相区分).在二值化相关标签的情况下,可以定义某个排序在k位置上的精度如下:
 
-$P\@ k(\pi)\overset{\triangle}{=}  \frac{\text{num. relevant documents in the top k positions of} \pi}{k}$(9.126)
+$P @  k(\pi)\overset{\triangle}{=}  \frac{\text{num. relevant documents in the top k positions of} \pi}{k}$(9.126)
 
 然后可以定义平均精度(average precision)如下:
 
-$AP(\pi)\overset{\triangle}{=}  \frac{\sum_k P\@k(\pi) \times I_k}{\text{num relevant documents}}$(9.127)
+$AP(\pi)\overset{\triangle}{=}  \frac{\sum_k P @ k(\pi) \times I_k}{\text{num relevant documents}}$(9.127)
 
 其中当且仅当文档k为相关的时候$I_k$才等于1.例如,如果有相关标签$y = (1, 0, 1, 0, 1)$,然后AP就是 $\frac13(\frac11 +\frac23 +\frac35 )\approx 0.76$最终就定义了均值平均精度(mean average precision)为对所有查询上的AP求平均值.
 
 * 归一化折扣累积增益(Normalized discounted cumulative gain,缩写为NDCG).假如香瓜鸟枪有多种层次.就可以定义对前面以一定次序排列的k个项目的折扣累积增益(discounted cumulative gain)如下所示:
  
-$DCG\@k(r)=r_1+\sum^k_{i=2} \frac{r_i}{\log_2 i}$(9.128)
+$DCG @ k(r)=r_1+\sum^k_{i=2} \frac{r_i}{\log_2 i}$(9.128)
 
 其中的$r_i$是第i项的相关性,而$\log_2$项目是用来稍后在列表中扣除项目的.表9.3展示了一个简单的数值样本.另一重定义就是强调了检索到相关文档(retrieving relevant documents),使用的是:
 
-$DCG\@k(r)= \sum^k_{i=1} \frac{2^{r_i}-1}{\log_2(1+i)}$(9.129)
+$DCG @ k(r)= \sum^k_{i=1} \frac{2^{r_i}-1}{\log_2(1+i)}$(9.129)
 
 
-折扣累积增益(DCG)的一个问题就是只要返回列表的长度变化,这个增益的数量级就会有变化.因此通常都要用理想折扣累积增益(ideal DCG)来将其归一化,理想折扣累积增益(ideal DCG)是指通过使用最优排序来得到的DCG,即$IDCG\@ k(r)=\arg\max_\pi DCG\@k(r)$.最终就定义出来了归一化折扣累积增益(Normalized discounted cumulative gain,缩写为NDCG),定义为$DCG/IDCG$.表9.4给出了一个简单数值样本.NDCG方法可以对查询项目进行平均然后来衡量性能.
+折扣累积增益(DCG)的一个问题就是只要返回列表的长度变化,这个增益的数量级就会有变化.因此通常都要用理想折扣累积增益(ideal DCG)来将其归一化,理想折扣累积增益(ideal DCG)是指通过使用最优排序来得到的DCG,即$IDCG @  k(r)=\arg\max_\pi DCG @ k(r)$.最终就定义出来了归一化折扣累积增益(Normalized discounted cumulative gain,缩写为NDCG),定义为$DCG/IDCG$.表9.4给出了一个简单数值样本.NDCG方法可以对查询项目进行平均然后来衡量性能.
 
 * 排序相关性(Rank correlation).可以在排序列表$\pi$和相关性判断$\pi^*$之间衡量相关性,使用的方法就很多了.比如可以使用加权肯德尔$\tau$统计(weighted Kendall’s τ statistics),这个统计定义形式为两个列表间不连续的加权值对:
 

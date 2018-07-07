@@ -204,9 +204,9 @@ $C_{k+1}=(I-\frac{s_ks_k^T}{y_k^Ts_k})C_k(I- \frac{y_ks_k^T}{y_k^Ts_k})+\frac{s_
 
 $$
 \begin{aligned}
-f'(w)&=NLL(w)+\lambda w^Tw           &\text{(8.30)}\\
-g'(w)&= g(w)+\lambda w          &\text{(8.31)}\\
-H'(w)&= H(w)+\lambda I          &\text{(8.32)}\\
+f'(w)&=NLL(w)+\lambda  w^Tw           &\text{(8.30)}\\
+g'(w)&= g(w)+\lambda  w          &\text{(8.31)}\\
+H'(w)&= H(w)+\lambda  I          &\text{(8.32)}\\
 \end{aligned}
 $$
 
@@ -396,12 +396,12 @@ $$
 然后就能发现需要去评估一个对应高斯分布的S形函数(sigmoid function)的期望.可以利用S形函数类似概率函数(probit function)的性质来进行近似,通过标准正态分布的累计密度函数(cdf):
 $\Phi(a)\overset{\triangle}{=}\int^a_{-\infty} N(x|0,1)dx$(8.67)
 
-图8.7(b)所示的就是s形函数和概率函数.图中的坐标轴做了缩放,使得$sigm(a)$在原点位置附近有和$\Phi(\lambda a)$有类似的范围,其中$\lambda^2 =\pi /8$.
+图8.7(b)所示的就是s形函数和概率函数.图中的坐标轴做了缩放,使得$sigm(a)$在原点位置附近有和$\Phi(\lambda  a)$有类似的范围,其中$\lambda ^2 =\pi /8$.
 
 利用概率函数(probit function)的优势就是可以用一个高斯分布以解析形式卷积(convolve)出来:
-$\int \Phi (\lambda a)N(a|\mu,\sigma^2)da =\Phi (\frac{a}{(\lambda^{-2}+\sigma^2)^{\frac{1}{2}}})$(8.68)
+$\int \Phi (\lambda  a)N(a|\mu,\sigma^2)da =\Phi (\frac{a}{(\lambda ^{-2}+\sigma^2)^{\frac{1}{2}}})$(8.68)
 
-然后再等号两边都使用 $sigm(a)\approx \Phi (\lambda a)$ 来插值近似,就得到了:
+然后再等号两边都使用 $sigm(a)\approx \Phi (\lambda  a)$ 来插值近似,就得到了:
 
 $$
 \begin{aligned}
@@ -474,7 +474,7 @@ $\bar\theta_k=\frac{1}{k}\sum^k_{t=1}\theta_t$(8.80)
 
 这就叫Polyak-Ruppert 平均,可以递归使用,如下所示:
 
-$\bar\theta_k=\bar\theta_{k-1}-\frac{1}{k}(\nbar\theta_{k-1}-\theta_k)$(8.81)
+$\bar\theta_k=\bar\theta_{k-1}-\frac{1}{k}(\nabla \theta_{k-1}-\theta_k)$(8.81)
 更多细节参考(Spall 2003; Kushner and Yin 2003).
 
 #### 8.5.2.1 设定步长规模
@@ -601,7 +601,7 @@ $p(\theta|D_{1:k})\propto p(D_k|\theta)p(\theta|d_{1:k-1})$(8.93)
 
 ## 8.6 生成分类器和判别分类器(Generative vs discriminative classifiers)
 
-在本书4.2.2,已经降到了类标签的后验分布使用高斯判别分析(Gaussian discriminative analysis,缩写为GDA)之后形式和逻辑回归一模一样,都是$p(y=1|x)=sigm(w^Tx)$.因此这个决策边界在两种情况下都是x的线性函数.不过要注意很多生成模型可能会给出一个逻辑回归后验,比如,每个类条件密度都是泊松分布(Poisson)$p(x|y=c)=Poi(x|\lambda_c)$.所以使用GDA所做的假设要比使用逻辑回归的假设更强.
+在本书4.2.2,已经降到了类标签的后验分布使用高斯判别分析(Gaussian discriminative analysis,缩写为GDA)之后形式和逻辑回归一模一样,都是$p(y=1|x)=sigm(w^Tx)$.因此这个决策边界在两种情况下都是x的线性函数.不过要注意很多生成模型可能会给出一个逻辑回归后验,比如,每个类条件密度都是泊松分布(Poisson)$p(x|y=c)=Poi(x|\lambda _c)$.所以使用GDA所做的假设要比使用逻辑回归的假设更强.
 
 这些模型更进一步的区别就是训练方式.当你和一个判别模型的时候,一般是最大化条件对数似然函数$\sum^N_{i=1}\log p(y_i|x_i,\theta)$,而当拟合一个生成模型的时候,通常要最大化联合对数似然函数$\sum^N_{i=1}\log p(y_i,x_i|\theta)$.很明显,这就能导致不同结果(参考练习4.20).
 
@@ -723,13 +723,13 @@ $$
 
 等式8.101就是两个标量的比;可以关于我求导数然后就等于零了.很明显(参考练习12.6)$J(w)$最大化的时候为:
 
-$S_Bw=\lambdaS_Ww$(8.107)
+$S_Bw=\lambda S_Ww$(8.107)
 
 其中的:
-$\lambda =\frac{w^TS_Bw}{w^TS_Ww}$(8.108)
+$\lambda  =\frac{w^TS_Bw}{w^TS_Ww}$(8.108)
 
 等式107也叫广义特征值问题(generalized eigenvalue problem).如果$S_W$可逆,就可以转换成一个规范特征值问题:
-$S_W^{-1}S_Bw =\lambda w$(8.109)
+$S_W^{-1}S_Bw =\lambda  w$(8.109)
 
 不过在二分类情况下,就有一个更简单的解了.由于
 
@@ -738,7 +738,7 @@ $S_Bw = (\mu_2-\mu_1)(\mu_2-\mu_1)^T w =(\mu_2-\mu_1)(m_2-m_1)$(8.110)
 所以通过等式8.109就有
 $$
 \begin{aligned}
-\lambda w& = S_W^{-1}(\mu_2-\mu_1)(m_2-m_1)  &\text{(8.111)}\\
+\lambda  w& = S_W^{-1}(\mu_2-\mu_1)(m_2-m_1)  &\text{(8.111)}\\
 w & \propto  S_W^{-1}(\mu_2-\mu_1) &\text{(8.112)}\\
 \end{aligned}
 $$
