@@ -292,7 +292,7 @@ $$
 
 #### 9.2.5.5 样例:伯努利分布
 
-举个简单例子,这回用新形式回顾一下$\beta$伯努利分布(Beta-Bernoulli model).
+举个简单例子,这回用新形式回顾一下$\beta $伯努利分布(Beta-Bernoulli model).
 
 似然函数为:
 
@@ -307,7 +307,7 @@ p(\theta|v_0,\tau_0) &\propto (1-\theta)^{v_0}\exp(\log(\frac{\theta}{1-\theta})
 \end{aligned}
 $$
 
-如果定义$\alpha =\tau_0+1,\beta=v_0-\tau_0+1$,就会发现这是一个$\beta$分布.
+如果定义$\alpha =\tau_0+1,\beta =v_0-\tau_0+1$,就会发现这是一个$\beta $分布.
 
 然后可以推导后验了,如下面所示,其中$s=\sum_iI(x_i=1)$是充分统计量:
 
@@ -318,13 +318,13 @@ p(\theta|D)&\propto  \theta^{\tau_0+s}(1-\theta)^{v_0-\tau_0+n-s}     &\text{(9.
 \end{aligned}
 $$
 
-后验预测分布的推测过程如下所示.设$p(\theta)=Beta(\theta|\alpha,\beta)$,$s=s(D)$是过去数据(past data)的人头数.就可以预测里一系列未来人头朝上$D'=(\tilde x_1,...,\tilde x_m)$的概率,充分统计量为$s'=\sum^m_{i=1}I(\tilde  x_i=1)$,则后验预测分布为:
+后验预测分布的推测过程如下所示.设$p(\theta)=Beta(\theta|\alpha,\beta )$,$s=s(D)$是过去数据(past data)的人头数.就可以预测里一系列未来人头朝上$D'=(\tilde x_1,...,\tilde x_m)$的概率,充分统计量为$s'=\sum^m_{i=1}I(\tilde  x_i=1)$,则后验预测分布为:
 
 $$
 \begin{aligned}
-p(D'|D)=\int^1_0 p(D'|\theta|Beta(\theta|\alpha_n,\beta_n)d\theta&=            &\text{(9.66)}\\
-&=    \frac{\Gamma(\alpha_n+\beta_n)}{\Gamma(\alpha_n)\Gamma(\beta_n)} \int^1_0 \theta^{\alpha_n+t'-1}(1-\theta)^{\beta_n+m-t'-1} d\theta        &\text{(9.67)}\\
-&=   \frac{\Gamma(\alpha_n+\beta_n) \Gamma (\alpha_{n+m}) \Gamma (\beta_{n+m})}{\Gamma(\alpha_n)\Gamma(\beta_n) \Gamma (\alpha_{n+m}+\beta_{n+m})}          &\text{(9.68)}\\
+p(D'|D)=\int^1_0 p(D'|\theta|Beta(\theta|\alpha_n,\beta _n)d\theta&=            &\text{(9.66)}\\
+&=    \frac{\Gamma(\alpha_n+\beta _n)}{\Gamma(\alpha_n)\Gamma(\beta _n)} \int^1_0 \theta^{\alpha_n+t'-1}(1-\theta)^{\beta _n+m-t'-1} d\theta        &\text{(9.67)}\\
+&=   \frac{\Gamma(\alpha_n+\beta _n) \Gamma (\alpha_{n+m}) \Gamma (\beta _{n+m})}{\Gamma(\alpha_n)\Gamma(\beta _n) \Gamma (\alpha_{n+m}+\beta _{n+m})}          &\text{(9.68)}\\
 \end{aligned}
 $$
 
@@ -333,7 +333,7 @@ $$
 $$
 \begin{aligned}
 \alpha_{n+m} &= \alpha_n+s' = \alpha_n+s+s'      &\text{(9.69)}\\
-\beta_{n+m} &= \beta_n +(m-s')=\beta+(n-s)+(m-s')    &\text{(9.70)}\\
+\beta _{n+m} &= \beta _n +(m-s')=\beta +(n-s)+(m-s')    &\text{(9.70)}\\
 \end{aligned}
 $$
 
@@ -588,35 +588,35 @@ $$
 
 设$y_{ij}$是第j群(group)当中的第i项(item)的响应变量,其中$i= 1:N_j,j=1:J$.例如,j可以对学校进行索引,然后i就是检索该学校中的学生,然后$y_{ij}$就是这个学生的测试分数,如本书5.6.2所示.或者也可以用j来对人进行索引,然后i代表队是购买次数,这样$y_{ij}$就只带被购买的特定商品(这就叫做离散选择模型(discrete choice modeling, Train 2009).设$x_{ij}$是对应$y_[ij}$的特征向量.目标就是要对于所有的j拟合出模型$p(y_j|x_j)$.
 
-虽然有的组可能有很多数据,通常都是长尾的(long tail),其中大多数组都只有很少的数据.因此不能很有把握地去分开拟合各个模型,可又不想对所有组使用同一个模型.所以就折中一下,可以对每个组拟合一个离散的模型,但设置在不同的组织间模型参数具有相似性.更具体来说就是设$\mathrm{E}[y_{ij}|x_{ij}]= g(x_i^T\Beta_j)$,其中的g是广义线性模型(GLM)的连接函数(link function).另外设$\Beta_j\sim N(\Beta_*,\sigma_j^2 I),\Beta_* \sim N(\mu,\sigma^2_*I)$.在这个模型里面,小样本规模的组就从更多样本的组借用统计强度,因为$\Beta_j$是和潜在通用母变量(latent common parents)$\Beta_*$相关的(这一点相关内容参考本书5.5).$\sigma_j^2$这一项控制了第j组对通用母变量(common parents)的依赖程度,而$\sigma_*^2$这一项控制了全局先验的强度.
+虽然有的组可能有很多数据,通常都是长尾的(long tail),其中大多数组都只有很少的数据.因此不能很有把握地去分开拟合各个模型,可又不想对所有组使用同一个模型.所以就折中一下,可以对每个组拟合一个离散的模型,但设置在不同的组织间模型参数具有相似性.更具体来说就是设$\mathrm{E}[y_{ij}|x_{ij}]= g(x_i^T\beta _j)$,其中的g是广义线性模型(GLM)的连接函数(link function).另外设$\beta _j\sim N(\beta _*,\sigma_j^2 I),\beta _* \sim N(\mu,\sigma^2_*I)$.在这个模型里面,小样本规模的组就从更多样本的组借用统计强度,因为$\beta _j$是和潜在通用母变量(latent common parents)$\beta _*$相关的(这一点相关内容参考本书5.5).$\sigma_j^2$这一项控制了第j组对通用母变量(common parents)的依赖程度,而$\sigma_*^2$这一项控制了全局先验的强度.
 
 为了简单起见,假设$\mu=0$,这样$\sigma_j^2$和$\sigma_*^2$就都是一直的了(可以通过交叉验证来设置).全局对数概率函数(overall log probability)形式为:
 
-$\log p(D|\Beta)+\log p(\Beta)=\sum_j [\log \p((D_j|\beta_j)-\frac{||\Beta_j-\Beta_*||^2}{2\sigma_j^2})]-\frac{||\Beta_*||^2}{2\sigma^2_*}$(9.110)
+$\log p(D|\beta )+\log p(\beta )=\sum_j [\log \p((D_j|\beta _j)-\frac{||\beta _j-\beta _*||^2}{2\sigma_j^2})]-\frac{||\beta _*||^2}{2\sigma^2_*}$(9.110)
 
-可以使用标准梯度方法进行对$\beta=(\Beta_{1:j},\Beta_*)$的最大后验估计(MAP).或者也可以使用迭代优化的策略,在$\Beta_j$和$\Beta_*$之间进行优化;因为似然函数和先验都是凸函数,这就保证了会收敛到全局最优解.要记住一旦一个模型训练出来了,就可以不用理会$\Beta_*$,分别使用每个模型.
+可以使用标准梯度方法进行对$\beta =(\beta _{1:j},\beta _*)$的最大后验估计(MAP).或者也可以使用迭代优化的策略,在$\beta _j$和$\beta _*$之间进行优化;因为似然函数和先验都是凸函数,这就保证了会收敛到全局最优解.要记住一旦一个模型训练出来了,就可以不用理会$\beta _*$,分别使用每个模型.
 
 
 
 ### 9.5.2 应用:个性化垃圾邮件过滤
 
-多任务学习的一个有趣应用就是个性化垃圾邮件过滤(personalized email spam filtering).假如要针对每个用户来拟合一个分类器$\Beta_j$.由于大部分用户都不会来标记他们的邮件是不是垃圾邮件,这就很难分开来对他们各自的模型进行估计.所以要设$\Beta_j$有一个通用的先验$\Beta_*$,表示了一个通用用户的参数.
+多任务学习的一个有趣应用就是个性化垃圾邮件过滤(personalized email spam filtering).假如要针对每个用户来拟合一个分类器$\beta _j$.由于大部分用户都不会来标记他们的邮件是不是垃圾邮件,这就很难分开来对他们各自的模型进行估计.所以要设$\beta _j$有一个通用的先验$\beta _*$,表示了一个通用用户的参数.
 
 这时候就可以利用上面的模型来估计这行为,这需要一点小技巧(Daume 2007b; Attenberg et al. 2009; Weinberger et al. 2009):将每个特征$x_i$都只做两个分本,一个联接(concatenated)到用户id,另外的一份则不做联接.这样要学习的预测器(predictor)的形式就为:
 
-$\mathrm{E}[y_i|x_i,u]= (\Beta_*,w_1,...,w_J)^T [x_i,I(u=1)x_i,...,I(u=J)x_i]$(9.111)
+$\mathrm{E}[y_i|x_i,u]= (\beta _*,w_1,...,w_J)^T [x_i,I(u=1)x_i,...,I(u=J)x_i]$(9.111)
 
 其中的u是用户id.也就是说:
 
-$\mathrm{E}[y_i|x_i,u=j]=(\Beta_*+w_j)^Tx_i$(9.112)
+$\mathrm{E}[y_i|x_i,u=j]=(\beta _*+w_j)^Tx_i$(9.112)
 
-因此$\Beta_*$就可以从每个人的邮件中来进行估计,而$w_j$则只从第j个用户的邮件中来估计.
+因此$\beta _*$就可以从每个人的邮件中来进行估计,而$w_j$则只从第j个用户的邮件中来估计.
 
-这和上面的分层贝叶斯模型具有对应关系(correspondence),定义$w_j=\Beta_j-\Beta_*$.然后原始模型的对数概率函数就可以重新写成下面的形式:
+这和上面的分层贝叶斯模型具有对应关系(correspondence),定义$w_j=\beta _j-\beta _*$.然后原始模型的对数概率函数就可以重新写成下面的形式:
 
-$\sum_j [\log p(D_j|\Beta_*+w_j)-frac{||w_j||^2}{2\sigma^2_j}]-\frac{||\Beta_*||^2}{2\sigma^2_*}$(9.113)
+$\sum_j [\log p(D_j|\beta _*+w_j)-frac{||w_j||^2}{2\sigma^2_j}]-\frac{||\beta _*||^2}{2\sigma^2_*}$(9.113)
 
-如果我们假设$\sigma^2_j=\sigma^2_*$,效果就和使用增强特征技巧(augmented feature trick)一样了,对$w_i$和$\Beta_*$都有一样的规范化强度(regularizer strength).不过如果让这两个不相等通常能得到更好的性能(Finkel and Manning 2009).
+如果我们假设$\sigma^2_j=\sigma^2_*$,效果就和使用增强特征技巧(augmented feature trick)一样了,对$w_i$和$\beta _*$都有一样的规范化强度(regularizer strength).不过如果让这两个不相等通常能得到更好的性能(Finkel and Manning 2009).
 
 ### 9.5.3 应用:域自适应(Domain adaptation)
 
@@ -627,7 +627,7 @@ $\sum_j [\log p(D_j|\Beta_*+w_j)-frac{||w_j||^2}{2\sigma^2_j}]-\frac{||\Beta_*||
 
 ### 9.5.4 其他类别的先验
 
-在多任务学习里面,通常都假设先验是高斯分布的.不过有时候也可能选择别的先验更适合.比如对于联合分析(conjoint analysis)的任务,这个任务需要想办法弄清用户最喜欢产品的哪个特征.这可以使用跟前文同样的分层贝叶斯模型设置,不过要对$\Beta_j$使用更加稀疏的先验(sparsity-promoting prior),而不是高斯先验.这就叫做多任务特征选择(multi-task feature selection).更多可用方法等等参考(Lenk et al. 1996; Argyriou et al. 2008).
+在多任务学习里面,通常都假设先验是高斯分布的.不过有时候也可能选择别的先验更适合.比如对于联合分析(conjoint analysis)的任务,这个任务需要想办法弄清用户最喜欢产品的哪个特征.这可以使用跟前文同样的分层贝叶斯模型设置,不过要对$\beta _j$使用更加稀疏的先验(sparsity-promoting prior),而不是高斯先验.这就叫做多任务特征选择(multi-task feature selection).更多可用方法等等参考(Lenk et al. 1996; Argyriou et al. 2008).
 
 总去假设所有任务都一样想死并不总是很合理的.如果把不同质量(qualitatively different)的任务的参数汇集到一起,计算性能回避不汇聚要更差,因为咱们先验中的归纳偏见(inductive bias)是错误的.实际上已经有研究发现有点时候多任务学习要比分开解决每个任务效果更差,这也叫做负转换(negative transfer).
 
@@ -635,12 +635,12 @@ $\sum_j [\log p(D_j|\Beta_*+w_j)-frac{||w_j||^2}{2\sigma^2_j}]-\frac{||\Beta_*||
 
 ## 9.6 广义线性混合模型(Generalized linear mixed models)*
 
-假如将多任务学习场景扩展来允许响应变量包含分组水平(group level)$x_j$,和项目水平(item level)$x_{ij}$.然后也允许参数$\Beta_j$在组间改变,或者参数$\alpha$在组间固定.这样就得到了下面的模型:
+假如将多任务学习场景扩展来允许响应变量包含分组水平(group level)$x_j$,和项目水平(item level)$x_{ij}$.然后也允许参数$\beta _j$在组间改变,或者参数$\alpha$在组间固定.这样就得到了下面的模型:
 
-$\mathrm{E}[y_{ij}|x_{ij},x_j]=g(\phi(x_{ij})^T\Beta_j+\phi_2(x_j)^T\Beta'_j +\phi_3 (x_{ij})^T\alpha+\phi_t(x_j)^T\alpha')$(9.114)
-其中的$\phi_k$是基函数(basis functions).这个函数如图9.2(a)所示.(这种图在本书第十章会解释.)参数$\Beta_j$的个数随着组个数增长而增长,而参数$\alpha$则是固定的.
+$\mathrm{E}[y_{ij}|x_{ij},x_j]=g(\phi(x_{ij})^T\beta _j+\phi_2(x_j)^T\beta '_j +\phi_3 (x_{ij})^T\alpha+\phi_t(x_j)^T\alpha')$(9.114)
+其中的$\phi_k$是基函数(basis functions).这个函数如图9.2(a)所示.(这种图在本书第十章会解释.)参数$\beta _j$的个数随着组个数增长而增长,而参数$\alpha$则是固定的.
 
-频率论里面将$\Beta_j$这一项叫做随机效应(random effects),因为它们在各组中随机变化;称$\alpha$为固定效应(fixed effect),看做是一个固定但未知的敞亮.如果一个模型同时有固定效应和随机效应,就称之为混合模型(mixed model).如果$p(y|x)$是一个广义线性模型(GLM),整个模型就叫做广义线性混合模型(generalized linear mixed effects model,缩写为GLMM).这种模型在统计学里面用的很普遍.
+频率论里面将$\beta _j$这一项叫做随机效应(random effects),因为它们在各组中随机变化;称$\alpha$为固定效应(fixed effect),看做是一个固定但未知的敞亮.如果一个模型同时有固定效应和随机效应,就称之为混合模型(mixed model).如果$p(y|x)$是一个广义线性模型(GLM),整个模型就叫做广义线性混合模型(generalized linear mixed effects model,缩写为GLMM).这种模型在统计学里面用的很普遍.
 
 ### 9.6.1 样例:针对医疗数据的半参数化广义线性混合模型(semi-parametric GLMMs for medical data)
 
@@ -649,28 +649,28 @@ $\mathrm{E}[y_{ij}|x_{ij},x_j]=g(\phi(x_{ij})^T\Beta_j+\phi_2(x_j)^T\Beta'_j +\p
 
 $$
 \begin{aligned}
-\mathrm{E}[y_{ij}|x_{ij},x_j]& = \Beta_j +\alpha^Tb(x_{ij})+\epsilon_{ij} &\text{(9.115)}\\
+\mathrm{E}[y_{ij}|x_{ij},x_j]& = \beta _j +\alpha^Tb(x_{ij})+\epsilon_{ij} &\text{(9.115)}\\
 &+ \alpha'_wI(x_j=w)+\alpha'_aI(x_j=a)+\alpha'_bI(x_j=b)+\alpha'_hI(x_j=h) &\text{(9.116)}\\
 \end{aligned}
 $$
 
-其中$\epsion_{ij}\sim N(0,\sigma_y^2)$.  $\alpha$包含了模型中和年龄相关的非参数部分,$\alpha'$包含了和种族相关的参数部分,而$\Beta_j$则包含了随着每个人j变化的随机偏移量.将这些回归系数(regression coefficients)都赋予各自的高斯先验.然后可以进行后验推导来计算$p(\alpha,\alpha',\Beta,\sigma^2|D)$(计算细节参考本书9.6.2).你喝了模型之后,可以对每个组计算预测.结果如图9.2(b)所示.还可以进行显著性检验(significance testing),以某个种群作为基准值(比如白人),来对每个种群g计算$p(\alpha_g-\alpha_w|D)$,这就跟本书5.2.3里面讲的一样了.
+其中$\epsion_{ij}\sim N(0,\sigma_y^2)$.  $\alpha$包含了模型中和年龄相关的非参数部分,$\alpha'$包含了和种族相关的参数部分,而$\beta _j$则包含了随着每个人j变化的随机偏移量.将这些回归系数(regression coefficients)都赋予各自的高斯先验.然后可以进行后验推导来计算$p(\alpha,\alpha',\beta ,\sigma^2|D)$(计算细节参考本书9.6.2).你喝了模型之后,可以对每个组计算预测.结果如图9.2(b)所示.还可以进行显著性检验(significance testing),以某个种群作为基准值(比如白人),来对每个种群g计算$p(\alpha_g-\alpha_w|D)$,这就跟本书5.2.3里面讲的一样了.
 
 此处参考原书图9.2
 
 
 ### 9.6.2 计算问题
 
-广义线性混合模型(GLMMs)的主要问题是不太好拟合,这有两个原因.首先是$p(y_{ij}|\theta)$可能和先验$p(\theta)$未必共轭,其中$\theta=\(\alpha,\Beta)$.另外一个原因是这个模型里面有两个未知层次,回归系数$\theta#以及先验$\eta=(\mu,\sigma)$的均值和方差.
+广义线性混合模型(GLMMs)的主要问题是不太好拟合,这有两个原因.首先是$p(y_{ij}|\theta)$可能和先验$p(\theta)$未必共轭,其中$\theta=\(\alpha,\beta )$.另外一个原因是这个模型里面有两个未知层次,回归系数$\theta#以及先验$\eta=(\mu,\sigma)$的均值和方差.
 
 一个方法是采用全贝叶斯方法(fully Bayesian inference methods),比如变分贝叶斯(variational Bayes,Hall et al.2011),或者马尔科夫链蒙特卡罗方法(MCMC,Gelman and Hill 2007).变分贝叶斯(VB)在本书21.5会讲到,而马尔科夫链蒙特卡罗方法(MCMC)在本书24.1.
 
 另一种方法就是使用经验贝叶斯(empirical Bayes),在本书5.6大概讲过.在广义线性混合模型的语境下,可以使用期望最大化算法(EM algorithm,本书11.4).
 其中的E步骤计算$p(\tehta|\eta,D$,而M这一步骤优化$\eta$.如果是线性回归的情况下,E步骤就可以确切进行,但一般都不用确切计算出来,使用个近似值就行了.传统方法是使用数值正交(numerical quadrature)或者蒙特卡罗方法(Breslow and Clayton 1993).更快的方法是使用变分期望最大化(variational EM),参考Braun and McAuliffe 2010提供了对多水平离散选择模型问题使用变分期望最大化的应用案例.
 
-在频率论统计学中,有一个拟合广义线性混合模型的流行方法叫做广义估计方程(generalized estimating equations,缩写为GEE,Hardin and Hilbe 2003).不过不推荐这个方法,因为在统计学上这个方法效率不如似然函数方法(参考本书6.4.3).另外这个方法也只能对人口参数$\alpha$进行估计,而不能对随机效应$\Beta_j$进行估计,而后者可能是更需要的.
+在频率论统计学中,有一个拟合广义线性混合模型的流行方法叫做广义估计方程(generalized estimating equations,缩写为GEE,Hardin and Hilbe 2003).不过不推荐这个方法,因为在统计学上这个方法效率不如似然函数方法(参考本书6.4.3).另外这个方法也只能对人口参数$\alpha$进行估计,而不能对随机效应$\beta _j$进行估计,而后者可能是更需要的.
 
-$p(y_{ij}|\theta)$  $p(\theta)$  $\theta =(\alpha,\Beta)$       $\eta =(\mu,\sigma)$
+$p(y_{ij}|\theta)$  $p(\theta)$  $\theta =(\alpha,\beta )$       $\eta =(\mu,\sigma)$
 
 
 $p(\theta|\eta,D)$   
@@ -801,7 +801,7 @@ L(k)&\overset{\triangle}{=}  \sum^k_{j=1}\alpha_j,\text{with} \alpha_1\ge \alpha
 $$
 
 
-上式中的$f(x,:)=[f(x,1),...,f(x,|y|)]$是对每个可能输出标签的评分向量,或者在迭代重加权(IR)项目中,就是对每个对应输入查询x的每个可能文章的评分向量.表达式$rank(f(x,:),y)$衡量由该评分函数分配真实标签y的评分.最后的L是讲整数值的评分转化成实数值的惩罚项(real-valued penalty).使用$\alpha_1=1,\alpha_{j>1}=0$可以优化前部位置分类标签正确的比例.设置$\alpha_1:k}$为非零值可以优化排序列表中的前k个项目,因为使用了均值平均准确率(MAP)或k精确度来衡量,所以性能不错.即便这样,加权估计-排序成对损失函数(weighted approximate-rank pairwise loss,缩写为WARP loss)也还是很难去优化的,但是可以使用蒙特卡罗取样方法来近似,然后再用梯度下降法去优化,这部分参考(Weston et al. 2010).
+上式中的$f(x,:)=[f(x,1),...,f(x,|y|)]$是对每个可能输出标签的评分向量,或者在迭代重加权(IR)项目中,就是对每个对应输入查询x的每个可能文章的评分向量.表达式$rank(f(x,:),y)$衡量由该评分函数分配真实标签y的评分.最后的L是讲整数值的评分转化成实数值的惩罚项(real-valued penalty).使用$\alpha_1=1,\alpha_{j>1}=0$可以优化前部位置分类标签正确的比例.设置$\alpha_{1:k}$为非零值可以优化排序列表中的前k个项目,因为使用了均值平均准确率(MAP)或k精确度来衡量,所以性能不错.即便这样,加权估计-排序成对损失函数(weighted approximate-rank pairwise loss,缩写为WARP loss)也还是很难去优化的,但是可以使用蒙特卡罗取样方法来近似,然后再用梯度下降法去优化,这部分参考(Weston et al. 2010).
 
 
 练习略
