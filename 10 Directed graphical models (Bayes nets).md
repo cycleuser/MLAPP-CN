@@ -167,7 +167,67 @@ $p(v_t=1|h)=1- \exp(w_{ot}+\sum_s h_sw_{st})$(10.12)
 
 对有向图模型的应用还有另外一个很重要也很悠久的领域,就是基因链接分析(genetic linkage analysis).先从谱系系树(pedigree graph)开始,这是一种表示了父子节点关系的有向无环图模型(DAG)如图10.6(a)所示.然后将其转换成有向图模型(DGM),接下来就会讲解这个过程.最后在得到的模型中进行概率推导.
 
-
 此处参考原书图10.6
+
+更详细说,对于每个人或者动物和沿着基因上的位置j都建立三个节点:观测标记(observed marker)$X_{ij}$(可以使血型啊或者一个能衡量的DNA片段),以及另外的两个隐藏的等位基因(hidden alleles)$G_{ij}^m$和$G_{ij}^p$,一个是来自i的母本(母本等位基因,maternal allele),另一个来自i的父本(父本等位基因,paternal allele)结合在一起就形成了有序基因对$G_{ij}=(G_{ij}^m,G_{ij}^p)$,这就是i在位置j上的隐藏基因型(hidden genotype).
+
+很明显必须添加$(G_{ij}^m \rightarrow X_{ij}$和$G_{ij}^p\rightarrow X_{ij}$来表示基因对性状(性状就是基因型的表现效应)的控制.条件概率分布(CPD)$p(X_{ij}|G_{ij}^m ,G_{ij}^p)$就叫做外显率模型(penetrance model).比如$X_{ij}\in \{A, B, O, AB\}$表示了第i个人的观测学习,而$G _{ij}^m , G_{ij}^p \in \{A, B, O\}$表示的是他们的基因型(genotype).就可以使用表10.2所示的确定性条件概率分布(deterministic CPD)来表示其外显率模型.比如基因A的优先级高于O,所以一个人基因型如果为AO或者OA,他的血型就是A型.
+
+另外还要在$G_{ij}$上加上i的父母,这反映了一个人从父母得到遗传物质的孟德尔遗传定律(Mendelian inheritance).具体来说就是设$m_i=k$为i的母本.然后$G_{ij}^m$就可以等于$G_{kj}^m$或者$G_{kj}^p$,也就是i的母本等位基因是其母本两个基因当中的一个的复制品.设$Z_{ij}^m$为隐藏变量确定了具体所选择的复制对象.然后可以用下面的条件概率分布对其进行建模,这个模型就是遗传模型(inheritance model):
+$p(G_{ij}^m|G_{kj}^m,G_{kj}^p,Z_{ij}^m) =\begin{cases} I(G_{ij}^m=G_{kj}^m) \text{ if } Z_{ij}^m=m\\I(G_{ij}^m=G_{kj}^p) \text{ if } Z_{ij}^m=p \end{cases}$(10.13)
+
+类似的方法还可以定义$p(G_{ij}^p|G_{kj}^m,G_{kj}^p,Z_{ij}^p)$,其中的$k=p_i$表示的是i的父本.$Z_{ij}$的值可以用来确定基因类型的相(phase).而$G_{ij}^p,G_{ij}^m,Z_{ij}^p,Z_{ij}^m $构成了第i个人在第j个位置上的单倍型(haplotype).
+
+然后要指定根节点的先验$p(G_{ij}^m$和$p(G_{ij}^p)$.这就叫祖先模型(founder model),表示了在人口中不同基因型的总体比例.通常假设这些祖先基因在不同位置上相互独立.
+
+最后要对控制遗传过程的转换变量指定先验.这些变量在空间上相关(spatially correlated),因为基因组上邻近的位置通常是一同遗传的,重新结合的情况很罕见.可以在Z上引入一个二阶马尔科夫链来对此进行建模,其中在位置j上的转换状态的概率由$\theta_j=\frac{1}{2}(1-e^{-2d_j})$给出,其中的$d_j$是位置j和j+1之间的距离.这个模型就叫做重新组合模型(recombination model).
+
+这样得到的涂抹些如图10.6(b)所示:一个同血缘的有向无环图(replicated pedigree DAG),通过转换Z变量增强(augmented),使用了马尔科夫链.(有个相关的模型叫做进化阴性马尔科夫模型(phylogenetic HMM,Siepel and Haussler 2003),模拟的是进化过程中的演化.)
+
+为了简单,这里举例只看一个基因位置,也就是对应血型的片段.为了简单就去掉j索引了.假如观测到了$x_i=A$.那么就有三种可能的基因组$G_i$:(A, A), (A, O) ,(O, A).
+这里会有多解性,因为基因组到基因表型的映射是多到一的.要将这个映射关系逆转,就要面对逆转问题(inverse problem).还好可以使用亲戚的学醒来降低甚至消除这些多解性.信息就会通过学院有向无环树(pedigree DAG)从其他的$x_i$留到他们的$G_i$中,然后传递到第i个人的$G_i$上.因此可以结合局部证据(local evidence)$p(x_i|G_i)$和先验$p(G_i|X_{-i})$,以其他数据为条件,然后得到一个更低熵(less entropic)的局部后验$p(G_i|x)\propto p(x_i|G_i)p(G_i|x_{-i})$.
+在实际应用中,这个模型一般用来根据给定疾病的致病基因来检测是否有疾病,也就是基因关联检测任务(genetic linkage analysis task).这种方法的工作流程如下.首先假设模型中所有参数,包括标记位置之间的距离,都是已知的.而唯一未知的是致病基因的位置.如果有L个标记位置,就构建L+1个模型:在模型l中,假定致病基因在标记l后出现,$0< l < L+1$.然后可以通过切换参数$\hat \theta_l$来估计马尔科夫模型,然后是致病基因和其最邻近位置之间的距离$d_l$.通过似然函数$p(D|\hat\theta_l)$来衡量模型质量.然后选出来最高似然率的模型(在均匀先验(uniform prior)下等价于最大后验分布模型(MAP model).
+
+不过要记住,计算似然率的时候需要边缘化掉所有的隐藏的Z和G这些变量.关于这个模型的具体信息细节参考(Fishelson and Geiger 2002);这些是基于变量估计算法的模型,我们会在本书20.3讲到.不过很不幸,由于一些会在本书20.5讲到的原因,实际上如果个体规模或者基因位置太多的话,具体的模型在计算上可能会很困难.关于计算似然率的近似方法参考(Albers et al. 2006);这种方法是变分推导(variational inference)的一种形式,具体会在本书22.4.1讲到.
+
+### 10.2.5 有向高斯图模型(Directed Gaussian graphical models)*
+
+考虑一个有向图模型(DGM),其中全部变量都是实数值的,而所有条件概率分布(CPD)都有如下的形式:
+
+$p(x_t|x_{pa(t})=N(x_t|\mu_t+w_t^Tx_{pa(t)},\sigma_t^2)$(10.14)
+
+这样的条件概率分布就叫做线性高斯条件概率分布(linear Gaussian CPD).将所有这些条件概率分布(CPD)乘到一起,就得到了一个大规模的连和高斯分布,形式为$p(x)=N(x|\mu,\Sigma)$.这就叫一个有向高斯图模型(缩写为 directed GGM),或者也叫做高斯贝叶斯网络(Gaussian Bayes net).
+
+接下来解释一下如何从条件概率参数中推出$\mu$和$\Sigma$,这部分的内容参考了(Shachter and Kenley 1989, App. B).为了简单,将条件概率分布写成下面的形式:
+$x_t =\mu_t +\sum_{s\in pa(t)} w_{ts}(x_s-\mu_s)+\sigma_tz_t$(10.15)
+
+其中$z_t\sim N(0,1)$,$\sigma_t$为给定亲本下$x_t$的条件标准偏差(conditional standard deviation),$w_s$是$s\rightarrow t$的强度,而$\mu_t$是局部均值(local mean).
+
+很明显局部均值的连接(concatenation)就是全局均值了,即$\mu=(\mu_1,...,\mu_D)$.然后再推导全局协方差(global covariance)$\Sigma$.设$s\overset{\triangle}{=} diag(\sigma)$是一个对角矩阵,包含了标准偏差.然后可以将等式10.15写成矩阵向量乘积的形式如下所示:
+$(x − \mu) = W(x − \mu) + Sz$(10.16)
+
+然后设e为噪音项目的向量:
+$e \overset{\triangle}{=} Sz$(10.17)
+
+重新整理就得到了:
+$e=(I-W)(x-\mu)$(10.18)
+
+因为W是下三角矩阵(因为如果在拓扑排序(topological ordering)中$t>s$,则$w_{ts}=0$),所以则有$I-W$是一个对角线为1的下三角矩阵.因此:
+$\begin{pmatrix} e_1\\e_2\\.\\.\\.\\e_d \end {pmatrix} =\begin{pmatrix} 1&&&&\\-w_{21}&1&&&\\-w_{32}&-w_{31}&1&&\\ ...\\ -w_{d1}&-w_{d2}&...&-w_{d,.d-1}& 1\end {pmatrix} \begin{pmatrix} x_1-\mu_1\\ x_2-\mu_2\\ .\\.\\.\\ x_d-\mu_d \end {pmatrix} $(10.19)
+
+
+
+由于 I-W 总是可逆的(invertible),就可以写出:
+
+$x-\mu = (I-W)^{-1}e \overset{\triangle}{=} Ue =USz$(10.20)
+
+其中定义$U=(I-W)^{-1}$.另外回归权重(regression weights)对应着对$\Sigma$的柯列斯基分解(Cholesky decomposition),如下所示:
+
+$$
+\begin{aligned}
+\Sigma &= cov [x] = cov [x − \mu ]   &\text{(10.21)}\\
+&= cov [USz] = US cov [z] SU^T = US^2 U^T &\text{(10.22)}\\
+\end{aligned}
+$$
 
 
