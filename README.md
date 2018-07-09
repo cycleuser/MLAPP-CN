@@ -56,7 +56,7 @@ https://github.com/Kivy-CN/MLAPP-CN/blob/master/Error.md
 - [x] 07 Linear regression 217~244(练习略)
 - [x] 08 Logistic regression 245~280(练习略)
 - [x] 09 Generalized linear models and the exponential family 281~306(练习略)
-- [ ] 10 Directed graphical models (Bayes nets) 307~336(当前页面319)
+- [ ] 10 Directed graphical models (Bayes nets) 307~336(当前页面324)
 - [ ] 11 Mixture models and the EM algorithm 337~380
 - [ ] 12 Latent linear models 381~420
 - [ ] 13 Sparse linear models 421~478
