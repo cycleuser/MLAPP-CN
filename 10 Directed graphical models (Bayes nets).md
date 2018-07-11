@@ -91,7 +91,7 @@ $x_s \bot  x_{pred(s) / pa(s)}| x_{pa(s)}$(10.4)
 例如,在图10.1(a)中编码了下面的联合分布:
 
 $$
-\begin{aligned}
+\require{cancel}\begin{aligned}
 p(x_{1:5}) &= p(x_1)p(x_2|x_1)p(x_3|x_1,\cancel{x_2})p(x_4|\cancel{x_1}, x_2, x_3)p(x_5|\cancel{x_1},\cancel{x_2},x_3,\cancel{x_4}) &\text{(10.5)}\\
 &=  p(x_1)p(x_2|x_1)p(x_3|x_1)p(x_4|x_2, x_3)p(x_5|x_3)   &\text{(10.6)}
 \end{aligned}
@@ -329,5 +329,88 @@ $\hat \theta_{tck}=\frac{N_{tc k}}{\sum_{k'}N_{tck'}}$(10.33)
 ### 10.4.3 在有缺失或者隐藏变量的情况下学习
 
 如果有缺失掉的变量或者隐藏变量,似然函数就不能分解了,而且也确实不再是凸函数了,具体细节会在本书11.3讲到.这就意味着我们通常只能计算一个局部最优的最大似然估计或者最大厚颜轨迹.对参数进行贝叶斯推导就更难了.后面的章节会介绍适合这种情况的近似推导技术.
+
+
+## 10.5 图模型(DGM)的条件独立性质
+
+图模型的核心其实是一系列的条件独立(CI)假设.如果在一个图G中给定了CA独立于B,就写作$X_A\bot GX_B|X_C$.设$I(G)$是这个图所编码的全部条件独立陈述(CI statements)的集合.
+
+设G是一个对p的独立映射(independence map,缩写为I-map)或者可以说p是关于G的马尔可夫分布(Markov),当且仅当$I(G) \subseteq I(p)$成立,其中的$I(p)$是所有满足分布p的条件独立陈述(CI statements).也就是说如果这个模型没有做出任何不符合这个分布的条件独立假设,那就是一个独立映射(I-map).这样在推导p的条件独立性质的时候可以使用图来作为对p的安全代理.在设计用于处理大规模分类分布的时候这很有用,就可以无视具体的数值参数$\theta$了.
+
+要注意,完全连接图(fully connected graph)是一个对所有分布的独立映射(I-map)因为根本就没有条件独立声明(CI assertions)(因为全连接图没有缺失边(edges)).如果G是一个对p的独立映射(I-map),而又没有一个G的子集$G' \subseteq G$也是p的独立映射,就说G是p的最小独立映射(minimal I-map).
+
+剩下就是要去判别$X_A\bot GX_B|X_C$是否成立了.无向图的独立性推到很容易(参考本书19.2),但有向无环图(DAG)就有点复杂了,因为要顾及到有向边(directed edges)的方向.接下来详细说下这些.
+
+### 10.5.1 有向分离(d-separation)和贝叶斯球算法(Bayes Ball algorithm)（全局马尔可夫性质(global Markov properties)）
+
+首先引入一些定义.当且仅当下面的条件当中至少有一个满足的时候,就说无向路径(undirected path)P是由一系列节点E(包含证据(evidence))所有向分离的(d-separated):
+1. P包含一个链,$s \rightarrow m \rightarrow t$或者$s \leftarrow m \leftarrow t$,其中$m\in E$
+2. P包含一个帐篷或者叉子结构,$s \leftarrow m \rightarrow t$,其中$m\in E$
+3. P包含一个V形结构,$s\rightarrow m \leftarrow t$,其中的m以及m的任意后代节点都不属于E
+
+然后,给定了第三方观测集合E,当且仅当从A中每个节点$a\in A$到B中每个节点$b\in B$之间的无向路径(undirected path)被E有向分离,节点集合(set of nodes)A与一个不同的节点集合B是有向分离的.最后对于一个有向无环图的条件独立性质就可以如下定义:
+$X_A\bot GX_B|X_C \iff \text{给定E条件下A和B有向分离}  $(10.24)
+
+贝叶斯球算法(Shachter 1998)就是基于上面的定义来判断给定E的情况下A是否和B有向分离的.基本思想是"遮住(shade)"E中的所有节点,表示他们被观测到了.然后在A终端每个节点放置"球",然后让他们通过某种规则"撞来撞去(bounce around)",然后去看是否有球能达到B的节点.三条主要规则如图10.9所示.这里要注意所有的求都可以沿着边的反方向运行.我们会发现一个球可以通过一个链传递,但如果中间遮住了就不行了.类似地,一个球可以通过一个叉子模型传递,但如果中间遮住了也不行.不过,对于V形结构来说,除非中间遮住了,否则不能传递球.
+
+此处参考原书图10.9
+
+下面说下三种贝叶斯球规则.首先考虑链式结构下$X\rightarrow Y \rightarrow Z$,编码了:
+$p(x, y, z) = p(x)p(y|x)p(z|y)$(10.35)
+
+如果以y为条件而x和z独立,就有:
+
+$p(x, z|y)= \frac{p(x)p(y|x)p(z|y)}{p(y)}= \frac{p(x, y)p(z|y)}{p(y)} = p(x|y)p(z|y)$(10.36)
+
+也就是$x\bot z|y$.因此在链式结构中观测中间节点就将其一分为二了(就跟马尔科夫链里面一样).
+
+然后考虑叉子结构$X \leftarrow Y \rightarrow Z$.联合分布为:
+
+$p(x, y, z) = p(y)p(x|y)p(z|y)$(10.37)
+
+
+此处参考原书图10.10
+
+如果以y为条件而x和z独立,就有:
+
+$p(x, z|y)= \frac{p(x, y, z)}{p(y)}= \frac{p(y)p(x|y)p(z|y)}{p(y)} = p(x|y)p(z|y)$(10.38)
+
+也就是$x\bot z|y$.所以观测一个根节点就会分离开这个根节点的子节点(就如朴素贝叶斯分类器一样,参考本书3.5).
+
+最后考虑V形结构,$X\rightarrow Y \leftarrow Z$.联合分布为:
+$p(x, y, z) = p(x)p(z)p(y|x, z)$(10.39)
+
+如果以y为条件而x和z独立,就有:
+$p(x, z|y) = \frac{p(x)p(z)p(y|x, z)}{p(y)}$(10.40)
+
+也就是$$\require{cancel} x \cancel{\bot} z|y$$.不过在非条件分布(unconditional distribution)中还是有:
+$p(x, z) = p(x)p(z)$(10.41)
+
+所以x和z还是边缘独立的(marginally independent).因此在V形结构底部的共有子节点取条件会使得父节点互相独立.这个重要的效应叫做explaining away, inter-causal reasoning,也叫做伯克森悖论(Berkson's paradox)(指两个通常独立的事物会在特定场合下关联起来,由此产生的相关性容易带来认知上的偏差).举个简单例子,抛两个硬币,设用二值化的0和1表示人头和字,然后观测总值.先验是两枚硬币互相独立,但一旦观测到了总和,这两个硬币就互相耦合(coupled)了,比如如果总和是1,而第一个硬币抛的结果是0,那就知道必然是第二个是1.
+
+最后,贝叶斯求也需要"边界条件(boundary conditions)",如图10.10(a-b)所示.要理解这些规则的来源,可以参考图10.10(c).设$Y'$是Y的一个无噪音副本.然后如果我们观测$Y'$,就也有效观测了Y,所以父节点X和Z必须竞争来对其进行解释(compete to explain this).如果发送了一个球$X\rightarrow  Y \rightarrow  Y'$,就会沿着$Y' \rightarrow  Y \rightarrow Z $"弹回来".不过如果Y以及所有子节点都是隐藏的,这球就不会弹回来了.
+
+
+此处参考原书图10.11
+
+
+例如在图10.11中,很明显$x_2\bot x_6|x_5$,因为路径$2\rightarrow 5 \rightarrow 6$被观测到的$x_5$阻塞(blocked)了,而路径$2\rightarrow 4\rightarrow 7\rightarrow 6$被$x_7$阻塞了(这个是隐藏的),路径$2\rightarrow 1\rightarrow 3\rightarrow 6$则被$x_1$阻塞(也是隐藏的).另外也能看到$$\require{cancel} x_2 \cancel{\bot}  x_6|x_5,x_7$$,因为这时候$2\rightarrow 4\rightarrow 7\rightarrow 6$不再被$x_7$阻塞了(观测到了).练习10.2会给出判断图模型中条件独立关系的更多练习.
+
+### 10.5.2 图模型的其他马尔科夫性质
+
+根据有向分离准则(the d-separation criterion),可以得出:
+$t\bot nd(t)/pa(t)|pa(t)$(10.42)
+
+其中节点nd(t)的非子节点(non-descendants)就是指除了其子节点之外的其他所有节点,$nd(t)= V/\{t \cup  desc(t)\}$.等式10.42也叫做有向局域马尔科夫性质(directed local Markov property).例如在图10.11中,就有$nd(3)=\{2,4\},pa(3)=1$,所以$3\bot 2,4|1$.
+
+这个性质的一个特例是在根据某种拓扑排序查找一个节点的前辈节点(predecessors)的时候.这时候有:
+$t \bot pred(t)/pa(t)|pa(t)$(10.43)
+
+其中$pred(t) \subseteq nd(t)$.这叫做有序马尔科夫性质(ordered Markov property),证明了等式10.7.例如在图10.11中,如果排序为1,2,...,7,就发现$pred(3) = {1, 2},pa(3) = 1$,所以$ 3 \bot 2|1$.
+
+这样就有了有向无环图(DAG)的三个马尔科夫性质:有向全局马尔科夫性质G如等式10.34所述,📮马尔科夫性质O如等式10.43所述,以及有向局域马尔科夫性质L如等式10.42所述.很明显$G \implies L \implies O$.不太明显但也真实成立的是$O\implies L \implies G $(证明参考Koller and Friedman 2009).因此所有这些性质都是等价的.
+
+再进一步,任何关于G的马尔科夫分布p都可以如等式10.7那样因式分解;这也叫做因式分解性质F.很明显$O \implies F$,不过反过来也成立,具体证明还是参考Koller and Friedman 2009.
+
 
 
