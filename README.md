@@ -34,6 +34,8 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 
 [09 Generalized linear models and the exponential family](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/09%20Generalized%20linear%20models%20and%20the%20exponential%20family.html)
 
+[10 Directed graphical models (Bayes nets)](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/10%20Directed%20graphical%20models (Bayes%20nets).html)
+
 # 笔记项目概述
 本系列是一个新坑, 还希望大家批评指正！
 
@@ -56,8 +58,8 @@ https://github.com/Kivy-CN/MLAPP-CN/blob/master/Error.md
 - [x] 07 Linear regression 217~244(练习略)
 - [x] 08 Logistic regression 245~280(练习略)
 - [x] 09 Generalized linear models and the exponential family 281~306(练习略)
-- [ ] 10 Directed graphical models (Bayes nets) 307~336(当前页面327)
-- [ ] 11 Mixture models and the EM algorithm 337~380
+- [x] 10 Directed graphical models (Bayes nets) 307~336(练习略)
+- [x] 11 Mixture models and the EM algorithm 337~380(当前进度 337)
 - [ ] 12 Latent linear models 381~420
 - [ ] 13 Sparse linear models 421~478
 - [ ] 14 Kernels 479~514
