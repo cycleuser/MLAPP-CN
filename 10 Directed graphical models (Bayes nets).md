@@ -1,4 +1,4 @@
-# MLAPP 读书笔记 - 10 离散图模型(Directed graphical models)(贝叶斯网络(Bayes nets))
+# MLAPP 读书笔记 - 10 有向图模型(Directed graphical models)(贝叶斯网络(Bayes nets))
 
 > A Chinese Notes of MLAPP,MLAPP 中文笔记项目 
 https://zhuanlan.zhihu.com/python-kivy
