@@ -34,7 +34,7 @@ A Chinese Notes of MLAPP，MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/
 
 [09 Generalized linear models and the exponential family](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/09%20Generalized%20linear%20models%20and%20the%20exponential%20family.html)
 
-[10 Directed graphical models (Bayes nets)](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/10%20Directed%20graphical%20models (Bayes%20nets).html)
+[10 Directed graphical models (Bayes nets)](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/10%20Directed%20graphical%20models%20(Bayes%20nets).html)
 
 # 笔记项目概述
 本系列是一个新坑, 还希望大家批评指正！
