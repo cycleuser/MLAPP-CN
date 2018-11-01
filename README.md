@@ -94,7 +94,7 @@ MLAPP Chinese Notes Project https://zhuanlan.zhihu.com/python-kivy
 
 [02 Probability](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/02%20Probability.html)
 
-[03 Generative models for discrete data](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/03%20Generative%20models%20for%20discrete% 20data.html)
+[03 Generative models for discrete data](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/03%20Generative%20models%20for%20discrete%20data.html)
 
 [04 Gaussian models](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/04%20Gaussian%20models.html)
 
@@ -106,11 +106,12 @@ MLAPP Chinese Notes Project https://zhuanlan.zhihu.com/python-kivy
 
 [08 Logistic regression](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/08%20Logistic%20regression.html)
 
-[09 Generalized linear models and the exponential family](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/09%20Generalized%20linear%20models% 20and%20the%20exponential%20family.html)
+[09 Generalized linear models and the exponential family](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/09%20Generalized%20linear%20models%20and%20the%20exponential%20family.html)
 
-[10 Directed graphical models (Bayes nets)](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/10%20Directed%20graphical%20models% 20 (Bayes%20nets).html)
+[10 Directed graphical models (Bayes nets)](https://htmlpreview.github.io/?https://github.com/Kivy-CN/MLAPP-CN/master/HTML/10%20Directed%20graphical%20models%20(Bayes%20nets).html)
 
-##Note Project Overview
+## Note Project Overview
+
 This series is a new pit, and I hope everyone will criticize me!
 
 ### Suspected error record in book
