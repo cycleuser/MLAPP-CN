@@ -62,7 +62,7 @@ $Ber(x|\mu) =\mu^x(1-\mu)^{1-x} =\exp[x\log(\mu)+(1-x)\log(1-\mu)] =\exp[\phi(x)
 
 其中的$\phi(x)=[I(x0),I(x=1),\theta =[\log(\mu)+(1-x)\log(1-\mu)]]$.不过这种表示是过完备的(over-complete),因为在特征(features)之间有一个线性依赖关系:
 
-$1^T\[hi(x)=I(x=0)+I(x=1)=1$(9.7)
+$1^T\phi(x)=I(x=0)+I(x=1)=1$(9.7)
 
 结果$\theta$就不再是唯一可识别的(uniquely identifiable).通常都要求表述最简化(minimal),也就意味着关于这个分布要有为一个的$\theta$.可以定义如下:
 
