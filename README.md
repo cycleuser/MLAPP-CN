@@ -1,6 +1,6 @@
 # MLAPP-CN
 
-MLAPP 中文笔记项目  https://zhuanlan.zhihu.com/python-kivy
+MLAPP 中文笔记项目 
 
 ## 在线阅读
 
@@ -47,7 +47,7 @@ https://github.com/Kivy-CN/MLAPP-CN/blob/master/Error.md
 
 # MLAPP-CN
 
-MLAPP Chinese Notes Project https://zhuanlan.zhihu.com/python-kivy
+MLAPP Chinese Notes Project
 
 ## Read Online
 
